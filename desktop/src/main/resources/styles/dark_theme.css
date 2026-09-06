@@ -1,0 +1,114 @@
+.main-panel {
+    -fx-background-color: #0b0f17;
+    -fx-font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+}
+
+/* Header & Nav */
+.header-container { -fx-background-color: #0d131d; -fx-border-color: #1a2332; -fx-border-width: 0 0 1 0; }
+.app-title { -fx-text-fill: #e1e7ed; -fx-font-size: 13px; -fx-font-weight: bold; }
+.active-badge { -fx-text-fill: #3b82f6; -fx-font-size: 12px; }
+.icon-btn { -fx-background-color: transparent; -fx-text-fill: #94a3b8; }
+.icon-btn-close { -fx-background-color: transparent; -fx-text-fill: #ef4444; }
+
+.nav-tab-bar { -fx-background-color: #0d131d; }
+.nav-tab-btn { -fx-background-color: transparent; -fx-text-fill: #94a3b8; -fx-padding: 8 16; -fx-font-size: 12px; }
+.nav-tab-active { -fx-border-color: #3b82f6; -fx-border-width: 0 0 2 0; -fx-text-fill: #ffffff; -fx-font-weight: bold; }
+
+/* Dashboard Cards */
+.card {
+    -fx-background-color: #111827;
+    -fx-border-color: #1f2937;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 12;
+}
+.card-header-title { -fx-text-fill: #9ca3af; -fx-font-size: 11px; -fx-font-weight: bold; }
+
+/* Stats Text */
+.stat-caption { -fx-text-fill: #6b7280; -fx-font-size: 11px; }
+.stat-caption-bold { -fx-text-fill: #3b82f6; -fx-font-size: 11px; -fx-font-weight: bold; }
+.stat-huge-value { -fx-text-fill: #60a5fa; -fx-font-size: 28px; -fx-font-weight: bold; }
+.stat-medium-value { -fx-text-fill: #38bdf8; -fx-font-size: 18px; -fx-font-weight: bold; }
+.stat-sub-green { -fx-text-fill: #22c55e; -fx-font-size: 11px; }
+.stat-sub { -fx-text-fill: #6b7280; -fx-font-size: 10px; }
+.stat-temp-normal { -fx-text-fill: #22c55e; -fx-font-size: 22px; -fx-font-weight: bold; }
+
+.hardware-info-box { -fx-background-color: #0b0f17; -fx-padding: 8; -fx-background-radius: 4; }
+.hw-text { -fx-text-fill: #9ca3af; -fx-font-size: 11px; }
+.hw-text-blue { -fx-text-fill: #60a5fa; -fx-font-size: 11px; }
+
+/* Battery & Bottleneck Boxes */
+.battery-icon-box { -fx-background-color: #030712; -fx-border-color: #22c55e; -fx-border-radius: 8; -fx-background-radius: 8; }
+.battery-bolt { -fx-text-fill: #38bdf8; -fx-font-size: 24px; }
+.battery-text { -fx-text-fill: #ffffff; -fx-font-size: 16px; -fx-font-weight: bold; }
+.power-info-box { -fx-background-color: #030712; -fx-padding: 8; -fx-background-radius: 4; }
+
+.bottleneck-box { -fx-background-color: #0d131d; -fx-padding: 10; -fx-background-radius: 6; }
+.highlight-path { -fx-text-fill: #60a5fa; -fx-font-size: 11px; -fx-font-weight: bold; }
+.info-callout { -fx-background-color: #1e1b4b; -fx-padding: 8; -fx-background-radius: 4; }
+.info-callout-text { -fx-text-fill: #818cf8; -fx-font-size: 11px; }
+.info-callout-sub { -fx-text-fill: #a5b4fc; -fx-font-size: 10px; }
+
+/* Red Alert Bar */
+.alert-banner-red { -fx-background-color: #450a0a; -fx-border-color: #991b1b; -fx-border-radius: 6; -fx-background-radius: 6; }
+.alert-icon-red { -fx-text-fill: #ef4444; -fx-font-size: 22px; }
+.alert-title-red { -fx-text-fill: #fca5a5; -fx-font-size: 12px; -fx-font-weight: bold; }
+.alert-sub-red { -fx-text-fill: #f87171; -fx-font-size: 11px; }
+.alert-btn-danger { -fx-background-color: #dc2626; -fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-background-radius: 4; }
+.alert-btn-secondary { -fx-background-color: #1f2937; -fx-text-fill: #e5e7eb; -fx-background-radius: 4; }
+
+/* Footer */
+.footer-bar { -fx-background-color: #030712; -fx-border-color: #1f2937; -fx-border-width: 1 0 0 0; }
+.footer-text { -fx-text-fill: #6b7280; -fx-font-size: 11px; }
+.footer-text-blue { -fx-text-fill: #3b82f6; -fx-font-size: 11px; }
+.clickable-stat {
+    -fx-cursor: hand;
+}
+.clickable-stat:hover {
+    -fx-background-color: rgba(255,255,255,0.05);
+    -fx-background-radius: 8;
+}
+
+/* PulseOS Dashboard V2 */
+.brand-title { -fx-text-fill: #f8fafc; -fx-font-size: 18px; -fx-font-weight: bold; }
+.section-kicker { -fx-text-fill: #94a3b8; -fx-font-size: 10px; -fx-font-weight: bold; -fx-letter-spacing: 1px; }
+.live-caption { -fx-text-fill: #64748b; -fx-font-size: 10px; }
+.dashboard-scroll, .dashboard-scroll .viewport { -fx-background-color: #0b0f17; }
+.dashboard-scroll > .corner { -fx-background-color: #0b0f17; }
+.hero-card { -fx-background-color: linear-gradient(to bottom right, #111827, #0d1622); -fx-border-color: #26364a; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 16; }
+.health-score { -fx-text-fill: #e2e8f0; -fx-font-size: 42px; -fx-font-weight: bold; }
+.health-grade { -fx-text-fill: #22c55e; -fx-font-size: 11px; -fx-font-weight: bold; }
+.hero-subtitle { -fx-text-fill: #94a3b8; -fx-font-size: 11px; }
+.health-progress { -fx-pref-height: 7px; }
+.mini-label { -fx-text-fill: #64748b; -fx-font-size: 10px; -fx-min-width: 80px; }
+.mini-value { -fx-text-fill: #cbd5e1; -fx-font-size: 10px; -fx-font-weight: bold; }
+.metric-tile { -fx-background-color: #0b1220; -fx-border-color: #1d2a3b; -fx-border-radius: 7; -fx-background-radius: 7; -fx-padding: 12; }
+.metric-tile:hover { -fx-border-color: #3b82f6; -fx-background-color: #101a2b; }
+.metric-value { -fx-text-fill: #e2e8f0; -fx-font-size: 24px; -fx-font-weight: bold; }
+.metric-hint { -fx-text-fill: #64748b; -fx-font-size: 9px; }
+.chart-card { -fx-background-color: #111827; -fx-border-color: #1f2937; -fx-border-radius: 7; -fx-background-radius: 7; -fx-padding: 9; }
+.chart-card-header { -fx-padding: 1 2 5 2; }
+.chart-card-title { -fx-text-fill: #cbd5e1; -fx-font-size: 11px; -fx-font-weight: bold; }
+.live-badge { -fx-background-color: #123322; -fx-text-fill: #4ade80; -fx-background-radius: 12; -fx-padding: 3 7; -fx-font-size: 9px; -fx-font-weight: bold; }
+.issue-line { -fx-text-fill: #cbd5e1; -fx-font-size: 11px; -fx-padding: 6 0; }
+.prediction-text { -fx-text-fill: #cbd5e1; -fx-font-size: 12px; -fx-font-weight: bold; }
+.muted-note { -fx-text-fill: #64748b; -fx-font-size: 10px; }
+.battery-big { -fx-text-fill: #e2e8f0; -fx-font-size: 30px; -fx-font-weight: bold; }
+.action-btn { -fx-background-color: #1e40af; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 12; }
+.about-card { -fx-background-color: #0e1622; -fx-border-color: #223047; -fx-border-radius: 7; -fx-background-radius: 7; -fx-padding: 14; }
+.about-title { -fx-text-fill: #dbeafe; -fx-font-size: 13px; -fx-font-weight: bold; }
+.about-text { -fx-text-fill: #94a3b8; -fx-font-size: 11px; }
+
+.backend-row { -fx-background-color: #0b1220; -fx-text-fill: #cbd5e1; -fx-padding: 9; -fx-background-radius: 5; -fx-border-color: #1d2a3b; -fx-border-radius: 5; -fx-font-size: 11px; }
+.backend-row:hover { -fx-border-color: #3b82f6; }
+.chart-column { -fx-background-color: transparent; }
+.chart-backend { -fx-text-fill: #64748b; -fx-font-size: 9px; -fx-padding: 1 4 3 4; }
+.list-view { -fx-background-color: #0b0f17; -fx-control-inner-background: #0b0f17; -fx-border-color: #1f2937; -fx-border-radius: 4; }
+.list-cell { -fx-background-color: #0b0f17; -fx-text-fill: #9ca3af; -fx-font-size: 10px; -fx-padding: 6 8; }
+.list-cell:filled:hover { -fx-background-color: #111827; }
+
+/* Full-size dashboard layout: prioritize visibility over compactness. */
+.healthView, .card, .hero-card { -fx-min-width: 0; }
+.chart-column { -fx-min-width: 0; -fx-pref-width: 100%; }
+.chart-card { -fx-min-width: 0; -fx-pref-height: 250px; }
+.chart-card .chart-plot-background { -fx-background-color: #0b1220; }
