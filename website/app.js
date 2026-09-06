@@ -1,1 +1,5 @@
 (function(){const ua=navigator.userAgent.toLowerCase();let p='your device';if(ua.includes('windows'))p='Windows';else if(ua.includes('mac'))p='macOS';else if(ua.includes('linux'))p='Linux';else if(ua.includes('android'))p='Android';else if(ua.includes('iphone')||ua.includes('ipad'))p='iOS';document.getElementById('platformText').textContent='Detected platform: '+p;document.getElementById('downloadIntro').textContent='Detected '+p+'. Choose the appropriate client below. Desktop downloads are prepared from the existing PulseOS client; mobile uses the responsive/mobile client architecture.'})();
+
+document.querySelectorAll('.dash-click').forEach((el)=>{
+  el.addEventListener('click',()=>el.classList.toggle('is-selected'));
+});

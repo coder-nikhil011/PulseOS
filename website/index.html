@@ -10,7 +10,160 @@
 <header class="nav"><a class="brand" href="#top">Pulse<span>OS</span></a><nav><a href="#features">Features</a><a href="#how">How it works</a><a href="#download">Download</a><a href="#mobile">Mobile</a></nav><a class="nav-btn" href="#download">Get PulseOS</a></header>
 <main id="top">
 <section class="hero"><div class="eyebrow">MONITOR · UNDERSTAND · PREDICT · HEAL</div><h1>Your device should explain itself.</h1><p>PulseOS turns raw system activity into health, diagnosis, prediction and safe remediation — while keeping your data local.</p><div class="hero-actions"><a class="primary" href="#download">Download PulseOS</a><a class="secondary" href="#features">Explore capabilities</a></div><div class="status"><i></i><span id="platformText">Detecting your platform…</span><span>·</span><span>Local-first</span></div></section>
-<section class="dashboard-preview"><div class="window"><div class="windowbar"><b>PulseOS</b><span>DEVICE HEALTH & HEALING CENTER</span><em>● LIVE</em></div><div class="mini-grid"><div class="score"><small>DEVICE HEALTH SCORE</small><strong>87<span>/100</span></strong><p>Healthy · stable workload</p><div class="bar"><i style="width:87%"></i></div></div><div class="metrics"><div><small>CPU</small><b>42%</b></div><div><small>MEMORY</small><b>61%</b></div><div><small>TEMP</small><b>54°C</b></div><div><small>THREADS</small><b>184</b></div></div></div><div class="charts"><div><small>CPU LOAD</small><svg viewBox="0 0 400 100"><polyline points="0,72 35,68 70,74 105,45 140,53 175,35 210,50 245,32 280,43 315,25 350,36 400,20"/></svg></div><div><small>MEMORY PRESSURE</small><svg viewBox="0 0 400 100"><polyline points="0,55 45,52 90,58 135,49 180,52 225,43 270,46 315,40 360,42 400,35"/></svg></div><div><small>CPU TEMPERATURE</small><svg viewBox="0 0 400 100"><polyline points="0,76 45,72 90,70 135,74 180,65 225,68 270,57 315,61 360,54 400,56"/></svg></div></div></div></section>
+<section class="dashboard-preview">
+  <div class="dash-window">
+    <div class="dash-topbar">
+      <div class="dash-brand"><span class="dash-logo">P</span><div><b>PulseOS</b><small>DEVICE HEALTH &amp; HEALING CENTER</small></div></div>
+      <div class="dash-top-actions"><span class="dash-live">● LIVE</span><span class="dash-refresh">↻</span><span class="dash-avatar">P</span></div>
+    </div>
+
+    <div class="dash-layout">
+      <aside class="dash-sidebar">
+        <button class="dash-nav active">◉ <span>Overview</span></button>
+        <button class="dash-nav">⌘ <span>Smart Router</span></button>
+        <button class="dash-nav">▣ <span>Storage Healer</span></button>
+        <button class="dash-nav">⇄ <span>Converter</span></button>
+        <button class="dash-nav">⚙ <span>Settings</span></button>
+        <div class="dash-side-status"><i></i> Monitoring active</div>
+        <div class="dash-side-version">PulseOS v0.1 Prototype</div>
+      </aside>
+
+      <div class="dash-content">
+        <div class="dash-pagehead">
+          <div>
+            <span class="dash-eyebrow">OVERVIEW</span>
+            <h3>Device Health &amp; Healing Center</h3>
+            <p>Understand your device at a glance — then act safely.</p>
+          </div>
+          <div class="dash-head-buttons"><button>Refresh</button><button class="dash-main-action">FIX ISSUES SAFELY</button></div>
+        </div>
+
+        <div class="dash-health-card dash-click">
+          <div class="dash-health-score">
+            <span class="dash-label">DEVICE HEALTH SCORE</span>
+            <strong>87<span>/100</span></strong>
+            <b>GOOD</b>
+            <p>Healthy · stable workload with moderate storage pressure.</p>
+          </div>
+          <div class="dash-health-bars">
+            <div><label>Performance <b>84%</b></label><i><em style="width:84%"></em></i></div>
+            <div><label>Hardware <b>91%</b></label><i><em style="width:91%"></em></i></div>
+            <div><label>Storage <b>71%</b></label><i><em style="width:71%"></em></i></div>
+            <div><label>Battery <b>92%</b></label><i><em style="width:92%"></em></i></div>
+          </div>
+        </div>
+
+        <div class="dash-section-head"><div><span class="dash-eyebrow">LIVE TELEMETRY</span><h4>Current device snapshot</h4></div><span class="dash-update"><i></i> Updating every second</span></div>
+        <div class="dash-snapshot">
+          <div class="dash-stat dash-click"><small>CPU</small><strong>42<em>%</em></strong><span>Chrome · top process</span></div>
+          <div class="dash-stat dash-click"><small>MEMORY</small><strong>61<em>%</em></strong><span>Android Studio · top memory</span></div>
+          <div class="dash-stat dash-click"><small>TEMPERATURE</small><strong>54<em>°C</em></strong><span>Thermal state · normal</span></div>
+          <div class="dash-stat dash-click"><small>THREADS</small><strong>184</strong><span>Running processes</span></div>
+          <div class="dash-stat dash-click"><small>CLOCK</small><strong>3.4<em>GHz</em></strong><span>Current frequency</span></div>
+        </div>
+
+        <div class="dash-chart-grid">
+          <div class="dash-card">
+            <div class="dash-card-head"><div><span>CPU</span><b>CPU Load</b></div><em>LIVE</em></div>
+            <svg class="dash-chart" viewBox="0 0 500 150" preserveAspectRatio="none">
+              <path class="gridline" d="M0 35H500M0 75H500M0 115H500"/>
+              <polyline points="0,112 40,107 80,114 120,66 160,77 200,48 240,71 280,43 320,57 360,34 400,48 445,24 500,35"/>
+            </svg>
+            <div class="dash-chart-foot"><strong>42%</strong><span>recent load trend</span></div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-card-head"><div><span>RAM</span><b>Memory Pressure</b></div><em>LIVE</em></div>
+            <svg class="dash-chart" viewBox="0 0 500 150" preserveAspectRatio="none">
+              <path class="gridline" d="M0 35H500M0 75H500M0 115H500"/>
+              <polyline points="0,70 50,66 100,73 150,62 200,67 250,55 300,61 350,51 400,54 455,45 500,41"/>
+            </svg>
+            <div class="dash-chart-foot"><strong>61%</strong><span>recent memory trend</span></div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-card-head"><div><span>THERMALS</span><b>CPU Temperature</b></div><em>LIVE</em></div>
+            <svg class="dash-chart" viewBox="0 0 500 150" preserveAspectRatio="none">
+              <path class="gridline" d="M0 35H500M0 75H500M0 115H500"/>
+              <polyline points="0,109 50,104 100,99 150,106 200,91 250,96 300,80 350,85 400,74 450,78 500,72"/>
+            </svg>
+            <div class="dash-chart-foot"><strong>54°C</strong><span>recent thermal trend</span></div>
+          </div>
+        </div>
+
+        <div class="dash-two">
+          <div class="dash-card dash-click">
+            <div class="dash-card-head"><div><span>ATTENTION</span><b>Active Problems</b></div><em class="dash-count">2</em></div>
+            <div class="dash-problems">
+              <div><i></i><div><b>STORAGE PRESSURE</b><span>Downloads and project artifacts are using space.</span></div><strong>71%</strong></div>
+              <div><i></i><div><b>RESOURCE SPIKE</b><span>Chrome is currently the top CPU process.</span></div><strong>42%</strong></div>
+            </div>
+            <button class="dash-text-button">REVIEW &amp; FIX →</button>
+          </div>
+          <div class="dash-card dash-click">
+            <div class="dash-card-head"><div><span>LOOKING AHEAD</span><b>Predictive Health</b></div><em>86% confidence</em></div>
+            <div class="dash-predict">
+              <div><span>CPU Pressure</span><b>72%</b></div><div><span>RAM Pressure</span><b>61%</b></div>
+              <div><span>Thermal Risk</span><b>34%</b></div><div><span>Storage Risk</span><b>18%</b></div>
+            </div>
+            <p>Current signals suggest moderate performance pressure with no immediate thermal risk.</p>
+          </div>
+        </div>
+
+        <div class="dash-two">
+          <div class="dash-card dash-click">
+            <div class="dash-card-head"><div><span>POWER</span><b>Battery &amp; Power</b></div><em>CHARGING</em></div>
+            <div class="dash-battery"><strong>84<em>%</em></strong><div><span>Battery health <b>92%</b></span><span>Cycle count <b>184</b></span><span>Power source <b>Adapter</b></span></div></div>
+          </div>
+          <div class="dash-card dash-click">
+            <div class="dash-card-head"><div><span>DISK</span><b>Storage Intelligence</b></div><em>42% USED</em></div>
+            <div class="dash-storage">
+              <div class="dash-donut"><div><strong>420</strong><span>GB used</span></div></div>
+              <div class="dash-storage-list">
+                <div><span><i></i>Downloads</span><b>120 GB</b></div>
+                <div><span><i></i>Projects</span><b>98 GB</b></div>
+                <div><span><i></i>Developer</span><b>76 GB</b></div>
+                <div><span><i></i>Documents</span><b>42 GB</b></div>
+                <div><span><i></i>Other</span><b>84 GB</b></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-card dash-click">
+          <div class="dash-card-head"><div><span>RESOURCE ANALYSIS</span><b>Top Resource Drainers</b></div><em>Open Smart Router →</em></div>
+          <div class="dash-drainers">
+            <div><span>CPU LEADER</span><b>Chrome</b><em>28%</em></div>
+            <div><span>MEMORY LEADER</span><b>Android Studio</b><em>2.4 GB</em></div>
+            <div><span>PROCESSES</span><b>184</b><em>Total running</em></div>
+            <div><span>RESOURCE SUMMARY</span><p>Moderate resource pressure. No single process is dominating the device.</p></div>
+          </div>
+        </div>
+
+        <div class="dash-two">
+          <div class="dash-card dash-click">
+            <div class="dash-card-head"><div><span>DEVICE</span><b>Hardware Information</b></div><em>Details →</em></div>
+            <div class="dash-info"><span>CPU <b>Apple Silicon / x64 device</b></span><span>Memory <b>16 GB</b></span><span>Thermal state <b>Normal</b></span><span>Telemetry <b>OSHI</b></span></div>
+          </div>
+          <div class="dash-card dash-click">
+            <div class="dash-card-head"><div><span>AUTOMATION</span><b>System Watcher</b></div><em>ACTIVE</em></div>
+            <div class="dash-watcher"><span>● Watching <b>~/Downloads</b></span><div><small>LAST EVENT</small><b>project-build.zip detected</b><p>Organized automatically · 2 min ago</p></div></div>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-head"><div><span>EVENTS</span><b>Recent Activity</b></div><em>View all →</em></div>
+          <div class="dash-activity"><div><time>10:42</time><span>•</span><b>Storage scan completed</b><em>Healthy result</em></div><div><time>10:40</time><span>•</span><b>New file detected</b><em>Watcher</em></div><div><time>10:38</time><span>•</span><b>Build artifact identified</b><em>Storage Healer</em></div><div><time>10:34</time><span>•</span><b>CPU spike detected</b><em>Smart Router</em></div></div>
+        </div>
+
+        <div class="dash-about dash-card">
+          <span class="dash-eyebrow">ABOUT PULSEOS</span><h4>From system data to device intelligence.</h4>
+          <p>PulseOS combines monitoring, diagnosis, prediction and safe maintenance into one local-first workflow.</p>
+          <div class="dash-flow"><b>MONITOR</b><i>→</i><b>UNDERSTAND</b><i>→</i><b>PREDICT</b><i>→</i><b>HEAL</b></div>
+          <footer>Existing tools show data. <strong>PulseOS turns data into decisions.</strong></footer>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 <section id="features" class="section"><div class="eyebrow">ONE PLATFORM, EVERY SIGNAL</div><h2>Everything already in PulseOS — plus intelligence around it.</h2><div class="cards"><article><b>◉</b><h3>Live Device Health</h3><p>CPU, RAM, temperature, threads, clocks, battery, processes and hardware telemetry.</p></article><article><b>↯</b><h3>Smart Router</h3><p>Understand resource-draining processes and make informed performance decisions.</p></article><article><b>◈</b><h3>Storage Healer</h3><p>Analyze storage, find build artifacts and reclaim safe space with guided cleanup.</p></article><article><b>⇄</b><h3>Offline Converter</h3><p>Document, image, archive, media and ebook conversion without uploading files.</p></article><article><b>⌁</b><h3>System Watcher</h3><p>Monitor Downloads, organize files and automate useful file workflows.</p></article><article><b>✦</b><h3>Local AI</h3><p>Optional Ollama integration for explanations, routing and intelligent automation.</p></article></div></section>
 <section id="how" class="section dark"><div class="eyebrow">THE PULSEOS LOOP</div><h2>From “something is slow” to a safe action.</h2><div class="steps"><div><span>01</span><h3>Monitor</h3><p>Collect available telemetry continuously.</p></div><div><span>02</span><h3>Understand</h3><p>Compare activity with device context and baseline.</p></div><div><span>03</span><h3>Predict</h3><p>Spot trends before they become failures.</p></div><div><span>04</span><h3>Heal</h3><p>Recommend and execute guarded remediation.</p></div></div></section>
 <section id="mobile" class="section mobile"><div><div class="eyebrow">PHONE + TABLET READY</div><h2>Same PulseOS intelligence, adapted to the screen and permissions.</h2><p>The mobile experience uses a responsive interface for phones and tablets. Android/iOS clients can share the PulseOS intelligence layer while respecting mobile OS permissions instead of pretending desktop controls exist on a phone.</p><ul><li>Portrait + landscape layouts</li><li>Compact health score and live trends</li><li>Battery, storage and device insights</li><li>Safe actions based on available permissions</li></ul></div><div class="phone"><div class="notch"></div><div class="phone-score">87<small>/100 HEALTH</small></div><div class="phone-card"><span>CPU</span><b>42%</b></div><div class="phone-card"><span>MEMORY</span><b>61%</b></div><div class="phone-card"><span>BATTERY</span><b>78%</b></div><div class="phone-chart">LIVE HEALTH TREND<div class="line"></div></div></div></section>
