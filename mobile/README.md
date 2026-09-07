@@ -1,15 +1,17 @@
-# PulseOS Mobile
+# pulseos_mobile
 
-Mobile client boundary for Android/iOS.
+A new Flutter project.
 
-The desktop JavaFX client is intentionally preserved in `../desktop`. Mobile should share the PulseOS intelligence/data contracts but use native platform UI and permissions. The website contains a responsive mobile experience preview.
+## Getting Started
 
-Planned mobile capabilities:
-- Device health score
-- Battery and storage intelligence
-- Health trends
-- Safe recommendations
-- Cross-device PulseOS account/sync (optional future service)
-- Platform-specific actions only where Android/iOS permissions allow
+This project is a starting point for a Flutter application.
 
-Do not port JavaFX/OSHI directly to mobile.
+A few resources to get you started if this is your first Flutter project:
+
+- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
+- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
