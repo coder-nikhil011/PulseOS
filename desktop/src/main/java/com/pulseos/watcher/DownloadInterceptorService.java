@@ -7,6 +7,8 @@ import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -16,6 +18,7 @@ public class DownloadInterceptorService {
     private WatchService watchService;
     private ExecutorService executor;
     private volatile boolean running = false;
+    private final Map<Path, Long> recentDispatches = new ConcurrentHashMap<>();
 
     public DownloadInterceptorService(Path watchPath) {
         this.watchPath = watchPath;
@@ -68,9 +71,15 @@ public class DownloadInterceptorService {
                     continue;
                 }
 
+                // Ignore duplicate CREATE/MODIFY bursts for the same file.
+                long now = System.currentTimeMillis();
+                Long previousDispatch = recentDispatches.get(fullPath);
+                if (previousDispatch != null && now - previousDispatch < 4000) continue;
+
                 // Extract file extension
                 String extension = getFileExtension(fileNameStr);
                 if (!extension.isEmpty()) {
+                    recentDispatches.put(fullPath, now);
                     listener.onFileDetected(fullPath, extension.toLowerCase());
                 }
             }
@@ -92,6 +101,7 @@ public class DownloadInterceptorService {
 
     public void stopIntercepting() {
         this.running = false;
+        recentDispatches.clear();
         if (executor != null && !executor.isShutdown()) {
             executor.shutdownNow();
         }

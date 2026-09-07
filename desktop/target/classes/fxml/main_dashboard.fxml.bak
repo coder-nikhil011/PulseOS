@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import com.pulseos.ui.components.TelemetryChartCard?>
+
+<StackPane fx:id="rootPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pulseos.ui.MainDashboardController" prefHeight="900.0" prefWidth="1400.0" styleClass="main-panel">
+    <BorderPane>
+        <top>
+            <VBox styleClass="header-container">
+                <HBox styleClass="header-bar" alignment="CENTER_LEFT" spacing="14">
+                    <padding><Insets top="10" right="18" bottom="9" left="18"/></padding>
+                    <Label text="PulseOS" styleClass="brand-title"/>
+                    <Label text="DEVICE HEALTH &amp; HEALING CENTER" styleClass="app-title"/>
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="liveStatusLabel" text="● LIVE" styleClass="active-badge"/>
+                    <Button text="—" styleClass="icon-btn"/>
+                    <Button text="□" styleClass="icon-btn"/>
+                    <Button text="✕" styleClass="icon-btn-close"/>
+                </HBox>
+                <HBox styleClass="nav-tab-bar" spacing="4">
+                    <padding><Insets left="12" right="12"/></padding>
+                    <Button fx:id="navHealthBtn" text="⌂ Overview" onAction="#showHealthView" styleClass="nav-tab-btn, nav-tab-active"/>
+                    <Button fx:id="navSmartRouterBtn" text="⚙ Smart Router" onAction="#showSmartRouterView" styleClass="nav-tab-btn"/>
+                    <Button fx:id="navStorageHealerBtn" text="◈ Storage Healer" onAction="#showStorageHealerView" styleClass="nav-tab-btn"/>
+                    <Button fx:id="navConverterBtn" text="⇄ Converter" onAction="#showConverterView" styleClass="nav-tab-btn"/>
+                    <Button fx:id="navSettingsBtn" text="⚙ Settings" onAction="#showSettingsView" styleClass="nav-tab-btn"/>
+                </HBox>
+            </VBox>
+        </top>
+
+        <center>
+            <StackPane fx:id="contentArea">
+                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="dashboard-scroll">
+                    <VBox fx:id="healthView" spacing="12">
+                        <padding><Insets top="14" right="14" bottom="18" left="14"/></padding>
+
+                        <VBox fx:id="healthHeroCard" styleClass="hero-card clickable-stat" spacing="8" maxWidth="Infinity">
+                            <Label text="DEVICE HEALTH SCORE" styleClass="section-kicker"/>
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <Label fx:id="healthScoreLabel" text="—/100" styleClass="health-score"/>
+                                <Label fx:id="healthGradeLabel" text="ANALYZING" styleClass="health-grade"/>
+                            </HBox>
+                            <Label fx:id="healthReasonLabel" text="PulseOS is analyzing live device telemetry." wrapText="true" styleClass="hero-subtitle"/>
+                            <Label fx:id="healthDataSourceLabel" text="Backend: OSHI telemetry · live scoring" wrapText="true" styleClass="muted-note"/>
+                            <Button fx:id="fixIssuesBtn" text="FIX ISSUES SAFELY" onAction="#handleFixIssues" styleClass="action-btn"/>
+                            <ProgressBar fx:id="performanceHealthBar" progress="0.8" styleClass="health-progress" maxWidth="Infinity"/>
+                            <HBox spacing="10"><Label text="Performance" styleClass="mini-label"/><Label fx:id="performanceHealthLabel" text="—" styleClass="mini-value"/></HBox>
+                            <HBox spacing="10"><Label text="Hardware" styleClass="mini-label"/><Label fx:id="hardwareHealthLabel" text="—" styleClass="mini-value"/></HBox>
+                            <HBox spacing="10"><Label text="Storage" styleClass="mini-label"/><Label fx:id="storageHealthLabel" text="—" styleClass="mini-value"/></HBox>
+                            <HBox spacing="10"><Label text="Battery" styleClass="mini-label"/><Label fx:id="batteryHealthLabel" text="—" styleClass="mini-value"/></HBox>
+                        </VBox>
+
+                        <VBox fx:id="liveSnapshotCard" styleClass="card clickable-stat" spacing="10" maxWidth="Infinity">
+                            <HBox alignment="CENTER_LEFT"><Label text="LIVE DEVICE SNAPSHOT" styleClass="section-kicker"/><HBox HBox.hgrow="ALWAYS"/><Label text="Values + live graphs" styleClass="live-caption"/></HBox>
+                            <HBox spacing="10" maxWidth="Infinity">
+                                <VBox onMouseClicked="#openCpuDetail" styleClass="metric-tile clickable-stat" HBox.hgrow="ALWAYS"><Label text="CPU" styleClass="stat-caption"/><Label fx:id="cpuLabel" text="—" styleClass="metric-value"/><Label fx:id="cpuBackendLabel" text="Top app: waiting…" styleClass="metric-hint" wrapText="true"/></VBox>
+                                <VBox onMouseClicked="#openRamDetail" styleClass="metric-tile clickable-stat" HBox.hgrow="ALWAYS"><Label text="MEMORY" styleClass="stat-caption"/><Label fx:id="ramLabel" text="—" styleClass="metric-value"/><Label fx:id="ramBackendLabel" text="Top app: waiting…" styleClass="metric-hint" wrapText="true"/></VBox>
+                                <VBox onMouseClicked="#openTempDetail" styleClass="metric-tile clickable-stat" HBox.hgrow="ALWAYS"><Label text="TEMPERATURE" styleClass="stat-caption"/><Label fx:id="tempLabel" text="—" styleClass="metric-value"/><Label fx:id="tempBackendLabel" text="Sensor: detecting…" styleClass="metric-hint" wrapText="true"/></VBox>
+                                <VBox onMouseClicked="#openThreadsDetail" styleClass="metric-tile clickable-stat" HBox.hgrow="ALWAYS"><Label text="THREADS" styleClass="stat-caption"/><Label fx:id="threadsLabel" text="—" styleClass="metric-value"/><Label fx:id="threadsBackendLabel" text="Process telemetry" styleClass="metric-hint" wrapText="true"/></VBox>
+                                <VBox onMouseClicked="#openClockDetail" styleClass="metric-tile clickable-stat" HBox.hgrow="ALWAYS"><Label text="CLOCK" styleClass="stat-caption"/><Label fx:id="clockSpeedLabel" text="—" styleClass="metric-value"/><Label fx:id="clockBackendLabel" text="CPU frequency" styleClass="metric-hint" wrapText="true"/></VBox>
+                            </HBox>
+                            <VBox styleClass="chart-column" spacing="4" maxWidth="Infinity">
+                                <TelemetryChartCard fx:id="cpuChart" prefHeight="190" maxHeight="190"/>
+                                <Label fx:id="cpuChartInfoLabel" text="Top app: waiting…" styleClass="chart-backend" wrapText="true"/>
+                            </VBox>
+                            <VBox styleClass="chart-column" spacing="4" maxWidth="Infinity">
+                                <TelemetryChartCard fx:id="ramChart" prefHeight="190" maxHeight="190"/>
+                                <Label fx:id="ramChartInfoLabel" text="Top app: waiting…" styleClass="chart-backend" wrapText="true"/>
+                            </VBox>
+                            <VBox styleClass="chart-column" spacing="4" maxWidth="Infinity">
+                                <TelemetryChartCard fx:id="tempChart" prefHeight="190" maxHeight="190"/>
+                                <Label fx:id="tempChartInfoLabel" text="Sensor: detecting…" styleClass="chart-backend" wrapText="true"/>
+                            </VBox>
+                        </VBox>
+
+                        <VBox fx:id="problemsCard" styleClass="card clickable-stat" spacing="8" maxWidth="Infinity">
+                            <HBox><Label text="ACTIVE PROBLEMS" styleClass="section-kicker"/><HBox HBox.hgrow="ALWAYS"/><Label text="Auto-detected" styleClass="live-caption"/></HBox>
+                            <Label fx:id="issue1Label" text="✓ Analyzing" styleClass="issue-line"/>
+                            <Label fx:id="issue2Label" text="✓ Analyzing" styleClass="issue-line"/>
+                            <Label fx:id="issue3Label" text="✓ Analyzing" styleClass="issue-line"/>
+                            <Label fx:id="problemSummaryLabel" text="Detection backend: OSHI + local thresholds" styleClass="muted-note" wrapText="true"/>
+                        </VBox>
+
+                        <VBox fx:id="predictionCard" styleClass="card clickable-stat" spacing="8" maxWidth="Infinity">
+                            <Label text="PREDICTIVE HEALTH" styleClass="section-kicker"/>
+                            <Label fx:id="predictionLabel" text="PulseOS is learning the current device state." wrapText="true" styleClass="prediction-text"/>
+                            <Label fx:id="predictionInputsLabel" text="CPU — · RAM — · Temp — · Storage —" wrapText="true" styleClass="muted-note"/>
+                            <Label fx:id="predictionConfidenceLabel" text="Confidence: calculating…" styleClass="muted-note"/>
+                            <Label text="Local prediction · no cloud required" wrapText="true" styleClass="muted-note"/>
+                        </VBox>
+
+                        <VBox fx:id="batteryCard" styleClass="card clickable-stat" spacing="8" maxWidth="Infinity">
+                            <Label text="BATTERY &amp; POWER" styleClass="section-kicker"/>
+                            <HBox alignment="CENTER_LEFT" spacing="12"><Label fx:id="batteryPercentLabel" text="N/A" styleClass="battery-big"/><VBox><Label fx:id="batteryStatusLabel" text="—" styleClass="stat-sub-green"/><Label fx:id="batteryDetailLabel" text="—" styleClass="hw-text"/></VBox></HBox>
+                            <Label fx:id="powerInfoLabel" text="—" styleClass="hw-text"/>
+                            <Label fx:id="batteryHealthInfoLabel" text="Health: detecting… · Cycles: detecting…" styleClass="muted-note" wrapText="true"/>
+                            <Label fx:id="batteryBackendLabel" text="Health and cycle data · live update" styleClass="muted-note" wrapText="true"/>
+                        </VBox>
+
+                        <VBox fx:id="storageCard" styleClass="card clickable-stat" spacing="8" maxWidth="Infinity">
+                            <HBox><Label text="STORAGE INTELLIGENCE" styleClass="section-kicker"/><HBox HBox.hgrow="ALWAYS"/><Label text="Live breakdown" styleClass="live-caption"/></HBox>
+                            <HBox alignment="CENTER_LEFT" spacing="10"><Label text="Used" styleClass="stat-caption"/><ProgressBar fx:id="storageProgressBar" progress="0.4" HBox.hgrow="ALWAYS"/><Label fx:id="freeStorageLabel" text="— free" styleClass="stat-caption-bold"/></HBox>
+                            <HBox spacing="20" alignment="CENTER_LEFT">
+                                <VBox HBox.hgrow="ALWAYS" alignment="CENTER" styleClass="clickable-stat" minHeight="330">
+                                    <PieChart fx:id="storagePieChart" prefWidth="460" prefHeight="280" minWidth="400" minHeight="250" legendVisible="true" legendSide="RIGHT"/>
+                                    <Label fx:id="storageArrowLabel" text="→ Free: calculating · → Used: calculating" styleClass="chart-backend" wrapText="true"/>
+                                </VBox>
+                                <VBox prefWidth="360" spacing="8" styleClass="bottleneck-box">
+                                    <Label fx:id="largestItemTypeLabel" text="Largest item" styleClass="card-header-title"/>
+                                    <Label fx:id="largestFolderLabel" text="Scanning…" wrapText="true"/>
+                                    <Label fx:id="largestFolderSizeLabel" text="" styleClass="hw-text"/>
+                                    <Label fx:id="largestFolderNoteLabel" text="" wrapText="true" styleClass="info-callout-text"/>
+                                    <Button fx:id="cleanNowBtn" text="Open Storage Healer" onAction="#showStorageHealerView" styleClass="action-btn"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+
+                        <VBox fx:id="drainerCard" styleClass="card clickable-stat" spacing="8" maxWidth="Infinity">
+                            <Label text="TOP RESOURCE DRAINERS" styleClass="section-kicker"/>
+                            <Label fx:id="topCpuProcessLabel" text="CPU: collecting…" styleClass="hw-text"/>
+                            <Label fx:id="topRamProcessLabel" text="Memory: collecting…" styleClass="hw-text"/>
+                            <Label fx:id="processCountLabel" text="Processes: collecting…" styleClass="hw-text"/>
+                            <Label fx:id="drainerSummaryLabel" text="Live process snapshot warming up…" styleClass="muted-note" wrapText="true"/>
+                            <VBox fx:id="hardwareCard" styleClass="hardware-info-box clickable-stat" spacing="5" maxWidth="Infinity">
+                                <Label fx:id="processorNameLabel" text="Processor: detecting…" styleClass="hw-text"/>
+                                <Label fx:id="processorVendorLabel" text="Vendor: detecting…" styleClass="hw-text"/>
+                                <Label fx:id="physicalProcessorLabel" text="Physical processors: detecting…" styleClass="hw-text"/>
+                                <Label fx:id="coreCountLabel" text="Logical processors: detecting…" styleClass="hw-text"/>
+                                <Label fx:id="baseSpeedLabel" text="Base / vendor: —" styleClass="hw-text"/>
+                                <Label fx:id="maxSpeedLabel" text="Max: —" styleClass="hw-text"/>
+                            </VBox>
+                        </VBox>
+
+                        <VBox fx:id="watcherCard" styleClass="card clickable-stat" spacing="8" maxWidth="Infinity">
+                            <Label text="SYSTEM WATCHER" styleClass="section-kicker"/>
+                            <Label fx:id="watcherStatusLabel" text="● WatchService active" styleClass="stat-sub-green"/>
+                            <Label fx:id="interceptedCountLabel" text="Downloads organized today: 0" styleClass="hw-text"/>
+                            <Label fx:id="lastFileLabel" text="Last file: —" styleClass="hw-text-blue" wrapText="true"/>
+                            <Label fx:id="lastTimeLabel" text="Last event: —" styleClass="hw-text"/>
+                            <Label fx:id="watcherBackendLabel" text="Watching Downloads · event-driven" styleClass="muted-note" wrapText="true"/>
+                            <Label text="Recent activity" styleClass="card-header-title"/>
+                            <ListView fx:id="activityLogView" VBox.vgrow="ALWAYS" prefHeight="180"/>
+                        </VBox>
+
+                        <HBox fx:id="alertBanner" styleClass="alert-banner-red" alignment="CENTER_LEFT" spacing="15" visible="false" managed="false">
+                            <padding><Insets top="10" right="15" bottom="10" left="15"/></padding>
+                            <Label text="⚠" styleClass="alert-icon-red"/>
+                            <VBox HBox.hgrow="ALWAYS" spacing="2"><Label fx:id="alertTitleLabel" text="HIGH RESOURCE ACTIVITY" styleClass="alert-title-red"/><Label fx:id="alertProcessLabel" text="" styleClass="alert-sub-red"/></VBox>
+                            <Button text="Open Smart Router" onAction="#showSmartRouterView" styleClass="alert-btn-secondary"/>
+                        </HBox>
+
+                        <VBox fx:id="aboutCard" styleClass="about-card clickable-stat" spacing="6">
+                            <Label text="WHAT IS PULSEOS?" styleClass="section-kicker"/>
+                            <Label text="PulseOS is a cross-platform desktop system health and maintenance application. It continuously reads available device telemetry, explains resource usage, detects storage and background-activity problems, organizes downloads, converts files offline, and provides guided healing actions." wrapText="true" styleClass="about-title"/>
+                            <Label text="It is not an operating system and it is not just Task Manager. Task Manager shows raw activity; PulseOS adds health scoring, diagnosis, trends, prediction, automation and safe remediation around that activity." wrapText="true" styleClass="about-text"/>
+                            <Label text="Current implementation: JavaFX desktop UI + OSHI telemetry + local storage healing + download watcher/organizer + offline converters + optional local AI through Ollama." wrapText="true" styleClass="muted-note"/>
+                        </VBox>
+                    </VBox>
+                </ScrollPane>
+            </StackPane>
+        </center>
+
+        <bottom>
+            <HBox styleClass="footer-bar" spacing="20" alignment="CENTER_LEFT">
+                <padding><Insets top="7" right="15" bottom="7" left="15"/></padding>
+                <Label fx:id="footerStatusLabel" text="● Starting" styleClass="footer-text"/>
+                <Label fx:id="footerRamLabel" text="RAM: — / — GB" styleClass="footer-text"/>
+                <Label fx:id="footerTempLabel" text="CPU Temp: —" styleClass="footer-text"/>
+                <HBox HBox.hgrow="ALWAYS"/>
+                <Label text="Local-first • Java 21 • Live telemetry" styleClass="footer-text-blue"/>
+            </HBox>
+        </bottom>
+    </BorderPane>
+</StackPane>

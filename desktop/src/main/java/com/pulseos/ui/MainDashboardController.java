@@ -1,9 +1,13 @@
 package com.pulseos.ui;
 
+import java.util.ArrayList;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -49,7 +53,7 @@ public class MainDashboardController {
     @FXML private Label healthDataSourceLabel, problemSummaryLabel, predictionInputsLabel, predictionConfidenceLabel;
     @FXML private Label batteryHealthInfoLabel, batteryBackendLabel, storageArrowLabel, drainerSummaryLabel, watcherBackendLabel;
     @FXML private Label topCpuProcessLabel, topRamProcessLabel, processCountLabel;
-    @FXML private Label batteryPercentLabel, batteryStatusLabel, batteryDetailLabel, powerInfoLabel;
+    @FXML private Label batteryPercentLabel, batteryStatusLabel, batteryDetailLabel, powerInfoLabel, batteryIconLabel, batteryConditionLabel;
     @FXML private Label processorNameLabel, processorVendorLabel, physicalProcessorLabel, coreCountLabel, baseSpeedLabel, maxSpeedLabel;
     @FXML private Label largestItemTypeLabel, largestFolderLabel, largestFolderSizeLabel, largestFolderNoteLabel;
     @FXML private Button cleanNowBtn, fixIssuesBtn;
@@ -63,7 +67,7 @@ public class MainDashboardController {
     @FXML private Label healthScoreLabel, healthGradeLabel, healthReasonLabel;
     @FXML private ProgressBar performanceHealthBar;
     @FXML private Label performanceHealthLabel, hardwareHealthLabel, storageHealthLabel, batteryHealthLabel;
-    @FXML private Label issue1Label, issue2Label, issue3Label, predictionLabel, liveStatusLabel;
+    @FXML private Label issue1Label, issue2Label, issue3Label, predictionLabel, predictionTrendLabel, liveStatusLabel, problemBadgeLabel;
     @FXML private ListView<String> activityLogView;
 
     private HardwareTelemetryService telemetryService;
@@ -85,6 +89,11 @@ public class MainDashboardController {
     private final Map<String, Integer> organizedByCategory = new LinkedHashMap<>();
     private SystemMetrics latestMetrics;
     private StorageCategoryScanner.CategoryResult latestStorageResult;
+    private final Deque<Double> cpuHistory = new ArrayDeque<>();
+    private final Deque<Double> ramHistory = new ArrayDeque<>();
+    private final Deque<Double> tempHistory = new ArrayDeque<>();
+    private final Deque<Double> storageHistory = new ArrayDeque<>();
+    private final Deque<Double> batteryHistory = new ArrayDeque<>();
     private double avgCpu = 0;
     private double avgRam = 0;
     private double avgTemp = 0;
@@ -123,8 +132,12 @@ public class MainDashboardController {
         predictionLabel.setText("Prediction: waiting for the first live sample…");
         predictionInputsLabel.setText("CPU — · RAM — · Temp — · Storage —");
         predictionConfidenceLabel.setText("Confidence: calculating baseline…");
+        predictionTrendLabel.setText("Trend: CPU warming up · RAM warming up · Thermal warming up · Storage warming up");
+        problemBadgeLabel.setText("0 active");
         batteryHealthInfoLabel.setText("Health: detecting… · Cycles: detecting…");
-        batteryBackendLabel.setText("Health and cycle data · live update");
+        batteryBackendLabel.setText("Charging + health + cycles · live update");
+        batteryIconLabel.setText("▮▮▮▮");
+        batteryConditionLabel.setText("Battery condition: detecting…");
         storageArrowLabel.setText("→ Free: calculating · → Used: calculating");
         drainerSummaryLabel.setText("Top CPU/RAM apps refresh every 3s");
         watcherBackendLabel.setText("Downloads monitoring · waiting for file events");
@@ -181,12 +194,13 @@ public class MainDashboardController {
                 java.util.List.of(
                         String.format("CPU: %.1f%%", latestMetrics.getCpuLoadPercentage()),
                         String.format("Memory: %.2f / %.2f GB (%.1f%%)", latestMetrics.getUsedMemoryGb(), latestMetrics.getTotalMemoryGb(), latestMetrics.getTotalMemoryGb() <= 0 ? 0 : latestMetrics.getUsedMemoryGb()/latestMetrics.getTotalMemoryGb()*100),
-                        String.format("Temperature: %.1f°C", latestMetrics.getCoreTemperature()),
+                        "Temperature: " + (latestMetrics.getCoreTemperature() > 0 ? String.format("%.1f°C", latestMetrics.getCoreTemperature()) : "Not exposed by this device"),
                         String.format("Threads: %,d", latestMetrics.getActiveThreadCount()),
                         String.format("Clock: %.2f GHz", latestMetrics.getClockSpeedGhz()),
                         String.format("Processes sampled: %,d", latestMetrics.getTotalProcessCount()),
                         "Telemetry source: OSHI + ProcessHandle",
-                        "Refresh: every 1 second; process list is cached for performance."));
+                        "Refresh: every 1 second; process list is cached for performance.",
+                        "Unknown/unsupported sensors are not replaced with fake values."));
     }
 
     private void openProblemsBackend() {
@@ -205,7 +219,8 @@ public class MainDashboardController {
                         String.format("RAM input: %.1f%%", ramPct),
                         String.format("Temperature input: %.1f°C", latestMetrics.getCoreTemperature()),
                         String.format("Storage used: %.1f%%", storageProgressBar.getProgress()*100),
-                        "Prediction engine: local deterministic heuristic rules",
+                        "Prediction engine: local deterministic heuristic rules + recent trend history",
+                        "CPU/RAM use current pressure + sustained trend; thermal risk is only evaluated when a sensor is exposed; storage uses free-space pressure.",
                         "No cloud telemetry is required for this decision."));
     }
 
@@ -248,6 +263,9 @@ public class MainDashboardController {
                         "Auto-organize: " + (autoOrganizeEnabled ? "enabled" : "disabled"),
                         "Protect active projects: " + (protectActiveProjects ? "enabled" : "disabled"),
                         "Files organized this session: " + interceptedCount,
+                        "File policy: incomplete/temp downloads are left unchanged",
+                        "File info tracked: name + size + destination/category + organizer decision",
+                        "Security note: the watcher does not scan files for malware",
                         "Backend: Java NIO WatchService + DownloadOrganizerService",
                         "PDF AI rename: optional local Ollama pipeline."));
     }
@@ -257,7 +275,7 @@ public class MainDashboardController {
                 "How the dashboard data is produced",
                 java.util.List.of(
                         "UI: JavaFX 21 + FXML",
-                        "Telemetry: OSHI 6.4.x",
+                        "Telemetry: OSHI 7.6.0",
                         "Process actions: Java ProcessHandle",
                         "Storage: BuildArtifactScanner + StorageCategoryScanner",
                         "Healing: reversible quarantine before permanent deletion",
@@ -311,6 +329,12 @@ public class MainDashboardController {
         avgRam = rollingAverage(avgRam, ramPct, tickCounter);
         if (temp > 0) avgTemp = rollingAverage(avgTemp, temp, tickCounter);
 
+        pushHistory(cpuHistory, metrics.getCpuLoadPercentage(), 30);
+        pushHistory(ramHistory, ramPct, 30);
+        if (temp > 0) pushHistory(tempHistory, temp, 30);
+        pushHistory(storageHistory, storageProgressBar.getProgress() * 100.0, 30);
+        if (metrics.getBatteryPercent() >= 0) pushHistory(batteryHistory, metrics.getBatteryPercent(), 30);
+
         cpuLabel.setText(String.format("%.0f%%", metrics.getCpuLoadPercentage()));
         threadsLabel.setText(String.format("%,d", metrics.getActiveThreadCount()));
         ramLabel.setText(String.format("%.1f GB", metrics.getUsedMemoryGb()));
@@ -326,10 +350,9 @@ public class MainDashboardController {
                 ? "Top app/service: warming up…"
                 : String.format("Top app/service: %s · %.0f MB", topRam.name(), topRam.getRamMb()));
         tempBackendLabel.setText(temp > 0
-                ? (topCpu == null ? "Sensor active · CPU contributor warming up…"
+                ? (topCpu == null ? "Sensor active · contributor warming up…"
                     : String.format("Sensor active · CPU contributor → %s (%.1f%%)", topCpu.name(), topCpu.cpuPercent()))
-                : (topCpu == null ? "Sensor unavailable on this device"
-                    : String.format("Sensor unavailable · CPU contributor → %s", topCpu.name())));
+                : "Sensor not exposed by this device · not used as an active fault");
         threadsBackendLabel.setText(String.format("Processes: %,d · live thread count", metrics.getTotalProcessCount()));
         clockBackendLabel.setText(metrics.getClockSpeedGhz() > 0
                 ? "Current CPU frequency"
@@ -346,25 +369,32 @@ public class MainDashboardController {
                 : String.format("Top app/service → %s · %.0f MB", topRam.name(), topRam.getRamMb()));
         tempChartInfoLabel.setText(temp > 0
                 ? String.format("Live sensor · %.0f°C", temp)
-                : "Temperature sensor unavailable · no fake value");
+                : "Thermal sensor not exposed · chart paused safely");
 
-        if (metrics.getBatteryPercent() > 0) {
-            String pct = metrics.getBatteryPercent() + "%";
+        if (metrics.getBatteryPercent() >= 0) {
+            int pctValue = metrics.getBatteryPercent();
+            String pct = pctValue + "%";
             batteryPercentLabel.setText(pct);
-            batteryStatusLabel.setText(metrics.isBatteryCharging() ? "Charging" : "On Battery");
-            batteryDetailLabel.setText(metrics.isBatteryCharging() ? "Plugged in" : "Discharging");
-            powerInfoLabel.setText(metrics.isBatteryCharging() ? "AC Adapter: Connected" : "Running on battery");
+            batteryStatusLabel.setText(metrics.isBatteryCharging() ? "CHARGING" : "ON BATTERY");
+            batteryDetailLabel.setText(metrics.isBatteryCharging() ? "AC adapter connected" : "Currently discharging");
+            powerInfoLabel.setText(metrics.isBatteryCharging() ? "Power source: adapter" : "Power source: battery");
             String health = metrics.getBatteryHealthPercent() > 0 ? metrics.getBatteryHealthPercent() + "%" : "N/A";
             String cycles = metrics.getBatteryCycleCount() >= 0 ? String.valueOf(metrics.getBatteryCycleCount()) : "N/A";
             batteryHealthInfoLabel.setText("Health: " + health + " · Cycles: " + cycles);
-            batteryBackendLabel.setText("Backend: OSHI PowerSource · capacity + charging + health/cycles");
+            batteryConditionLabel.setText(metrics.getBatteryHealthPercent() > 0
+                    ? (metrics.getBatteryHealthPercent() >= 90 ? "Battery condition: Excellent" : metrics.getBatteryHealthPercent() >= 80 ? "Battery condition: Good" : "Battery condition: Review")
+                    : "Battery condition: Health telemetry unavailable");
+            batteryIconLabel.setText(batteryGlyph(pctValue));
+            batteryBackendLabel.setText("Power source telemetry · capacity + charging + health/cycles");
         } else {
             batteryPercentLabel.setText("N/A");
-            batteryStatusLabel.setText("No battery detected");
-            batteryDetailLabel.setText("Desktop or unavailable sensor");
+            batteryStatusLabel.setText("NO BATTERY DETECTED");
+            batteryDetailLabel.setText("Desktop or unavailable battery sensor");
             powerInfoLabel.setText("This device does not expose battery telemetry");
             batteryHealthInfoLabel.setText("Health: N/A · Cycles: N/A");
-            batteryBackendLabel.setText("Battery sensor not exposed on this device");
+            batteryConditionLabel.setText("Battery condition: Not measurable");
+            batteryIconLabel.setText("▯▯▯▯");
+            batteryBackendLabel.setText("Battery telemetry not exposed by this device");
         }
 
         footerRamLabel.setText(String.format("RAM: %.1f / %.1f GB", metrics.getUsedMemoryGb(), metrics.getTotalMemoryGb()));
@@ -382,82 +412,147 @@ public class MainDashboardController {
 
     private void updateHealthIntelligence(SystemMetrics m, double ramPct, double temp) {
         try {
-        // Health score measures abnormal pressure, not simply "how busy" the machine is.
-        // This avoids unfairly punishing a healthy Mac for normal CPU/RAM activity.
-        int performance = clamp((int) Math.round(100
-                - Math.max(0, m.getCpuLoadPercentage() - 55) * 0.45
-                - Math.max(0, ramPct - 65) * 0.55));
+            double cpuAvg = average(cpuHistory, m.getCpuLoadPercentage());
+            double ramAvg = average(ramHistory, ramPct);
+            double tempAvg = tempHistory.isEmpty() ? 0 : average(tempHistory, temp);
+            double usedRatio = storageProgressBar.getProgress();
 
-        int hardware = temp <= 0 ? 95
-                : clamp((int) Math.round(100 - Math.max(0, temp - 60) * 1.25));
+            // Health is a sustained-condition score: short spikes should not dominate it,
+            // but persistent CPU/RAM/thermal/storage pressure will reduce it.
+            int performance = clamp((int) Math.round(100
+                    - Math.max(0, cpuAvg - 55) * 0.55
+                    - Math.max(0, ramAvg - 65) * 0.60));
 
-        double usedRatio = storageProgressBar.getProgress();
-        int storage = usedRatio <= 0.70 ? 100
-                : clamp((int) Math.round(100 - (usedRatio - 0.70) * 150));
+            int hardware = tempAvg <= 0 ? 100
+                    : clamp((int) Math.round(100 - Math.max(0, tempAvg - 60) * 1.30));
 
-        int battery = m.getBatteryPercent() <= 0 ? 95
-                : (m.getBatteryHealthPercent() > 0 ? m.getBatteryHealthPercent() : m.getBatteryPercent());
+            int storage = usedRatio <= 0.70 ? 100
+                    : clamp((int) Math.round(100 - (usedRatio - 0.70) * 170));
 
-        int score = clamp((int) Math.round(performance * .40 + hardware * .25 + storage * .20 + battery * .15));
-        healthScoreLabel.setText(score + "/100");
-        healthGradeLabel.setText(score >= 90 ? "EXCELLENT" : score >= 75 ? "GOOD" : score >= 55 ? "NEEDS ATTENTION" : "CRITICAL");
+            int battery = -1;
+            int reportedBatteryHealth = m.getBatteryHealthPercent();
 
-        boolean highCpu = m.getCpuLoadPercentage() > 80;
-        boolean highRam = ramPct > 85;
-        boolean highTemp = temp > 78;
-        boolean storagePressure = usedRatio > .88;
-        int issueCount = (highCpu ? 1 : 0) + (highRam ? 1 : 0) + (highTemp ? 1 : 0) + (storagePressure ? 1 : 0);
+            if (reportedBatteryHealth >= 20 && reportedBatteryHealth <= 100) {
+                // Battery component is the battery-condition signal, not the charge level.
+                // Keep a healthy 92% battery near 92% instead of applying a second penalty.
+                battery = reportedBatteryHealth;
+            } else if (m.getBatteryPercent() >= 0) {
+                // If macOS/OSHI cannot provide a trustworthy health ratio, use the
+                // actual current charge as a bounded fallback rather than showing 1%.
+                battery = m.getBatteryPercent();
+            }
 
-        if (issueCount == 0) {
-            healthReasonLabel.setText("Your device is operating within a healthy range. PulseOS is continuously watching for changes.");
-            fixIssuesBtn.setText("✓ ALL CLEAR");
-            fixIssuesBtn.setDisable(true);
-        } else {
-            healthReasonLabel.setText("PulseOS found " + issueCount + " condition" + (issueCount > 1 ? "s" : "") + " that can be reviewed or safely fixed.");
-            fixIssuesBtn.setText(storagePressure ? "FIX ISSUES SAFELY" : "REVIEW & FIX");
-            fixIssuesBtn.setDisable(false);
-        }
+            int score = clamp((int) Math.round(performance * .40 + hardware * .25 + storage * .20 + battery * .15));
+            healthScoreLabel.setText(score + "/100");
+            healthGradeLabel.setText(score >= 90 ? "EXCELLENT" : score >= 75 ? "GOOD" : score >= 55 ? "NEEDS ATTENTION" : "CRITICAL");
 
-        setHealth(performanceHealthBar, performanceHealthLabel, performance);
-        hardwareHealthLabel.setText(hardware + "%");
-        storageHealthLabel.setText(storage + "%");
-        batteryHealthLabel.setText(battery + "%");
+            boolean highCpu = m.getCpuLoadPercentage() > 80;
+            boolean highRam = ramPct > 85;
+            boolean highTemp = temp > 0 && temp > 78;
+            boolean storagePressure = usedRatio > .88;
+            int issueCount = (highCpu ? 1 : 0) + (highRam ? 1 : 0) + (highTemp ? 1 : 0) + (storagePressure ? 1 : 0);
 
-        issue1Label.setText(highCpu && !m.getTopProcesses().isEmpty()
-                ? "⚠ High CPU: " + m.getTopProcesses().get(0).name() + " is using resources"
-                : "✓ CPU load is within the healthy range");
-        issue2Label.setText(highRam
-                ? "⚠ High memory pressure: " + String.format("%.0f%% RAM used", ramPct)
-                : "✓ Memory pressure is under control");
-        if (highTemp) {
-            issue3Label.setText("⚠ High CPU temperature: " + String.format("%.0f°C", temp));
-        } else if (storagePressure) {
-            issue3Label.setText("⚠ Storage is nearly full — safe cleanup is available");
-        } else {
-            issue3Label.setText("✓ Storage and thermal conditions look healthy");
-        }
+            updateActiveProblems(m, ramPct, temp, usedRatio, highCpu, highRam, highTemp, storagePressure);
 
-        predictionLabel.setText(buildPrediction(m, ramPct, temp));
-        predictionInputsLabel.setText(String.format("CPU %.0f%% · RAM %.0f%% · Temp %s · Storage %.0f%% used",
-                m.getCpuLoadPercentage(), ramPct, temp > 0 ? String.format("%.0f°C", temp) : "N/A", storageProgressBar.getProgress() * 100));
-        int confidence = 70 + Math.min(25, Math.max(0, (tickCounter - 1) / 5));
-        predictionConfidenceLabel.setText("Confidence: " + Math.min(95, confidence) + "% · live samples: " + Math.min(tickCounter, 60));
-        problemSummaryLabel.setText(String.format("%d active condition(s) · CPU %.0f%% · RAM %.0f%% · Temp %s · Storage %.0f%%", issueCount, m.getCpuLoadPercentage(), ramPct, temp > 0 ? String.format("%.0f°C", temp) : "N/A", usedRatio * 100));
-        healthDataSourceLabel.setText("Live score · last update " + LocalTime.now().format(TIME_FMT));
-        footerStatusLabel.setText(issueCount == 0 ? "● System Healthy" : "● " + issueCount + " issue" + (issueCount > 1 ? "s" : "") + " detected");
+            if (issueCount == 0) {
+                healthReasonLabel.setText("Your device is operating within the configured healthy range. PulseOS will lower this score only when pressure persists or a health signal deteriorates.");
+                fixIssuesBtn.setText("✓ ALL CLEAR");
+                fixIssuesBtn.setDisable(true);
+            } else {
+                healthReasonLabel.setText("PulseOS found " + issueCount + " active condition" + (issueCount > 1 ? "s" : "") + ". Review or safely remediate the affected area.");
+                fixIssuesBtn.setText(storagePressure ? "FIX ISSUES SAFELY" : "REVIEW & FIX");
+                fixIssuesBtn.setDisable(false);
+            }
+
+            setHealth(performanceHealthBar, performanceHealthLabel, performance);
+            hardwareHealthLabel.setText(hardware + "%");
+            storageHealthLabel.setText(storage + "%");
+            batteryHealthLabel.setText(battery >= 0 ? battery + "%" : "N/A");
+
+            predictionLabel.setText(buildPrediction(m, ramPct, temp));
+            String tempInput = temp > 0 ? String.format("%.0f°C", temp) : "not measurable";
+            predictionInputsLabel.setText(String.format("Current: CPU %.0f%% · RAM %.0f%% · Temp %s · Storage %.0f%% used",
+                    m.getCpuLoadPercentage(), ramPct, tempInput, usedRatio * 100));
+            predictionTrendLabel.setText(String.format("Trend: CPU %s · RAM %s · Thermal %s · Storage %s",
+                    trend(cpuHistory), trend(ramHistory), tempHistory.isEmpty() ? "not measurable" : trend(tempHistory), trend(storageHistory)));
+            predictionConfidenceLabel.setText(String.format("Confidence: %d%% · baseline samples: %d", Math.min(95, 70 + Math.min(25, tickCounter / 4)), Math.min(tickCounter, 60)));
+            problemSummaryLabel.setText(issueCount == 0
+                    ? "No active threshold breaches · monitoring for sustained changes"
+                    : String.format("%d active condition(s) · based on current thresholds", issueCount));
+            healthDataSourceLabel.setText("Score uses sustained CPU/RAM + thermal + storage + battery health");
+            footerStatusLabel.setText(issueCount == 0 ? "● System Healthy" : "● " + issueCount + " issue" + (issueCount > 1 ? "s" : "") + " detected");
         } catch (Exception ex) {
-            // Never leave half-rendered score components if one optional sensor is unavailable.
             healthGradeLabel.setText("LIVE");
-            healthDataSourceLabel.setText("Backend: telemetry partially available · optional sensor unavailable");
+            healthDataSourceLabel.setText("Telemetry partially available · optional sensor not exposed");
         }
     }
 
+    private void updateActiveProblems(SystemMetrics m, double ramPct, double temp, double usedRatio,
+                                      boolean highCpu, boolean highRam, boolean highTemp, boolean storagePressure) {
+        var labels = new Label[]{issue1Label, issue2Label, issue3Label};
+        for (Label l : labels) { l.setVisible(false); l.setManaged(false); l.setText(""); }
+        var messages = new ArrayList<String>();
+        if (highCpu) {
+            String leader = m.getTopProcesses().isEmpty() ? "top process unavailable" : m.getTopProcesses().get(0).name();
+            messages.add("⚠ High CPU · " + String.format("%.0f%%", m.getCpuLoadPercentage()) + " · " + leader);
+        }
+        if (highRam) messages.add("⚠ High memory pressure · " + String.format("%.0f%% RAM used", ramPct));
+        if (highTemp) messages.add("⚠ High temperature · " + String.format("%.0f°C", temp));
+        if (storagePressure) messages.add("⚠ Storage nearly full · safe cleanup available");
+
+        problemBadgeLabel.setText(messages.isEmpty() ? "0 active" : messages.size() + " active");
+        if (messages.isEmpty()) {
+            issue1Label.setText("✓ No active problems detected");
+            issue1Label.setVisible(true); issue1Label.setManaged(true);
+        } else {
+            for (int i = 0; i < messages.size() && i < labels.length; i++) {
+                labels[i].setText(messages.get(i));
+                labels[i].setVisible(true); labels[i].setManaged(true);
+            }
+        }
+    }
+
+    private void pushHistory(Deque<Double> history, double value, int max) {
+        history.addLast(value);
+        while (history.size() > max) history.removeFirst();
+    }
+
+    private double average(Deque<Double> history, double fallback) {
+        if (history.isEmpty()) return fallback;
+        double sum = 0; for (double v : history) sum += v;
+        return sum / history.size();
+    }
+
+    private String trend(Deque<Double> history) {
+        if (history.size() < 6) return "warming up";
+        var a = history.toArray(new Double[0]);
+        int mid = a.length / 2;
+        double first = 0, second = 0;
+        for (int i = 0; i < mid; i++) first += a[i];
+        for (int i = mid; i < a.length; i++) second += a[i];
+        first /= mid; second /= (a.length - mid);
+        double delta = second - first;
+        if (Math.abs(delta) < 2.0) return "stable";
+        return delta > 0 ? "rising" : "falling";
+    }
+
+    private String batteryGlyph(int pct) {
+        if (pct >= 75) return "▮▮▮▮";
+        if (pct >= 50) return "▮▮▮▫";
+        if (pct >= 25) return "▮▮▫▫";
+        return "▮▫▫▫";
+    }
+
     private String buildPrediction(SystemMetrics m, double ramPct, double temp) {
-        if (temp > 78) return "Prediction: sustained heat may reduce performance — investigate the top CPU process.";
-        if (ramPct > 85) return "Prediction: memory pressure may cause slowdowns if this workload continues.";
-        if (storageProgressBar.getProgress() > .88) return "Prediction: storage pressure may soon affect updates and application performance.";
-        if (m.getCpuLoadPercentage() > 75) return "Prediction: current workload may keep the device under heavy load.";
-        return "Prediction: no immediate degradation pattern detected from current telemetry.";
+        String cpuTrend = trend(cpuHistory);
+        String ramTrend = trend(ramHistory);
+        String storageTrend = trend(storageHistory);
+
+        if (temp > 78) return "Thermal outlook: elevated — sustained heat may reduce performance if the current pattern continues.";
+        if (ramPct > 85 || ("rising".equals(ramTrend) && ramPct > 75)) return "Memory outlook: elevated — pressure is rising and may cause slowdowns if this workload continues.";
+        if (storageProgressBar.getProgress() > .88) return "Storage outlook: high pressure — free-space margin is low; cleanup should be reviewed soon.";
+        if (m.getCpuLoadPercentage() > 80 || ("rising".equals(cpuTrend) && m.getCpuLoadPercentage() > 70)) return "Performance outlook: elevated — CPU load is trending upward and may persist if the current workload continues.";
+        return "Outlook: stable — no immediate degradation pattern is visible from the current telemetry trend.";
     }
 
     private void setHealth(ProgressBar bar, Label label, int value) {
@@ -581,8 +676,12 @@ public class MainDashboardController {
         var result = categoryScanner.scan(home, artifacts);
         latestStorageResult = result;
         var pieData = FXCollections.<PieChart.Data>observableArrayList();
-        result.categoryMb().forEach((label, mb) -> { if (mb > 1) pieData.add(new PieChart.Data(label, mb)); });
+        double totalGb = Math.max(1.0, Paths.get(System.getProperty("user.home")).toFile().getTotalSpace() / (1024.0 * 1024.0 * 1024.0));
+        double freeGb = Math.max(0.0, Paths.get(System.getProperty("user.home")).toFile().getFreeSpace() / (1024.0 * 1024.0 * 1024.0));
+        pieData.add(new PieChart.Data("Free Space", Math.max(0.1, freeGb)));
+        pieData.add(new PieChart.Data("Other Used Space", Math.max(0.1, totalGb - freeGb)));
         storagePieChart.setData(pieData);
+        storagePieChart.setStartAngle(90);
         StringBuilder arrows = new StringBuilder();
         result.categoryMb().entrySet().stream().limit(5).forEach(e -> {
             if (arrows.length() > 0) arrows.append("   ");
@@ -631,6 +730,10 @@ public class MainDashboardController {
                 interceptedCountLabel.setText("Downloads organized today: " + interceptedCount + " files");
                 lastFileLabel.setText("Last file: " + filePath.getFileName());
                 lastTimeLabel.setText("Last event: " + LocalTime.now().format(TIME_FMT));
+                String sizeText = "size unavailable";
+                try { if (java.nio.file.Files.exists(result.newLocation())) sizeText = formatStorage(java.nio.file.Files.size(result.newLocation()) / (1024.0 * 1024.0)); } catch (Exception ignored) { }
+                String policy = result.moved() ? "Policy: safe to organize" : "Policy: left unchanged";
+                watcherBackendLabel.setText("Event details · " + sizeText + " · " + policy + " · malware safety not scanned");
                 String msg = result.moved() ? "Moved " + filePath.getFileName() + " → " + result.reason() : result.reason();
                 logActivity("Watcher: " + msg);
                 ToastNotification.show(rootPane, "Watcher: " + msg, ToastNotification.Type.INFO);

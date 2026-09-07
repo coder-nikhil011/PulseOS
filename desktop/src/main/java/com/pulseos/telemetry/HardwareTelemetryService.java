@@ -19,7 +19,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.function.Consumer;
 
 /**
  * Live telemetry engine. Hardware metrics are deliberately isolated from process
@@ -104,26 +103,110 @@ public class HardwareTelemetryService {
             if (clockSpeedGhz <= 0) clockSpeedGhz = processor.getMaxFreq() / 1_000_000_000.0;
         } catch (Exception ignored) { }
 
-        int batteryPercent = 0;
+        int batteryPercent = -1;
         boolean charging = false;
         int batteryHealthPercent = 0;
         int batteryCycleCount = -1;
+
+        // Primary source: OSHI. Some macOS versions/hardware combinations can
+        // expose a PowerSource object but report an unusable remaining-capacity
+        // value. In that case, fall back to macOS's own `pmset -g batt` output.
         try {
             List<PowerSource> sources = hardware.getPowerSources();
-            if (!sources.isEmpty()) {
-                PowerSource ps = sources.get(0);
-                batteryPercent = (int) Math.round(ps.getRemainingCapacityPercent() * 100.0);
-                charging = ps.isCharging();
-                if (ps.getDesignCapacity() > 0 && ps.getMaxCapacity() > 0) {
-                    batteryHealthPercent = (int) Math.round(100.0 * ps.getMaxCapacity() / ps.getDesignCapacity());
+            double bestCharge = -1.0;
+            PowerSource best = null;
+
+            for (PowerSource ps : sources) {
+                try { ps.updateAttributes(); } catch (Exception ignored) { }
+                double charge = ps.getRemainingCapacityPercent();
+                if (Double.isFinite(charge) && charge >= 0.0 && charge <= 1.0) {
+                    if (charge > bestCharge) {
+                        bestCharge = charge;
+                        best = ps;
+                    }
                 }
-                batteryCycleCount = ps.getCycleCount();
             }
-        } catch (Exception ignored) { }
+
+            if (best != null && bestCharge >= 0.0) {
+                batteryPercent = Math.max(0, Math.min(100, (int) Math.round(bestCharge * 100.0)));
+                charging = best.isCharging();
+
+                long designCapacity = best.getDesignCapacity();
+                long maxCapacity = best.getMaxCapacity();
+
+                // Only trust the OSHI capacity ratio when it is internally sane.
+                // Some macOS/Apple Silicon combinations can expose tiny/odd raw
+                // capacity values; treating that as 1% health would be misleading.
+                if (designCapacity > 0 && maxCapacity > 0) {
+                    double ratio = 100.0 * maxCapacity / designCapacity;
+                    if (Double.isFinite(ratio) && ratio >= 20.0 && ratio <= 110.0) {
+                        batteryHealthPercent = (int) Math.round(Math.min(100.0, ratio));
+                    }
+                }
+                batteryCycleCount = best.getCycleCount();
+            }
+        } catch (Exception e) {
+            System.err.println("PulseOS OSHI battery read failed: " + e.getMessage());
+        }
+
+        if (System.getProperty("os.name", "").toLowerCase(java.util.Locale.ROOT).contains("mac")) {
+            BatteryFallback fallback = readMacBatteryFallback();
+            if (fallback.percent >= 0) {
+                // Prefer macOS's own power-management percentage when available.
+                // This fixes Macs where the OSHI PowerSource percentage can be 0.
+                batteryPercent = fallback.percent;
+                charging = fallback.charging;
+            }
+        }
 
         return new SystemMetrics(cpuLoad, cpuTemp, threadCount, usedMemoryGb, totalMemoryGb,
                 clockSpeedGhz, batteryPercent, charging, batteryHealthPercent, batteryCycleCount,
                 cachedProcessCount, cachedTopByCpu, cachedTopByRam);
+    }
+
+    private static final class BatteryFallback {
+        final int percent;
+        final boolean charging;
+        BatteryFallback(int percent, boolean charging) {
+            this.percent = percent;
+            this.charging = charging;
+        }
+    }
+
+    /**
+     * macOS fallback for battery charge state. `pmset -g batt` is backed by
+     * macOS's own power-management framework and is useful on Macs where OSHI
+     * exposes a PowerSource object but its remaining-capacity field is stale or 0.
+     */
+    private BatteryFallback readMacBatteryFallback() {
+        try {
+            Process proc = new ProcessBuilder("/usr/bin/pmset", "-g", "batt")
+                    .redirectErrorStream(true)
+                    .start();
+
+            String output = new String(
+                    proc.getInputStream().readAllBytes(),
+                    java.nio.charset.StandardCharsets.UTF_8
+            );
+            proc.waitFor(2, TimeUnit.SECONDS);
+
+            java.util.regex.Matcher matcher = java.util.regex.Pattern
+                    .compile("(\\d{1,3})%")
+                    .matcher(output);
+
+            int percent = matcher.find() ? Integer.parseInt(matcher.group(1)) : -1;
+            percent = percent >= 0 ? Math.max(0, Math.min(100, percent)) : -1;
+
+            String lower = output.toLowerCase(java.util.Locale.ROOT);
+            boolean charging = lower.contains("charging;")
+                    || lower.contains("charged;")
+                    || lower.contains("ac attached;");
+
+            return new BatteryFallback(percent, charging);
+        } catch (Exception e) {
+            System.err.println("PulseOS macOS battery fallback unavailable: " + e.getMessage());
+            return new BatteryFallback(-1, false);
+        }
     }
 
     private void refreshProcessSnapshotSafely() {
@@ -147,7 +230,7 @@ public class HardwareTelemetryService {
                     catch (Exception ignored) { }
                 }
                 infos.add(new SystemMetrics.ProcessInfo(
-                        p.getName(), cpu, p.getResidentSetSize(), p.getProcessID(), p.getThreadCount()));
+                        p.getName(), cpu, p.getPrivateResidentMemory(), p.getProcessID(), p.getThreadCount()));
             }
 
             cachedTopByCpu = infos.stream()

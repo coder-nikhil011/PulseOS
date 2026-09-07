@@ -3,6 +3,7 @@ com/pulseos/telemetry/SystemMetrics.class
 com/pulseos/ui/views/SettingsView.class
 com/pulseos/ai/OllamaClient.class
 com/pulseos/converter/ArchiveConverterEngine$ExtractedEntry.class
+com/pulseos/telemetry/HardwareTelemetryService$BatteryFallback.class
 com/pulseos/ui/MainDashboardController.class
 com/pulseos/converter/ImageConverterEngine.class
 com/pulseos/converter/MediaConverterEngine.class
