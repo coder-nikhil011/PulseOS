@@ -1,3 +1,3 @@
 #!/bin/bash
 cd "$(dirname "$0")/../desktop"
-mvn javafx:run
+mvn clean javafx:run
