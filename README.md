@@ -490,7 +490,7 @@ PulseOS/
 ## 1. Clone the Repository
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
+git clone https://github.com/coder-nikhil011/PulseOS.git
 ```
 
 ## 2. Enter the Desktop Project
@@ -508,7 +508,7 @@ mvn clean package
 ## 4. Run the Application
 
 ```bash
-mvn javafx:run
+mvn clean javafx:run
 ```
 
 ---
