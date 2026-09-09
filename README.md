@@ -487,6 +487,27 @@ PulseOS/
 
 # ▶️ Installation & Setup
 
+## Downloaded macOS App
+
+For Mac users who downloaded the DMG from the PulseOS website:
+
+1. Open `PulseOS-1.0.0.dmg`.
+2. Drag `PulseOS.app` into the `Applications` folder.
+3. Open Terminal and run this command once:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/PulseOS.app && open /Applications/PulseOS.app
+```
+
+This removes the quarantine flag from this locally generated, unsigned build
+and opens PulseOS. macOS may otherwise show an “Apple could not verify” or
+“app cannot be opened” message. Only run this command for a PulseOS DMG
+downloaded from a source you trust. A future Apple Developer ID signed and
+notarized release will open normally without this command.
+
+Windows and Linux users should use the installer for their platform. Mobile
+users should use the mobile build and its platform-specific installation flow.
+
 ## 1. Clone the Repository
 
 ```bash
