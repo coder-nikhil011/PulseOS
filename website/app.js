@@ -3,8 +3,8 @@
   let platform='your device';
   let cardId='';
   if(ua.includes('windows')){platform='Windows';cardId='windows';}
-  else if(ua.includes('android'))platform='Android';
-  else if(ua.includes('iphone')||ua.includes('ipad'))platform='iOS';
+  else if(ua.includes('android')){platform='Android';cardId='mobile-client';}
+  else if(ua.includes('iphone')||ua.includes('ipad')){platform='iOS';cardId='mobile-client';}
   else if(ua.includes('mac')){platform='macOS';cardId='macos';}
   else if(ua.includes('linux')){platform='Linux';cardId='linux';}
 
