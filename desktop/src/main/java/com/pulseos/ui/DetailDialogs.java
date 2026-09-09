@@ -29,11 +29,16 @@ public final class DetailDialogs {
     private DetailDialogs() {}
 
     public static void showCpuDetail(Window owner, SystemMetrics metrics) {
+        showCpuDetail(owner, metrics, null);
+    }
+
+    public static void showCpuDetail(Window owner, SystemMetrics metrics, StorageCategoryScanner.CategoryResult storage) {
         VBox content = new VBox(10);
         content.getChildren().add(new Label(String.format("Overall CPU load: %.1f%%", metrics.getCpuLoadPercentage())));
         content.getChildren().add(new Label("Backend: OSHI process telemetry • sampled every 1s"));
-        content.getChildren().add(new Label("Top processes by CPU usage right now:"));
+        content.getChildren().add(new Label("Apps and services with the highest CPU impact right now:"));
         content.getChildren().add(buildProcessTable(metrics.getTopProcesses(), null));
+        addImpactedFiles(content, storage);
         openDialog(owner, "CPU Usage — Live Detail", content, 560, 420);
     }
 
@@ -52,6 +57,12 @@ public final class DetailDialogs {
 
     public static void showTempDetail(Window owner, SystemMetrics metrics, LongConsumer killAction,
                                        java.util.function.Supplier<java.util.concurrent.CompletableFuture<String>> aiDiagnosis) {
+        showTempDetail(owner, metrics, null, killAction, aiDiagnosis);
+    }
+
+    public static void showTempDetail(Window owner, SystemMetrics metrics, StorageCategoryScanner.CategoryResult storage,
+                                       LongConsumer killAction,
+                                       java.util.function.Supplier<java.util.concurrent.CompletableFuture<String>> aiDiagnosis) {
         VBox content = new VBox(10);
         boolean abnormal = metrics.getCoreTemperature() > 75.0;
 
@@ -61,9 +72,9 @@ public final class DetailDialogs {
         content.getChildren().add(statusLabel);
 
         if (abnormal) {
-            content.getChildren().add(new Label(
+                content.getChildren().add(new Label(
                     "Software can't lower temperature directly — the real fix is reducing CPU load. " +
-                    "Terminate the heaviest process below to cut heat generation:"));
+                    "Terminate the heaviest app or service below to cut heat generation:"));
             content.getChildren().add(buildProcessTable(metrics.getTopProcesses(), killAction));
 
             Label aiLabel = new Label("");
@@ -79,16 +90,23 @@ public final class DetailDialogs {
         } else {
             content.getChildren().add(new Label("No action needed right now."));
         }
+        addImpactedFiles(content, storage);
         openDialog(owner, "Core Temperature — Detail", content, 560, 480);
     }
 
     public static void showRamDetail(Window owner, SystemMetrics metrics, LongConsumer killAction) {
+        showRamDetail(owner, metrics, null, killAction);
+    }
+
+    public static void showRamDetail(Window owner, SystemMetrics metrics, StorageCategoryScanner.CategoryResult storage,
+                                     LongConsumer killAction) {
         VBox content = new VBox(10);
         content.getChildren().add(new Label(String.format("RAM in use: %.2f / %.2f GB",
                 metrics.getUsedMemoryGb(), metrics.getTotalMemoryGb())));
         content.getChildren().add(new Label("Backend: OSHI GlobalMemory + process telemetry"));
-        content.getChildren().add(new Label("Where your memory is actually going — terminate anything you don't need:"));
+        content.getChildren().add(new Label("Apps and services using the most memory — terminate anything you don't need:"));
         content.getChildren().add(buildProcessTable(metrics.getTopByRam(), killAction));
+        addImpactedFiles(content, storage);
         openDialog(owner, "RAM Usage — Free Up Memory", content, 560, 420);
     }
 
@@ -160,7 +178,7 @@ public final class DetailDialogs {
     private static TableView<SystemMetrics.ProcessInfo> buildProcessTable(List<SystemMetrics.ProcessInfo> processes, LongConsumer killAction) {
         TableView<SystemMetrics.ProcessInfo> table = new TableView<>();
 
-        TableColumn<SystemMetrics.ProcessInfo, String> nameCol = new TableColumn<>("Process");
+        TableColumn<SystemMetrics.ProcessInfo, String> nameCol = new TableColumn<>("App / Service");
         nameCol.setCellValueFactory(cd -> new javafx.beans.property.SimpleStringProperty(cd.getValue().name()));
         nameCol.setPrefWidth(180);
 
@@ -207,6 +225,20 @@ public final class DetailDialogs {
         table.getItems().addAll(processes);
         table.setPrefHeight(260);
         return table;
+    }
+
+    private static void addImpactedFiles(VBox content, StorageCategoryScanner.CategoryResult storage) {
+        if (storage == null || storage.largeItems().isEmpty()) {
+            content.getChildren().add(new Label("High-impact user files: no large or long-unused files found in the scanned folders."));
+            return;
+        }
+        content.getChildren().add(new Label("High-impact user files found in Downloads, Desktop, Documents, Pictures, Videos, or Music:"));
+        storage.largeItems().stream()
+                .sorted((left, right) -> Double.compare(right.sizeMb(), left.sizeMb()))
+                .limit(5)
+                .forEach(item -> content.getChildren().add(new Label(String.format(
+                        "File: %s · %.0f MB · %d days unused",
+                        item.path(), item.sizeMb(), item.daysUnused()))));
     }
 
     private static void openDialog(Window owner, String title, VBox content, double width, double height) {

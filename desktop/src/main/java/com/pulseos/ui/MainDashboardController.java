@@ -794,7 +794,7 @@ public class MainDashboardController {
     private Window owner() { return rootPane.getScene() != null ? rootPane.getScene().getWindow() : null; }
     @FXML private void openCpuDetail(MouseEvent e) { e.consume(); openCpuDetailInternal(); }
     private void openCpuDetailInternal() {
-        if (latestMetrics != null) DetailDialogs.showCpuDetail(owner(), latestMetrics);
+        if (latestMetrics != null) DetailDialogs.showCpuDetail(owner(), latestMetrics, latestStorageResult);
         else BackendInfoDialogs.showData(owner(), "CPU — Backend Data", "Telemetry is still starting.", java.util.List.of("Source: OSHI HardwareAbstractionLayer", "Sampling: 1 second"));
     }
     @FXML private void openThreadsDetail(MouseEvent e) { e.consume(); openThreadsDetailInternal(); }
@@ -804,12 +804,12 @@ public class MainDashboardController {
     }
     @FXML private void openTempDetail(MouseEvent e) { e.consume(); openTempDetailInternal(); }
     private void openTempDetailInternal() {
-        if (latestMetrics != null) DetailDialogs.showTempDetail(owner(), latestMetrics, this::killProcess, () -> aiService.explainThermalAnomaly(latestMetrics));
+        if (latestMetrics != null) DetailDialogs.showTempDetail(owner(), latestMetrics, latestStorageResult, this::killProcess, () -> aiService.explainThermalAnomaly(latestMetrics));
         else BackendInfoDialogs.showData(owner(), "Temperature — Backend Data", "Thermal telemetry is still starting.", java.util.List.of("Source: OSHI sensors", "Some Macs may not expose CPU temperature to user-space."));
     }
     @FXML private void openRamDetail(MouseEvent e) { e.consume(); openRamDetailInternal(); }
     private void openRamDetailInternal() {
-        if (latestMetrics != null) DetailDialogs.showRamDetail(owner(), latestMetrics, this::killProcess);
+        if (latestMetrics != null) DetailDialogs.showRamDetail(owner(), latestMetrics, latestStorageResult, this::killProcess);
         else BackendInfoDialogs.showData(owner(), "RAM — Backend Data", "Telemetry is still starting.", java.util.List.of("Source: OSHI GlobalMemory + process telemetry"));
     }
     @FXML private void openBatteryDetail() {
