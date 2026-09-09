@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Locale;
 
 import javax.imageio.ImageIO;
 
@@ -20,8 +21,12 @@ public class ImageConverterEngine {
             throw new IOException("Unsupported image format or corrupt file: " + sourcePath);
         }
 
+        String format = targetFormat == null ? "" : targetFormat.toLowerCase(Locale.ROOT);
+        if (format.isBlank()) throw new IOException("Choose an image target format.");
         File targetFile = targetPath.toFile();
-        ImageIO.write(image, targetFormat.toLowerCase(), targetFile);
+        if (!ImageIO.write(image, format, targetFile)) {
+            throw new IOException("No image writer is installed for ." + format + ".");
+        }
     }
 
     /**

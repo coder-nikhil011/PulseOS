@@ -7,9 +7,11 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
@@ -79,11 +81,20 @@ public class DocumentConverterEngine {
              FileWriter writer = new FileWriter(csvTarget.toFile())) {
 
             XSSFSheet sheet = workbook.getSheetAt(0);
+            DataFormatter formatter = new DataFormatter();
             for (var row : sheet) {
                 StringBuilder line = new StringBuilder();
                 for (var cell : row) {
                     if (line.length() > 0) line.append(",");
-                    line.append(cell.toString().replace(",", " "));
+                    String value = formatter.formatCellValue(cell);
+                    // Emit valid RFC-4180 fields instead of silently replacing
+                    // commas (which changed the user's data).
+                    if (value.indexOf(',') >= 0 || value.indexOf('"') >= 0
+                            || value.indexOf('\n') >= 0 || value.indexOf('\r') >= 0) {
+                        line.append('"').append(value.replace("\"", "\"\"")).append('"');
+                    } else {
+                        line.append(value);
+                    }
                 }
                 writer.write(line.toString());
                 writer.write(System.lineSeparator());
@@ -129,6 +140,28 @@ public class DocumentConverterEngine {
             contentStream.close();
 
             document.save(pdfTarget.toFile());
+        }
+
+    }
+
+    /** Encodes a local raster image into a real PDF page; never just renames the file. */
+    public void imageToPdf(Path imageSource, Path pdfTarget) throws IOException {
+            if (!Files.isRegularFile(imageSource) || !Files.isReadable(imageSource)) {
+                throw new IOException("Image file does not exist or cannot be read.");
+            }
+            try (PDDocument document = new PDDocument()) {
+                PDImageXObject image = PDImageXObject.createFromFileByContent(imageSource.toFile(), document);
+                PDRectangle pageSize = PDRectangle.A4;
+                float scale = Math.min(pageSize.getWidth() / image.getWidth(), pageSize.getHeight() / image.getHeight());
+                float width = image.getWidth() * scale;
+                float height = image.getHeight() * scale;
+                PDPage page = new PDPage(pageSize);
+                document.addPage(page);
+                try (PDPageContentStream stream = new PDPageContentStream(document, page)) {
+                    stream.drawImage(image, (pageSize.getWidth() - width) / 2,
+                            (pageSize.getHeight() - height) / 2, width, height);
+                }
+                document.save(pdfTarget.toFile());
         }
     }
 }

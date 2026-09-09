@@ -37,7 +37,12 @@ public class StorageHealerService {
         if (roots.isEmpty()) return CompletableFuture.completedFuture(List.of());
 
         List<CompletableFuture<List<BuildArtifactScanner.ArtifactDetails>>> jobs = roots.stream()
-                .map(this::scanAsync).toList();
+                .map(this::scanAsync)
+                .map(job -> job.exceptionally(error -> {
+                    System.err.println("PulseOS storage scan failed: " + error.getMessage());
+                    return List.of();
+                }))
+                .toList();
         return CompletableFuture.allOf(jobs.toArray(new CompletableFuture[0]))
                 .thenApply(v -> {
                     List<BuildArtifactScanner.ArtifactDetails> all = new ArrayList<>();
@@ -125,7 +130,7 @@ public class StorageHealerService {
 
     public void shutdown() {
         if (executor != null && !executor.isShutdown()) {
-            executor.shutdown();
+            executor.shutdownNow();
         }
     }
 }

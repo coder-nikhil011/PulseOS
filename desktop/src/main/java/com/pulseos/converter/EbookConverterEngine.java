@@ -15,10 +15,17 @@ public class EbookConverterEngine {
 
     public boolean isCalibreAvailable() {
         try {
-            Process process = new ProcessBuilder("ebook-convert", "--version").start();
+            Process process = new ProcessBuilder("ebook-convert", "--version")
+                    .redirectOutput(ProcessBuilder.Redirect.DISCARD)
+                    .redirectError(ProcessBuilder.Redirect.DISCARD)
+                    .start();
             boolean finished = process.waitFor(3, TimeUnit.SECONDS);
+            if (!finished) process.destroyForcibly();
             return finished && process.exitValue() == 0;
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
+            return false;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             return false;
         }
     }
@@ -31,7 +38,7 @@ public class EbookConverterEngine {
         }
         try {
             ProcessBuilder pb = new ProcessBuilder("ebook-convert", sourcePath.toString(), targetPath.toString());
-            pb.redirectErrorStream(true);
+            pb.redirectErrorStream(true).redirectOutput(ProcessBuilder.Redirect.DISCARD);
             Process process = pb.start();
             boolean finished = process.waitFor(120, TimeUnit.SECONDS);
 
@@ -43,8 +50,11 @@ public class EbookConverterEngine {
                 return new ConversionOutcome(false, "ebook-convert reported an error (exit code " + process.exitValue() + ").");
             }
             return new ConversionOutcome(true, "Converted via local Calibre (offline).");
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             return new ConversionOutcome(false, "Conversion failed: " + e.getMessage());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return new ConversionOutcome(false, "Conversion interrupted.");
         }
     }
 }

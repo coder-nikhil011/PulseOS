@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Problem 2 expansion: the old pie chart only ever showed hardcoded fake numbers.
@@ -36,14 +37,21 @@ public class StorageCategoryScanner {
 
     public CategoryResult scan(Path home, List<BuildArtifactScanner.ArtifactDetails> buildArtifacts) {
         List<LargeItem> largeItems = new ArrayList<>();
+        Set<Path> artifactRoots = buildArtifacts.stream()
+                .map(BuildArtifactScanner.ArtifactDetails::path)
+                .map(p -> p.toAbsolutePath().normalize())
+                .collect(java.util.stream.Collectors.toSet());
 
         for (String folderName : SCAN_FOLDERS) {
             Path folder = home.resolve(folderName);
             if (!Files.isDirectory(folder)) continue;
-            scanFolderShallow(folder, largeItems);
+            scanFolderShallow(folder, largeItems, artifactRoots);
         }
 
-        double buildArtifactMb = buildArtifacts.stream().mapToDouble(BuildArtifactScanner.ArtifactDetails::getSizeInMb).sum();
+        double buildArtifactMb = buildArtifacts.stream()
+                .mapToDouble(BuildArtifactScanner.ArtifactDetails::getSizeInMb).sum();
+        // Build artifacts are a more specific category. Do not count the same
+        // directory again as a large/unused item.
         double largeItemsMb = largeItems.stream().mapToDouble(LargeItem::sizeMb).sum();
 
         long totalSpaceMb = home.toFile().getTotalSpace() / (1024 * 1024);
@@ -70,7 +78,7 @@ public class StorageCategoryScanner {
         return new CategoryResult(categories, largeItems, biggest);
     }
 
-    private void scanFolderShallow(Path folder, List<LargeItem> results) {
+    private void scanFolderShallow(Path folder, List<LargeItem> results, Set<Path> artifactRoots) {
         try (var stream = Files.newDirectoryStream(folder)) {
             for (Path entry : stream) {
                 try {
@@ -84,7 +92,10 @@ public class StorageCategoryScanner {
 
                     long daysUnused = (System.currentTimeMillis() - attrs.lastAccessTime().toMillis()) / (1000L * 60 * 60 * 24);
 
-                    if (sizeMb >= LARGE_FILE_THRESHOLD_MB || daysUnused >= UNUSED_DAYS_THRESHOLD) {
+                    Path normalized = entry.toAbsolutePath().normalize();
+                    boolean isBuildArtifact = artifactRoots.stream().anyMatch(
+                            artifact -> normalized.startsWith(artifact));
+                    if (!isBuildArtifact && (sizeMb >= LARGE_FILE_THRESHOLD_MB || daysUnused >= UNUSED_DAYS_THRESHOLD)) {
                         results.add(new LargeItem(entry, attrs.isDirectory(), sizeMb, Math.max(0, daysUnused)));
                     }
                 } catch (IOException ignored) {
@@ -96,7 +107,10 @@ public class StorageCategoryScanner {
 
     private double folderSizeMb(Path folder) {
         try (var stream = Files.walk(folder, 4)) {
-            long bytes = stream.filter(p -> p.toFile().isFile()).mapToLong(p -> p.toFile().length()).sum();
+            long bytes = stream.filter(Files::isRegularFile)
+                    .mapToLong(p -> {
+                        try { return Files.size(p); } catch (IOException ignored) { return 0L; }
+                    }).sum();
             return bytes / (1024.0 * 1024.0);
         } catch (IOException e) {
             return 0;

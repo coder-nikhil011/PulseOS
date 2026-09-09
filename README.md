@@ -508,8 +508,45 @@ mvn clean package
 ## 4. Run the Application
 
 ```bash
-mvn clean javafx:run
+../scripts/run_mac.command
 ```
+
+## 5. Distribute the Desktop App
+
+Do not distribute the Maven project or ask users to install Java. Build a
+platform installer that bundles Java 21 and JavaFX:
+
+```bash
+# macOS (run on macOS)
+../scripts/package_mac.sh
+```
+
+The generated `.dmg` is in `desktop/target/installer/`. Windows installers
+must be built on Windows:
+
+```powershell
+.\scripts\package_windows.ps1
+```
+
+The GitHub Actions workflow
+`.github/workflows/desktop-installers.yml` builds both installers on tagged
+releases or by selecting **Run workflow**. Upload the generated `.dmg` and
+`.exe` files to the website. Users then install and launch PulseOS without
+Maven, Java, or JavaFX installed.
+
+The workflow produces separate macOS installers for Apple Silicon and Intel.
+It also produces a Linux `.deb` package for Debian- and Ubuntu-based systems.
+For a public release, sign/notarize the macOS app with an Apple Developer
+certificate and sign the Windows installer with a code-signing certificate;
+otherwise macOS Gatekeeper or Windows SmartScreen may show an unverified
+publisher warning.
+
+### macOS first launch
+
+The locally generated DMG is valid but is not notarized without an Apple
+Developer certificate. If macOS says the app cannot be opened, drag it to
+Applications, then Control-click `PulseOS.app`, choose **Open**, and confirm.
+For a public release, sign and notarize the DMG so users can open it normally.
 
 ---
 

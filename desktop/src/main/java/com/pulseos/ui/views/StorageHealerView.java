@@ -85,7 +85,8 @@ public class StorageHealerView extends VBox {
 
         VBox.setVgrow(table, Priority.ALWAYS);
         this.getChildren().addAll(title, actionBar, summaryLabel, aiExplainLabel, table);
-        Platform.runLater(this::runScan);
+        // The dashboard performs its own lightweight startup scan. Defer this
+        // view's heavier table scan until the user opens it.
     }
 
     private void setupTable() {
@@ -146,7 +147,14 @@ public class StorageHealerView extends VBox {
 
             logCallback.accept("🔍 Scan complete: " + artifacts.size() + " artifacts found");
             scanStarted = false;
-        }));
+        })).exceptionally(error -> {
+            Platform.runLater(() -> {
+                spinner.setVisible(false);
+                scanStarted = false;
+                summaryLabel.setText("❌ Storage scan failed: " + friendlyMessage(error));
+            });
+            return null;
+        });
     }
 
     private void runAiExplain() {
@@ -183,7 +191,24 @@ public class StorageHealerView extends VBox {
                     "Cleaned! Freed %.1f MB (moved to quarantine, permanent delete after 7 days).%s",
                     freedMb, protectedSelected > 0 ? " " + protectedSelected + " active project(s) were skipped for safety." : ""));
             logCallback.accept("✅ Storage Healer freed " + String.format("%.1f", freedMb) + " MB");
+            scanStarted = false;
             runScan();
-        }));
+        })).exceptionally(error -> {
+            Platform.runLater(() -> {
+                scanStarted = false;
+                spinner.setVisible(false);
+                summaryLabel.setText("❌ Cleanup failed: " + friendlyMessage(error));
+            });
+            return null;
+        });
+    }
+
+    private String friendlyMessage(Throwable error) {
+        Throwable cause = error;
+        while (cause.getCause() != null
+                && cause instanceof java.util.concurrent.CompletionException) {
+            cause = cause.getCause();
+        }
+        return cause.getMessage() == null ? cause.getClass().getSimpleName() : cause.getMessage();
     }
 }

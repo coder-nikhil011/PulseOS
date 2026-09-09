@@ -106,14 +106,19 @@ public class MainDashboardController {
         cpuChart.configure("CPU Load", "CPU", "Usage %", 0, 100);
         ramChart.configure("Memory Pressure", "RAM", "Usage %", 0, 100);
         tempChart.configure("CPU Temperature", "Temperature", "°C", 0, 100);
-        buildOtherViews();
-        startTelemetry();
-        startWatcher();
         initializeDashboardDataState();
         updateStorageInfo();
-        populateStaticHardwareInfo();
         wireDashboardInteractions();
-        runInitialStorageHealthScan();
+        // Keep FXML loading and the first paint cheap. OSHI initialization,
+        // process enumeration and storage traversal are deliberately started
+        // after the stage has been shown.
+        Platform.runLater(() -> {
+            populateStaticHardwareInfo();
+            buildOtherViews();
+            startTelemetry();
+            startWatcher();
+            runInitialStorageHealthScan();
+        });
     }
 
 
@@ -286,10 +291,21 @@ public class MainDashboardController {
     }
 
     @FXML private void showHealthView() { swapContent(healthView, navHealthBtn); }
-    @FXML private void showSmartRouterView() { swapContent(smartRouterView, navSmartRouterBtn); }
-    @FXML private void showStorageHealerView() { swapContent(storageHealerView, navStorageHealerBtn); storageHealerView.ensureLoaded(); }
-    @FXML private void showConverterView() { swapContent(converterView, navConverterBtn); }
-    @FXML private void showSettingsView() { swapContent(settingsView, navSettingsBtn); }
+    @FXML private void showSmartRouterView() {
+        if (smartRouterView != null) swapContent(smartRouterView, navSmartRouterBtn);
+    }
+    @FXML private void showStorageHealerView() {
+        if (storageHealerView != null) {
+            swapContent(storageHealerView, navStorageHealerBtn);
+            storageHealerView.ensureLoaded();
+        }
+    }
+    @FXML private void showConverterView() {
+        if (converterView != null) swapContent(converterView, navConverterBtn);
+    }
+    @FXML private void showSettingsView() {
+        if (settingsView != null) swapContent(settingsView, navSettingsBtn);
+    }
 
     private void swapContent(Node view, Button activeBtn) {
         contentArea.getChildren().setAll(view);
@@ -632,7 +648,15 @@ public class MainDashboardController {
         // can contain Library, caches and SDKs with hundreds of thousands of files.
         // PulseOS only needs the user-facing locations for a fast dashboard prototype.
         healerService.analyzeCommonLocations(home).thenAccept(artifacts ->
-                Platform.runLater(() -> applyRealStorageBreakdown(home, artifacts)));
+                Platform.runLater(() -> applyRealStorageBreakdown(home, artifacts)))
+                .exceptionally(error -> {
+                    Platform.runLater(() -> {
+                        storageArrowLabel.setText("→ Storage scan unavailable");
+                        largestFolderLabel.setText("Storage details unavailable");
+                        logActivity("Storage scan failed: " + error.getMessage());
+                    });
+                    return null;
+                });
     }
 
     @FXML
@@ -676,10 +700,13 @@ public class MainDashboardController {
         var result = categoryScanner.scan(home, artifacts);
         latestStorageResult = result;
         var pieData = FXCollections.<PieChart.Data>observableArrayList();
-        double totalGb = Math.max(1.0, Paths.get(System.getProperty("user.home")).toFile().getTotalSpace() / (1024.0 * 1024.0 * 1024.0));
-        double freeGb = Math.max(0.0, Paths.get(System.getProperty("user.home")).toFile().getFreeSpace() / (1024.0 * 1024.0 * 1024.0));
-        pieData.add(new PieChart.Data("Free Space", Math.max(0.1, freeGb)));
-        pieData.add(new PieChart.Data("Other Used Space", Math.max(0.1, totalGb - freeGb)));
+        // Use the scanner's disjoint categories instead of replacing its real
+        // result with a misleading two-slice used/free chart.
+        result.categoryMb().forEach((category, mb) -> {
+            if (mb != null && Double.isFinite(mb) && mb > 0) {
+                pieData.add(new PieChart.Data(category, mb));
+            }
+        });
         storagePieChart.setData(pieData);
         storagePieChart.setStartAngle(90);
         StringBuilder arrows = new StringBuilder();
@@ -712,6 +739,11 @@ public class MainDashboardController {
         Path downloadsFolder = Paths.get(System.getProperty("user.home"), "Downloads");
         organizerService = new DownloadOrganizerService(downloadsFolder);
         watcherService = new DownloadInterceptorService(downloadsFolder);
+        if (!java.nio.file.Files.isDirectory(downloadsFolder)) {
+            watcherStatusLabel.setText("○ Downloads folder unavailable");
+            watcherBackendLabel.setText("Watching disabled: " + downloadsFolder);
+            return;
+        }
         watcherStatusLabel.setText("● WatchService active");
         interceptedCountLabel.setText("Downloads organized today: " + interceptedCount + " files");
         lastFileLabel.setText("Last file: — (waiting for event)");
@@ -796,6 +828,7 @@ public class MainDashboardController {
     public void stopServices() {
         if (telemetryService != null) telemetryService.stopMonitoring();
         if (watcherService != null) watcherService.stopIntercepting();
+        if (converterView != null) converterView.shutdown();
         if (healerService != null) { healerService.purgeQuarantine(7); healerService.shutdown(); }
     }
 }

@@ -66,10 +66,26 @@ public class TelemetryChartCard extends VBox {
     }
 
     public void addTelemetryPoint(String timestampOrTick, double value) {
+        if (!Double.isFinite(value)) return;
         dataSeries.getData().add(new XYChart.Data<>(timestampOrTick, value));
         if (dataSeries.getData().size() > maxDataPoints) dataSeries.getData().remove(0);
     }
 
-    public void setMaxDataPoints(int maxDataPoints) { this.maxDataPoints = maxDataPoints; }
+    /**
+     * Keeps the JavaFX scene graph bounded even when a card is reused for a long
+     * running session.  Also trims an already populated chart when the limit is
+     * changed (the old implementation only enforced the limit on new samples).
+     */
+    public void setMaxDataPoints(int maxDataPoints) {
+        this.maxDataPoints = Math.max(1, maxDataPoints);
+        while (dataSeries.getData().size() > this.maxDataPoints) {
+            dataSeries.getData().remove(0);
+        }
+    }
+
+    public void clearData() {
+        dataSeries.getData().clear();
+    }
+
     public AreaChart<String, Number> getAreaChart() { return areaChart; }
 }

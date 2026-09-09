@@ -68,7 +68,7 @@
 
                         <VBox fx:id="liveSnapshotCard" styleClass="card clickable-stat" spacing="7" maxWidth="Infinity">
                             <HBox alignment="CENTER_LEFT"><Label text="LIVE DEVICE SNAPSHOT" styleClass="section-kicker"/><HBox HBox.hgrow="ALWAYS"/><Label text="Current machine state" styleClass="live-caption"/></HBox>
-                            <HBox spacing="4" maxWidth="Infinity">
+                            <HBox spacing="10" maxWidth="Infinity">
                                 <VBox onMouseClicked="#openCpuDetail" alignment="CENTER_LEFT" styleClass="metric-tile clickable-stat" HBox.hgrow="ALWAYS" minWidth="0"><Label text="CPU" styleClass="stat-caption"/><Label fx:id="cpuLabel" text="—" styleClass="metric-value"/><Label fx:id="cpuBackendLabel" text="Top app: waiting…" styleClass="metric-hint" wrapText="true"/></VBox>
                                 <VBox onMouseClicked="#openRamDetail" alignment="CENTER_LEFT" styleClass="metric-tile clickable-stat" HBox.hgrow="ALWAYS" minWidth="0"><Label text="MEMORY" styleClass="stat-caption"/><Label fx:id="ramLabel" text="—" styleClass="metric-value"/><Label fx:id="ramBackendLabel" text="Top app: waiting…" styleClass="metric-hint" wrapText="true"/></VBox>
                                 <VBox onMouseClicked="#openTempDetail" alignment="CENTER_LEFT" styleClass="metric-tile clickable-stat" HBox.hgrow="ALWAYS" minWidth="0"><Label text="TEMPERATURE" styleClass="stat-caption"/><Label fx:id="tempLabel" text="—" styleClass="metric-value"/><Label fx:id="tempBackendLabel" text="Sensor: detecting…" styleClass="metric-hint" wrapText="true"/></VBox>
@@ -77,7 +77,7 @@
                             </HBox>
                         </VBox>
 
-                        <HBox spacing="4" maxWidth="Infinity">
+                        <HBox spacing="10" maxWidth="Infinity">
                             <VBox styleClass="card chart-card" HBox.hgrow="ALWAYS" minWidth="0" onMouseClicked="#openCpuDetail">
                                 <HBox styleClass="chart-card-header"><Label text="CPU" styleClass="section-kicker"/><HBox HBox.hgrow="ALWAYS"/><Label text="LIVE" styleClass="live-caption"/></HBox>
                                 <Label text="CPU Load" styleClass="chart-card-title"/>
@@ -138,7 +138,7 @@
                                 <HBox spacing="8" alignment="CENTER_LEFT"><Label text="Used" styleClass="stat-caption"/><ProgressBar fx:id="storageProgressBar" progress="0.4" HBox.hgrow="ALWAYS"/><Label fx:id="freeStorageLabel" text="— free" styleClass="stat-caption-bold"/></HBox>
                                 <HBox spacing="14" alignment="CENTER_LEFT" maxWidth="Infinity">
                                     <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
-                                        <PieChart fx:id="storagePieChart" prefWidth="390" prefHeight="245" minWidth="350" minHeight="220" legendVisible="true" legendSide="RIGHT" labelsVisible="false" startAngle="90" clockwise="false"/>
+                                        <PieChart fx:id="storagePieChart" prefWidth="350" prefHeight="190" minWidth="300" minHeight="175" legendVisible="true" legendSide="RIGHT" labelsVisible="false" startAngle="90" clockwise="false"/>
                                         <Label fx:id="storageArrowLabel" text="→ Free: calculating · → Used: calculating" styleClass="chart-backend" wrapText="true"/>
                                     </VBox>
                                     <VBox prefWidth="250" minWidth="230" spacing="6" styleClass="bottleneck-box">
@@ -154,7 +154,7 @@
 
                         <VBox fx:id="drainerCard" styleClass="card clickable-stat" spacing="7" maxWidth="Infinity">
                             <HBox><Label text="TOP RESOURCE DRAINERS" styleClass="section-kicker"/><HBox HBox.hgrow="ALWAYS"/><Label text="Open Smart Router →" styleClass="live-caption"/></HBox>
-                            <HBox spacing="4">
+                            <HBox spacing="10">
                                 <VBox spacing="4" styleClass="drainer-box" HBox.hgrow="ALWAYS"><Label text="CPU LEADER" styleClass="section-kicker"/><Label fx:id="topCpuProcessLabel" text="CPU: collecting…" styleClass="hw-text"/><Label text="Highest current CPU consumer" styleClass="muted-note"/></VBox>
                                 <VBox spacing="4" styleClass="drainer-box" HBox.hgrow="ALWAYS"><Label text="MEMORY LEADER" styleClass="section-kicker"/><Label fx:id="topRamProcessLabel" text="Memory: collecting…" styleClass="hw-text"/><Label text="Highest current memory consumer" styleClass="muted-note"/></VBox>
                                 <VBox spacing="4" styleClass="drainer-box" HBox.hgrow="ALWAYS"><Label text="PROCESSES" styleClass="section-kicker"/><Label fx:id="processCountLabel" text="Processes: collecting…" styleClass="hw-text"/><Label text="Total running" styleClass="muted-note"/></VBox>
@@ -162,7 +162,7 @@
                             </HBox>
                         </VBox>
 
-                        <HBox spacing="4" maxWidth="Infinity">
+                        <HBox spacing="10" maxWidth="Infinity">
                             <VBox fx:id="hardwareCard" styleClass="card clickable-stat" spacing="7" HBox.hgrow="ALWAYS">
                                 <HBox><Label text="HARDWARE INFORMATION" styleClass="section-kicker"/><HBox HBox.hgrow="ALWAYS"/><Label text="Details →" styleClass="live-caption"/></HBox>
                                 <Label fx:id="processorNameLabel" text="Processor: detecting…" styleClass="hw-text"/>

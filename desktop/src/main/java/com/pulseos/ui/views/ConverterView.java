@@ -22,7 +22,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -45,7 +49,7 @@ public class ConverterView extends VBox {
     private final Consumer<String> logCallback;
 
     private static final Map<String, List<String>> CATEGORY_TARGET_FORMATS = Map.of(
-            "Image", List.of("png", "jpg", "bmp", "gif"),
+            "Image", List.of("jpg", "jpeg", "png", "bmp", "gif", "pdf"),
             "Document", List.of("txt", "csv", "pdf"),
             "Compressed / Archive", List.of("zip", "tar", "tar.gz", "tar.bz2", "7z"),
             "Audio / Video (needs ffmpeg)", List.of("mp3", "wav", "aac", "flac", "mp4", "mkv", "avi", "mov", "webm"),
@@ -60,6 +64,12 @@ public class ConverterView extends VBox {
     private final TextField searchField = new TextField();
     private final ListView<Path> searchResults = new ListView<>();
     private final Label searchStatusLabel = new Label("");
+    private final ExecutorService workExecutor = Executors.newFixedThreadPool(2, r -> {
+        Thread t = new Thread(r, "pulseos-converter");
+        t.setDaemon(true);
+        return t;
+    });
+    private Button convertButton;
     private File selectedFile;
 
     public ConverterView(AiFeaturesService aiService, Consumer<String> logCallback) {
@@ -87,14 +97,14 @@ public class ConverterView extends VBox {
         Button chooseBtn = new Button("Choose File");
         chooseBtn.setOnAction(e -> chooseFile());
 
-        Button convertBtn = new Button("Convert");
-        convertBtn.getStyleClass().add("alert-btn-danger");
-        convertBtn.setOnAction(e -> runConversion());
+        convertButton = new Button("Convert");
+        convertButton.getStyleClass().add("alert-btn-danger");
+        convertButton.setOnAction(e -> runConversion());
 
         HBox row1 = new HBox(10, new Label("Category:"), categoryBox, new Label("Target:"), formatBox);
         row1.setAlignment(Pos.CENTER_LEFT);
 
-        HBox row2 = new HBox(10, chooseBtn, convertBtn);
+        HBox row2 = new HBox(10, chooseBtn, convertButton);
         row2.setAlignment(Pos.CENTER_LEFT);
 
         Label toolNote = new Label(
@@ -134,6 +144,7 @@ public class ConverterView extends VBox {
                 selectedFile = picked.toFile();
                 fileLabel.setText("Selected (from AI search): " + picked.getFileName());
                 statusLabel.setText("");
+                selectDetectedCategory(picked);
             }
         });
 
@@ -149,16 +160,18 @@ public class ConverterView extends VBox {
         searchStatusLabel.setText("🤖 Understanding your request...");
         searchResults.getItems().clear();
 
-        aiService.parseSearchIntent(query).thenAccept(intent -> {
-            List<Path> matches = searchFileSystem(intent.keywords(), intent.targetFormat());
-            Platform.runLater(() -> {
-                searchResults.getItems().setAll(matches);
-                searchStatusLabel.setText(matches.isEmpty()
-                        ? "Kuch nahi mila keywords [" + intent.keywords() + "]" + (intent.targetFormat() != null ? " ." + intent.targetFormat() : "") + " ke liye."
-                        : matches.size() + " result(s) found for [" + intent.keywords() + "]"
-                          + (intent.targetFormat() != null ? " ." + intent.targetFormat() : ""));
-            });
-        });
+        CompletableFuture.supplyAsync(() -> aiService.parseSearchIntent(query), workExecutor)
+                .thenCompose(future -> future)
+                .thenApplyAsync(intent -> searchFileSystem(intent.keywords(), intent.targetFormat()), workExecutor)
+                .thenAccept(matches -> Platform.runLater(() -> {
+                    searchResults.getItems().setAll(matches);
+                    searchStatusLabel.setText(matches.isEmpty() ? "No matching files found."
+                            : matches.size() + " result(s) found.");
+                }))
+                .exceptionally(error -> {
+                    Platform.runLater(() -> searchStatusLabel.setText("❌ Search failed: " + friendlyMessage(error)));
+                    return null;
+                });
     }
 
     /** Shallow-ish keyword filename search under the user's home (Documents/Downloads/Desktop) — fast enough for a live UI. */
@@ -175,7 +188,8 @@ public class ConverterView extends VBox {
                         .filter(Files::isRegularFile)
                         .filter(p -> {
                             String name = p.getFileName().toString().toLowerCase();
-                            boolean matchesFormat = targetFormat == null || name.endsWith("." + targetFormat.toLowerCase());
+                            boolean matchesFormat = targetFormat == null
+                                    || name.endsWith("." + targetFormat.toLowerCase(Locale.ROOT));
                             boolean matchesKeywords = terms.isEmpty() || terms.stream().anyMatch(name::contains);
                             return matchesFormat && matchesKeywords;
                         })
@@ -196,7 +210,33 @@ public class ConverterView extends VBox {
             selectedFile = file;
             fileLabel.setText("Selected: " + file.getName());
             statusLabel.setText("");
+            selectDetectedCategory(file.toPath());
         }
+    }
+
+    private void selectDetectedCategory(Path file) {
+        String extension = getExtension(file.getFileName().toString()).toLowerCase(Locale.ROOT);
+        String category = switch (extension) {
+            case "png", "jpg", "jpeg", "bmp", "gif", "tif", "tiff", "webp" -> "Image";
+            case "pdf", "txt", "docx", "pptx", "xlsx", "csv" -> "Document";
+            case "zip", "tar", "gz", "bz2", "7z" -> "Compressed / Archive";
+            case "mp3", "wav", "aac", "flac", "mp4", "mkv", "avi", "mov", "webm" ->
+                    "Audio / Video (needs ffmpeg)";
+            case "epub", "mobi", "azw3", "fb2" -> "eBook (needs Calibre)";
+            default -> null;
+        };
+        if (category == null) {
+            statusLabel.setText("⚠ Detected format ." + extension + "; choose a supported category.");
+            return;
+        }
+        categoryBox.setValue(category);
+        formatBox.getItems().setAll(CATEGORY_TARGET_FORMATS.get(category));
+        if (category.equals("Image")) {
+            formatBox.setValue("pdf");
+        } else if (!formatBox.getItems().isEmpty()) {
+            formatBox.setValue(formatBox.getItems().get(0));
+        }
+        statusLabel.setText("Detected ." + extension + " → " + category + ". Compatible targets updated.");
     }
 
     private void runConversion() {
@@ -207,95 +247,124 @@ public class ConverterView extends VBox {
 
         String category = categoryBox.getValue();
         String targetFormat = formatBox.getValue();
+        if (category == null || targetFormat == null || targetFormat.isBlank()) {
+            statusLabel.setText("❌ Choose a category and target format first.");
+            return;
+        }
         Path source = selectedFile.toPath();
+        if (!Files.isRegularFile(source) || !Files.isReadable(source)) {
+            statusLabel.setText("❌ The selected file no longer exists or cannot be read.");
+            return;
+        }
         String sourceExt = getExtension(selectedFile.getName()).toLowerCase();
         String baseName = selectedFile.getName().replaceAll("\\.[^.]+$", "");
-        Path target = source.getParent().resolve(baseName + "_converted." + targetFormat);
+        Path parent = source.getParent() == null ? Paths.get(".").toAbsolutePath() : source.getParent();
+        Path target = parent.resolve(baseName + "_converted." + targetFormat);
+        convertButton.setDisable(true);
+        statusLabel.setText("⏳ Converting locally…");
 
-        try {
-            switch (category) {
-                case "Image" -> {
-                    imageEngine.convertImageFormat(source, target, targetFormat);
-                    succeed(target, "Image converted offline");
-                }
-                case "Document" -> convertDocument(source, target, sourceExt, targetFormat);
-                case "Compressed / Archive" -> {
-                    archiveEngine.convert(source, target, targetFormat);
-                    succeed(target, "Archive re-packed offline");
-                }
-                case "Audio / Video (needs ffmpeg)" -> {
-                    var outcome = mediaEngine.convert(source, target);
-                    if (outcome.success()) succeed(target, outcome.message());
-                    else statusLabel.setText("❌ " + outcome.message());
-                }
-                case "eBook (needs Calibre)" -> {
-                    var outcome = ebookEngine.convert(source, target);
-                    if (outcome.success()) succeed(target, outcome.message());
-                    else statusLabel.setText("❌ " + outcome.message());
-                }
-                default -> statusLabel.setText("❌ CAD conversion isn't supported yet (no safe offline engine exists).");
+        CompletableFuture.supplyAsync(() -> {
+            try {
+                return performConversion(category, source, target, sourceExt, targetFormat);
+            } catch (Exception ex) {
+                throw new java.util.concurrent.CompletionException(ex);
             }
-        } catch (Exception ex) {
-            statusLabel.setText("❌ Failed: " + ex.getMessage());
-        }
+        }, workExecutor).whenComplete((message, error) -> Platform.runLater(() -> {
+            convertButton.setDisable(false);
+            if (error != null) {
+                statusLabel.setText("❌ Failed: " + friendlyMessage(error));
+            } else if (message != null) {
+                statusLabel.setText("✅ Saved: " + target.getFileName() + " (" + message + ")");
+                logCallback.accept("🔄 " + message + " → " + target.getFileName());
+            }
+        }));
     }
 
-    private void convertDocument(Path source, Path target, String sourceExt, String targetFormat) throws Exception {
+    private String performConversion(String category, Path source, Path target,
+                                     String sourceExt, String targetFormat) throws Exception {
         switch (sourceExt) {
             case "pdf" -> {
                 if (!targetFormat.equals("txt")) {
-                    statusLabel.setText("❌ PDF can currently only convert to TXT here.");
-                    return;
+                    throw new java.io.IOException("PDF can currently only convert to TXT here.");
                 }
                 String text = documentEngine.extractTextFromPdf(source);
                 java.nio.file.Files.writeString(target, text);
-                succeed(target, "PDF text extracted offline");
+                return "PDF text extracted offline";
             }
             case "docx" -> {
                 if (!targetFormat.equals("txt")) {
-                    statusLabel.setText("❌ DOCX can currently only convert to TXT here.");
-                    return;
+                    throw new java.io.IOException("DOCX can currently only convert to TXT here.");
                 }
                 String text = documentEngine.docxToText(source);
                 java.nio.file.Files.writeString(target, text);
-                succeed(target, "DOCX text extracted offline");
+                return "DOCX text extracted offline";
             }
             case "pptx" -> {
                 if (!targetFormat.equals("txt")) {
-                    statusLabel.setText("❌ PPTX can currently only convert to TXT here.");
-                    return;
+                    throw new java.io.IOException("PPTX can currently only convert to TXT here.");
                 }
                 String text = documentEngine.pptxToText(source);
                 java.nio.file.Files.writeString(target, text);
-                succeed(target, "PPTX text extracted offline");
+                return "PPTX text extracted offline";
             }
             case "xlsx" -> {
                 if (!targetFormat.equals("csv")) {
-                    statusLabel.setText("❌ XLSX can currently only convert to CSV here.");
-                    return;
+                    throw new java.io.IOException("XLSX can currently only convert to CSV here.");
                 }
                 documentEngine.xlsxToCsv(source, target);
-                succeed(target, "XLSX converted to CSV offline");
+                return "XLSX converted to CSV offline";
             }
             case "txt" -> {
                 if (!targetFormat.equals("pdf")) {
-                    statusLabel.setText("❌ TXT can currently only convert to PDF here.");
-                    return;
+                    throw new java.io.IOException("TXT can currently only convert to PDF here.");
                 }
                 documentEngine.textToPdf(source, target);
-                succeed(target, "TXT converted to PDF offline");
+                return "TXT converted to PDF offline";
             }
-            default -> statusLabel.setText("❌ Unsupported source document type: ." + sourceExt);
+            default -> {
+                switch (category) {
+                    case "Image" -> {
+                        if (targetFormat.equalsIgnoreCase("pdf")) {
+                            documentEngine.imageToPdf(source, target);
+                            return "Image encoded into PDF offline";
+                        }
+                        imageEngine.convertImageFormat(source, target, targetFormat);
+                        return "Image encoded offline";
+                    }
+                    case "Compressed / Archive" -> {
+                        archiveEngine.convert(source, target, targetFormat);
+                        return "Archive re-packed offline";
+                    }
+                    case "Audio / Video (needs ffmpeg)" -> {
+                        var outcome = mediaEngine.convert(source, target);
+                        if (!outcome.success()) throw new java.io.IOException(outcome.message());
+                        return outcome.message();
+                    }
+                    case "eBook (needs Calibre)" -> {
+                        var outcome = ebookEngine.convert(source, target);
+                        if (!outcome.success()) throw new java.io.IOException(outcome.message());
+                        return outcome.message();
+                    }
+                    default -> throw new java.io.IOException("CAD conversion isn't supported yet (no safe offline engine exists).");
+                }
+            }
         }
     }
 
-    private void succeed(Path target, String reason) {
-        statusLabel.setText("✅ Saved: " + target.getFileName() + " (" + reason + ")");
-        logCallback.accept("🔄 " + reason + " → " + target.getFileName());
+    private String friendlyMessage(Throwable error) {
+        Throwable cause = error;
+        while (cause instanceof java.util.concurrent.CompletionException && cause.getCause() != null) {
+            cause = cause.getCause();
+        }
+        return cause.getMessage() == null ? cause.getClass().getSimpleName() : cause.getMessage();
     }
 
     private String getExtension(String fileName) {
         int dot = fileName.lastIndexOf('.');
         return dot > 0 ? fileName.substring(dot + 1) : "";
+    }
+
+    public void shutdown() {
+        workExecutor.shutdownNow();
     }
 }

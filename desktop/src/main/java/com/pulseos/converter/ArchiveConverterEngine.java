@@ -11,7 +11,9 @@ import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -27,6 +29,9 @@ import java.util.List;
  */
 public class ArchiveConverterEngine {
 
+    private static final long MAX_ENTRY_BYTES = 512L * 1024 * 1024;
+    private static final long MAX_TOTAL_BYTES = 2L * 1024 * 1024 * 1024;
+
     public record ExtractedEntry(String name, byte[] data) {}
 
     public void convert(Path sourcePath, Path targetPath, String targetFormat) throws IOException {
@@ -39,27 +44,40 @@ public class ArchiveConverterEngine {
         String lowerName = sourcePath.getFileName().toString().toLowerCase();
 
         if (lowerName.endsWith(".7z")) {
+            long totalBytes = 0;
             try (SevenZFile sevenZFile = new SevenZFile(sourcePath.toFile())) {
                 SevenZArchiveEntry entry;
                 while ((entry = sevenZFile.getNextEntry()) != null) {
                     if (entry.isDirectory()) continue;
-                    byte[] data = new byte[(int) entry.getSize()];
-                    sevenZFile.read(data);
+                    long size = entry.getSize();
+                    if (size < 0 || size > MAX_ENTRY_BYTES || totalBytes + size > MAX_TOTAL_BYTES) {
+                        throw new IOException("Archive is too large to convert safely (maximum 2 GB unpacked).");
+                    }
+                    byte[] data = new byte[(int) size];
+                    int offset = 0;
+                    while (offset < data.length) {
+                        int read = sevenZFile.read(data, offset, data.length - offset);
+                        if (read < 0) throw new EOFException("Truncated 7z entry: " + entry.getName());
+                        offset += read;
+                    }
+                    totalBytes += size;
                     results.add(new ExtractedEntry(entry.getName(), data));
                 }
             }
             return results;
         }
 
-        try (InputStream fileIn = new BufferedInputStream(Files.newInputStream(sourcePath));
+        try (InputStream fileIn = compressionStream(lowerName, new BufferedInputStream(Files.newInputStream(sourcePath)));
              ArchiveInputStream<? extends ArchiveEntry> in = new ArchiveStreamFactory()
                      .createArchiveInputStream(autoDetectFormat(lowerName), fileIn)) {
 
             ArchiveEntry entry;
+            long totalBytes = 0;
             while ((entry = in.getNextEntry()) != null) {
                 if (entry.isDirectory()) continue;
                 ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                in.transferTo(buffer);
+                copyBounded(in, buffer, totalBytes);
+                totalBytes += buffer.size();
                 results.add(new ExtractedEntry(entry.getName(), buffer.toByteArray()));
             }
         } catch (org.apache.commons.compress.archivers.ArchiveException e) {
@@ -68,11 +86,34 @@ public class ArchiveConverterEngine {
         return results;
     }
 
+    private InputStream compressionStream(String lowerName, InputStream input) throws IOException {
+        if (lowerName.endsWith(".tar.gz") || lowerName.endsWith(".tgz")) {
+            return new GzipCompressorInputStream(input);
+        }
+        if (lowerName.endsWith(".tar.bz2") || lowerName.endsWith(".tbz2")) {
+            return new BZip2CompressorInputStream(input);
+        }
+        return input;
+    }
+
+    private void copyBounded(InputStream in, OutputStream out, long totalBefore) throws IOException {
+        byte[] buffer = new byte[8192];
+        long entryBytes = 0;
+        int read;
+        while ((read = in.read(buffer)) >= 0) {
+            entryBytes += read;
+            if (entryBytes > MAX_ENTRY_BYTES || totalBefore + entryBytes > MAX_TOTAL_BYTES) {
+                throw new IOException("Archive is too large to convert safely (maximum 2 GB unpacked).");
+            }
+            out.write(buffer, 0, read);
+        }
+    }
+
     private String autoDetectFormat(String lowerName) {
         if (lowerName.endsWith(".zip")) return ArchiveStreamFactory.ZIP;
         if (lowerName.endsWith(".tar")) return ArchiveStreamFactory.TAR;
         if (lowerName.endsWith(".tar.gz") || lowerName.endsWith(".tgz")) return ArchiveStreamFactory.TAR;
-        if (lowerName.endsWith(".tar.bz2")) return ArchiveStreamFactory.TAR;
+        if (lowerName.endsWith(".tar.bz2") || lowerName.endsWith(".tbz2")) return ArchiveStreamFactory.TAR;
         if (lowerName.endsWith(".cab")) return ArchiveStreamFactory.CPIO;
         return ArchiveStreamFactory.ZIP;
     }

@@ -3,6 +3,56 @@
     -fx-font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
 }
 
+/* Plain controls are used by the converter and settings views. Set their
+   foreground colors explicitly so JavaFX platform defaults cannot render
+   dark text on the dark application background. */
+.label {
+    -fx-text-fill: #dbe4ec;
+}
+.text-field {
+    -fx-background-color: #16202b;
+    -fx-control-inner-background: #16202b;
+    -fx-text-fill: #f1f5f9;
+    -fx-prompt-text-fill: #8291a0;
+    -fx-border-color: #344454;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 8 10;
+}
+.combo-box {
+    -fx-background-color: #16202b;
+    -fx-border-color: #344454;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+.combo-box .list-cell {
+    -fx-background-color: #16202b;
+    -fx-text-fill: #f1f5f9;
+}
+.combo-box-popup .list-view,
+.combo-box-popup .list-cell {
+    -fx-background-color: #16202b;
+    -fx-text-fill: #f1f5f9;
+}
+.button {
+    -fx-background-color: #263545;
+    -fx-text-fill: #f1f5f9;
+    -fx-background-radius: 5;
+    -fx-border-color: #405366;
+    -fx-border-radius: 5;
+    -fx-padding: 8 14;
+}
+.button:hover {
+    -fx-background-color: #33485d;
+}
+.separator .line {
+    -fx-border-color: #344454;
+}
+.text-area {
+    -fx-control-inner-background: #16202b;
+    -fx-text-fill: #f1f5f9;
+}
+
 /* Header & Nav */
 .header-container { -fx-background-color: #0d131d; -fx-border-color: #1a2332; -fx-border-width: 0 0 1 0; }
 .app-title { -fx-text-fill: #e1e7ed; -fx-font-size: 13px; -fx-font-weight: bold; }
@@ -146,6 +196,20 @@
 .chart-card .chart { -fx-padding: 0; }
 .chart-card .chart-content { -fx-padding: 0; }
 .chart-card .axis-label, .chart-card .chart-legend { -fx-font-size: 9px; }
+.chart-legend {
+    -fx-background-color: #10161c;
+    -fx-border-color: #344454;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 8;
+}
+.chart-legend-item {
+    -fx-text-fill: #dbe4ec;
+    -fx-font-size: 11px;
+}
+.chart-legend-item-symbol {
+    -fx-background-radius: 5px;
+}
 .battery-content { -fx-min-height: 118px; }
 .battery-icon-box { -fx-background-color: #0b1217; -fx-border-color: #2a3741; -fx-border-width: 1; -fx-border-radius: 9; -fx-background-radius: 9; }
 .battery-icon-glyph { -fx-text-fill: #55c46b; -fx-font-size: 16px; -fx-font-weight: bold; -fx-letter-spacing: 2px; }
@@ -157,6 +221,19 @@
 .issue-line { -fx-font-size: 10px; -fx-padding: 5px 0; }
 .list-view { -fx-pref-height: 138px; }
 .chart-backend { -fx-font-size: 8px; }
+
+/* Keep dashboard sections visually grouped without large empty gaps. */
+.healthView > .card,
+.healthView > .hero-card {
+    -fx-padding: 12;
+}
+.healthView > HBox {
+    -fx-spacing: 10;
+}
+.healthView .bottleneck-box {
+    -fx-pref-height: 190px;
+    -fx-min-height: 175px;
+}
 
 /* Storage reference style: two clear slices + right legend, while category
    details remain in the text breakdown and largest-item panel. */

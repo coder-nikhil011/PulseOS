@@ -37,6 +37,7 @@ public class HardwareTelemetryService {
     private volatile List<SystemMetrics.ProcessInfo> cachedTopByCpu = List.of();
     private volatile List<SystemMetrics.ProcessInfo> cachedTopByRam = List.of();
     private volatile Consumer<List<SystemMetrics.ProcessInfo>> processListener = ignored -> {};
+    private volatile Consumer<SystemMetrics> metricsListener = ignored -> {};
 
     private ScheduledExecutorService coreExecutor;
     private ScheduledExecutorService processExecutor;
@@ -56,6 +57,7 @@ public class HardwareTelemetryService {
     public void startMonitoring(Consumer<SystemMetrics> metricsListener, long intervalMs) {
         stopMonitoring();
         running = true;
+        this.metricsListener = metricsListener == null ? ignored -> {} : metricsListener;
 
         coreExecutor = Executors.newSingleThreadScheduledExecutor(
                 Thread.ofVirtual().name("pulseos-core-telemetry").factory());
@@ -66,7 +68,7 @@ public class HardwareTelemetryService {
         coreExecutor.scheduleAtFixedRate(() -> {
             if (!running) return;
             try {
-                metricsListener.accept(collectCoreMetrics());
+                this.metricsListener.accept(collectCoreMetrics());
             } catch (Exception e) {
                 System.err.println("PulseOS core telemetry error: " + e.getMessage());
             }
@@ -184,11 +186,13 @@ public class HardwareTelemetryService {
                     .redirectErrorStream(true)
                     .start();
 
-            String output = new String(
-                    proc.getInputStream().readAllBytes(),
-                    java.nio.charset.StandardCharsets.UTF_8
-            );
-            proc.waitFor(2, TimeUnit.SECONDS);
+            boolean finished = proc.waitFor(2, TimeUnit.SECONDS);
+            if (!finished) {
+                proc.destroyForcibly();
+                return new BatteryFallback(-1, false);
+            }
+            String output = new String(proc.getInputStream().readAllBytes(),
+                    java.nio.charset.StandardCharsets.UTF_8);
 
             java.util.regex.Matcher matcher = java.util.regex.Pattern
                     .compile("(\\d{1,3})%")
@@ -255,6 +259,7 @@ public class HardwareTelemetryService {
 
     public void stopMonitoring() {
         running = false;
+        metricsListener = ignored -> {};
         if (coreExecutor != null) coreExecutor.shutdownNow();
         if (processExecutor != null) processExecutor.shutdownNow();
     }
