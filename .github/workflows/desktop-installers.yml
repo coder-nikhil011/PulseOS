@@ -3,8 +3,8 @@ name: Build desktop installers
 on:
   workflow_dispatch:
   push:
-    tags:
-      - "v*"
+    branches:
+      - main
 
 jobs:
   package:
@@ -15,9 +15,6 @@ jobs:
         include:
           - os: macos-14
             artifact: PulseOS-macos-apple-silicon
-            file: desktop/target/installer/*.dmg
-          - os: macos-13
-            artifact: PulseOS-macos-intel
             file: desktop/target/installer/*.dmg
           - os: windows-2022
             artifact: PulseOS-windows
