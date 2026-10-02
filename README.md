@@ -955,23 +955,6 @@ PulseOS aims to move computer maintenance from a **reactive process** to an **in
 
 ---
 
-# 👥 Team
-
-**Project:** PulseOS  
-**Event:** TEKATHON 5.0 — 2026  
-**Team Name:** YOUR TEAM NAME
-
-### Team Members
-
-| Name | Role |
-|---|---|
-| Member 1 | ______ |
-| Member 2 | ______ |
-| Member 3 | ______ |
-| Member 4 | ______ |
-
----
-
 # 📄 License
 
 This project is currently under development.
