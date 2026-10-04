@@ -18,7 +18,8 @@ import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xslf.usermodel.XSLFSlide;
 import org.apache.poi.xslf.usermodel.XSLFTextShape;
 
-import java.io.File;
+import java.io.*;
+import java.util.List;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -146,10 +147,17 @@ public class DocumentConverterEngine {
 
     /** Encodes a local raster image into a real PDF page; never just renames the file. */
     public void imageToPdf(Path imageSource, Path pdfTarget) throws IOException {
-            if (!Files.isRegularFile(imageSource) || !Files.isReadable(imageSource)) {
-                throw new IOException("Image file does not exist or cannot be read.");
-            }
-            try (PDDocument document = new PDDocument()) {
+        imagesToPdf(List.of(imageSource), pdfTarget);
+    }
+
+    /** Encodes multiple local raster images into a multi-page PDF document; offline via PDFBox. */
+    public void imagesToPdf(List<Path> imageSources, Path pdfTarget) throws IOException {
+        if (imageSources == null || imageSources.isEmpty()) {
+            throw new IOException("No image files provided for PDF conversion.");
+        }
+        try (PDDocument document = new PDDocument()) {
+            for (Path imageSource : imageSources) {
+                if (!Files.isRegularFile(imageSource) || !Files.isReadable(imageSource)) continue;
                 PDImageXObject image = PDImageXObject.createFromFileByContent(imageSource.toFile(), document);
                 PDRectangle pageSize = PDRectangle.A4;
                 float scale = Math.min(pageSize.getWidth() / image.getWidth(), pageSize.getHeight() / image.getHeight());
@@ -161,7 +169,11 @@ public class DocumentConverterEngine {
                     stream.drawImage(image, (pageSize.getWidth() - width) / 2,
                             (pageSize.getHeight() - height) / 2, width, height);
                 }
-                document.save(pdfTarget.toFile());
+            }
+            if (document.getNumberOfPages() == 0) {
+                throw new IOException("None of the selected images could be read.");
+            }
+            document.save(pdfTarget.toFile());
         }
     }
 }

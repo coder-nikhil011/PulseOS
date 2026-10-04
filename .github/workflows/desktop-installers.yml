@@ -2,9 +2,17 @@ name: Build desktop installers
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: Release version, for example 1.0.9
+        required: true
+        default: 1.0.9
   push:
-    branches:
-      - main
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
 
 jobs:
   package:
@@ -13,15 +21,22 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-14
-            artifact: PulseOS-macos-apple-silicon
-            file: desktop/target/installer/*.dmg
           - os: windows-2022
+            platform: windows
             artifact: PulseOS-windows
             file: desktop/target/installer/*.exe
           - os: ubuntu-22.04
+            platform: linux
             artifact: PulseOS-linux
             file: desktop/target/installer/*.deb
+          - os: macos-14
+            platform: macos
+            artifact: PulseOS-macos
+            file: desktop/target/installer/*.dmg
+          - os: ubuntu-22.04
+            platform: android
+            artifact: PulseOS-android
+            file: mobile/build/app/outputs/flutter-apk/app-release.apk
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -29,17 +44,91 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: maven
+      - uses: subosito/flutter-action@v2
+        if: matrix.platform == 'android'
+        with:
+          channel: stable
+          cache: true
+      - name: Verify Android app
+        if: matrix.platform == 'android'
+        working-directory: mobile
+        run: |
+          flutter pub get
+          flutter analyze
+          flutter test
       - name: Build installer
         shell: bash
+        env:
+          PULSEOS_VERSION: ${{ inputs.version || github.ref_name }}
         run: |
-          if [[ "${{ runner.os }}" == "Windows" ]]; then
+          if [[ "${{ matrix.platform }}" == "android" ]]; then
+            cd mobile
+            flutter build apk --release
+          elif [[ "${{ matrix.platform }}" == "windows" ]]; then
             powershell -ExecutionPolicy Bypass -File scripts/package_windows.ps1
-          elif [[ "${{ runner.os }}" == "Linux" ]]; then
+          elif [[ "${{ matrix.platform }}" == "linux" ]]; then
             bash scripts/package_linux.sh
-          else
+          elif [[ "${{ matrix.platform }}" == "macos" ]]; then
             bash scripts/package_mac.sh
+          fi
+      - name: Verify installer
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ matrix.platform }}" == "android" ]]; then
+            installer="mobile/build/app/outputs/flutter-apk/app-release.apk"
+          else
+            installer=$(find desktop/target/installer -maxdepth 1 -type f -print -quit)
+          fi
+          test -n "$installer"
+          test -s "$installer"
+          case "$installer" in
+            *.deb) dpkg-deb --info "$installer" >/dev/null ;;
+            *.exe) test "${installer##*.}" = "exe" ;;
+            *.dmg) test -s "$installer" ;;
+            *.apk) test -s "$installer" ;;
+            *) echo "Unsupported installer: $installer" >&2; exit 1 ;;
+          esac
+          if command -v sha256sum >/dev/null 2>&1; then
+            sha256sum "$installer"
+          else
+            shasum -a 256 "$installer"
           fi
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact }}
           path: ${{ matrix.file }}
+
+  release:
+    name: Publish release and refresh website downloads
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: package
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Download installers
+        uses: actions/download-artifact@v4
+        with:
+          pattern: PulseOS-*
+          path: release-assets
+          merge-multiple: true
+      - name: Stage stable download names
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p website/downloads
+          version="${GITHUB_REF_NAME#v}"
+          cp "release-assets/PulseOS-${version}.exe" website/downloads/PulseOS-windows.exe
+          cp "release-assets/PulseOS-${version}.deb" website/downloads/PulseOS-linux.deb
+          cp "release-assets/PulseOS-${version}.dmg" website/downloads/PulseOS-macos.dmg
+          cp release-assets/app-release.apk website/downloads/PulseOS-android.apk
+          sha256sum website/downloads/PulseOS-{windows.exe,linux.deb,macos.dmg,android.apk}
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          make_latest: true
+          files: |
+            website/downloads/PulseOS-windows.exe
+            website/downloads/PulseOS-linux.deb
+            website/downloads/PulseOS-macos.dmg
+            website/downloads/PulseOS-android.apk

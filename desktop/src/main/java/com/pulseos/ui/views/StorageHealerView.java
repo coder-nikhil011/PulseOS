@@ -59,8 +59,12 @@ public class StorageHealerView extends VBox {
     }
 
     private void buildUi() {
-        Label title = new Label("💾 STORAGE HEALER — Ghost Build Artifacts");
-        title.getStyleClass().add("card-header-title");
+        VBox main = new VBox(10);
+        main.getStyleClass().add("view-shell-content");
+        Label title = new Label("Storage Healer");
+        title.getStyleClass().add("view-title");
+        Label subtitle = new Label("Scan, find and remove junk. Keep your system clean and fast.");
+        subtitle.getStyleClass().add("view-subtitle");
 
         spinner.setMaxSize(18, 18);
         spinner.setVisible(false);
@@ -78,13 +82,25 @@ public class StorageHealerView extends VBox {
         HBox actionBar = new HBox(10, scanBtn, cleanBtn, aiExplainBtn, spinner);
         actionBar.setAlignment(Pos.CENTER_LEFT);
 
+        HBox usage = new HBox(10);
+        usage.getStyleClass().add("storage-summary-row");
+        Label usageLabel = new Label("STORAGE USAGE\n\n▰  Local Disk (Primary SSD)                         Analyzing...\n\nTotal Space: Calculating... · Used: Calculating... (—%)");
+        usageLabel.getStyleClass().add("storage-summary-card");
+        usageLabel.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(usageLabel, Priority.ALWAYS);
+        Label categories = new Label("—%\nUsed\n\nApps & System       Scanning...\nImages                    Scanning...\nVideos                    Scanning...\nAudio                      Scanning...\nDocuments                Scanning...\nOther                       Scanning...");
+        categories.getStyleClass().add("storage-summary-card");
+        usage.getChildren().addAll(usageLabel, categories);
+
         aiExplainLabel.setWrapText(true);
         aiExplainLabel.getStyleClass().add("info-callout-text");
 
         setupTable();
 
         VBox.setVgrow(table, Priority.ALWAYS);
-        this.getChildren().addAll(title, actionBar, summaryLabel, aiExplainLabel, table);
+        main.getChildren().addAll(title, subtitle, actionBar, usage, summaryLabel, aiExplainLabel, table);
+        VBox.setVgrow(main, Priority.ALWAYS);
+        this.getChildren().add(main);
         // The dashboard performs its own lightweight startup scan. Defer this
         // view's heavier table scan until the user opens it.
     }

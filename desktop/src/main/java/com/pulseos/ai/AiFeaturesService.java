@@ -22,6 +22,18 @@ public class AiFeaturesService {
         return client.isAvailable();
     }
 
+    /** General local AI assistant used by the desktop dashboard. */
+    public CompletableFuture<String> askAssistant(String question, String systemContext) {
+        // Do not synchronously probe Ollama here: this method is called from the WebView
+        // bridge, and a blocking availability check would freeze the desktop UI. The actual
+        // HTTP request is asynchronous and failure is reported honestly to the caller.
+        String prompt = "You are PulseOS, a local desktop troubleshooting assistant. Answer the user's question concisely and practically. " +
+                "Use only the supplied device context; do not invent hardware facts. If the user reports a problem, explain WHAT the problem is, WHY it matters, and HOW to solve it. " +
+                "Device context: " + systemContext + "\nUser question: " + question;
+        return client.generate(prompt).exceptionally(error ->
+                "Local AI is not available right now. Start Ollama with the configured model and ask again. Current device context: " + systemContext);
+    }
+
     /** Feature 2 (AI Code Build & Dependency Pruner): natural-language safety explanation. */
     public CompletableFuture<String> explainCleanupSafety(ArtifactDetails artifact) {
         if (!isAiAvailable()) {

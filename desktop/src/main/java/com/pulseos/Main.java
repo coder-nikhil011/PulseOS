@@ -2,29 +2,35 @@ package com.pulseos;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-import com.pulseos.ui.MainDashboardController;
-
-import javafx.animation.PauseTransition;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
+import javafx.scene.web.WebView;
+import javafx.scene.web.WebEngine;
+import netscape.javascript.JSObject;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main_dashboard.fxml"));
-            Parent root = loader.load();
-            MainDashboardController controller = loader.getController();
+            WebView webView = new WebView();
+            webView.setContextMenuEnabled(false);
+            WebEngine engine = webView.getEngine();
+            engine.setOnError(event -> writeStartupError(new IllegalStateException("WebView error: " + event.getMessage())));
+            DesktopTelemetryBridge telemetryBridge = new DesktopTelemetryBridge(primaryStage);
+            telemetryBridge.start();
+            engine.getLoadWorker().stateProperty().addListener((observable, oldState, newState) -> {
+                if (newState == javafx.concurrent.Worker.State.SUCCEEDED) {
+                    JSObject window = (JSObject) engine.executeScript("window");
+                    window.setMember("pulseOSBridge", telemetryBridge);
+                }
+            });
+            engine.load(getClass().getResource("/web/index.html").toExternalForm());
 
             primaryStage.setTitle("PulseOS — Device Health & Healing Center");
             primaryStage.setMinWidth(1000);
@@ -35,67 +41,44 @@ public class Main extends Application {
             // macOS than manually applying visual-bound coordinates (especially with
             // Retina scaling, menu bars, docks, or multiple displays).
             Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
-            double width = Math.min(1500, Math.max(1100, bounds.getWidth() - 80));
-            double height = Math.min(950, Math.max(700, bounds.getHeight() - 100));
+            double width = Math.min(1322, Math.max(1100, bounds.getWidth() - 40));
+            double height = Math.min(871, Math.max(700, bounds.getHeight() - 80));
 
-            Scene scene = new Scene(root, width, height);
-            var css = getClass().getResource("/styles/dark_theme.css");
-            if (css != null) scene.getStylesheets().add(css.toExternalForm());
+            Scene scene = new Scene(webView, width, height);
+            var theme = getClass().getResource("/styles/dark_theme.css");
+            if (theme != null) {
+                scene.getStylesheets().add(theme.toExternalForm());
+            }
             primaryStage.setScene(scene);
-            primaryStage.setOnCloseRequest(e -> controller.stopServices());
-
-            // Show first, then position/focus. On macOS this avoids a JavaFX window
-            // being created behind Terminal/IDE or ending up outside the visible area.
-            primaryStage.setIconified(false);
+            primaryStage.setOnCloseRequest(event -> telemetryBridge.stop());
             primaryStage.show();
             primaryStage.centerOnScreen();
-            primaryStage.setIconified(false);
             primaryStage.toFront();
             primaryStage.requestFocus();
-
-            // Keep the window in front briefly while macOS activates the JavaFX app.
-            // Then return to normal window behavior.
-            primaryStage.setAlwaysOnTop(true);
-            PauseTransition focusBoost = new PauseTransition(Duration.seconds(1.5));
-            focusBoost.setOnFinished(e -> {
-                primaryStage.setAlwaysOnTop(false);
-                primaryStage.toFront();
-                primaryStage.requestFocus();
-            });
-            focusBoost.play();
-
-            // If the display is smaller than the requested minimum, maximize rather
-            // than creating a clipped/off-screen window.
-            if (bounds.getWidth() < 1150 || bounds.getHeight() < 760) {
-                primaryStage.setMaximized(true);
-            }
+            primaryStage.setMaximized(false);
         } catch (Throwable e) {
-            // Never fail silently. If FXML/controller initialization breaks, put an
-            // emergency visible JavaFX window on screen so the actual exception is
-            // readable instead of making the app appear to do nothing.
             e.printStackTrace();
-            try {
-                StringWriter sw = new StringWriter();
-                e.printStackTrace(new PrintWriter(sw));
-                Label message = new Label("PulseOS could not load the dashboard\n\n" + sw);
-                message.setWrapText(true);
-                StackPane pane = new StackPane(message);
-                Scene errorScene = new Scene(pane, 1000, 700);
-                primaryStage.setTitle("PulseOS — Startup Error");
-                primaryStage.setScene(errorScene);
-                primaryStage.setAlwaysOnTop(true);
-                primaryStage.show();
-                primaryStage.centerOnScreen();
-                primaryStage.toFront();
-                primaryStage.requestFocus();
-                Platform.runLater(() -> primaryStage.setAlwaysOnTop(false));
-            } catch (Throwable ignored) {
-                // JavaFX startup itself failed; the original stack trace remains in terminal.
-            }
+            writeStartupError(e);
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            primaryStage.setTitle("PulseOS — Startup Error");
+            primaryStage.setScene(new Scene(new javafx.scene.control.Label("PulseOS could not load the dashboard\n\n" + sw), 1000, 700));
+            primaryStage.show();
         }
     }
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    private static void writeStartupError(Throwable error) {
+        try {
+            Path log = Path.of(System.getProperty("java.io.tmpdir"), "PulseOS-startup-error.log");
+            StringWriter details = new StringWriter();
+            error.printStackTrace(new PrintWriter(details));
+            Files.writeString(log, details.toString());
+        } catch (Exception ignored) {
+            // Preserve the original startup failure if the log cannot be written.
+        }
     }
 }

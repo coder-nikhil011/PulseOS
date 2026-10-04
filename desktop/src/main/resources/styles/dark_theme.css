@@ -1,3 +1,71 @@
+.view-shell-sidebar{ -fx-background-color:#f3f6f7; -fx-border-color:#d3dde0; -fx-border-width:0 1 0 0; -fx-padding:12 9 12 9; -fx-spacing:4; -fx-min-width:180px; -fx-pref-width:205px; }
+.sidebar-title{ -fx-text-fill:#263841; -fx-font-size:11px; -fx-font-weight:bold; -fx-letter-spacing:1px; -fx-padding:2 8 10 8; }
+.view-sidebar-button{ -fx-background-color:transparent; -fx-border-color:transparent; -fx-text-fill:#4a5a62; -fx-alignment:CENTER_LEFT; -fx-padding:10 9; -fx-font-size:11px; -fx-background-radius:5; -fx-border-radius:5; }
+.view-sidebar-button:hover,.view-sidebar-active{ -fx-background-color:#dce9eb; -fx-border-color:#8fc8be; -fx-text-fill:#1d454b; -fx-font-weight:bold; }
+.view-shell-content{ -fx-padding:8 10 10 14; -fx-background-color:transparent; }
+.view-title{ -fx-text-fill:#1b2c35; -fx-font-size:20px; -fx-font-weight:bold; }
+.view-subtitle{ -fx-text-fill:#6b7980; -fx-font-size:11px; }
+.settings-view{ -fx-background-color:transparent; }
+.settings-view .view-shell-sidebar{ -fx-min-width:220px; -fx-pref-width:235px; }
+.settings-sidebar-item{ -fx-background-color:transparent; -fx-text-fill:#263841; -fx-padding:11 10; -fx-font-size:11px; -fx-line-spacing:2px; -fx-background-radius:5; -fx-border-radius:5; }
+.settings-sidebar-item:hover,.settings-sidebar-active{ -fx-background-color:#dce9eb; -fx-border-color:#65b5a8; -fx-border-width:0 0 0 3; -fx-text-fill:#1e4c50; -fx-font-weight:bold; }
+.settings-card{ -fx-background-color:#ffffff; -fx-border-color:#d1dade; -fx-border-radius:8; -fx-background-radius:8; -fx-padding:13; -fx-effect:dropshadow(gaussian,rgba(33,52,63,.12),8,.12,0,2); -fx-min-width:300px; }
+.settings-card-title{ -fx-text-fill:#20343c; -fx-font-size:13px; -fx-font-weight:bold; }
+.settings-card .separator .line{ -fx-border-color:#e0e6e8; }
+.settings-toggle-row{ -fx-background-color:transparent; -fx-text-fill:#2d4048; -fx-font-size:10px; -fx-padding:8 5; -fx-wrap-text:true; }
+.settings-toggle-row:selected{ -fx-text-fill:#285b57; }
+.settings-select-row{ -fx-background-color:#f5f8f8; -fx-border-color:#d3dfe2; -fx-text-fill:#34474f; -fx-padding:6 8; -fx-font-size:10px; }
+.converter-drop-zone{ -fx-background-color:#f4f7f8; -fx-border-color:#aebdc2; -fx-border-style:dashed; -fx-border-radius:7; -fx-background-radius:7; -fx-text-fill:#40545d; -fx-font-size:13px; -fx-padding:20; -fx-text-alignment:CENTER; }
+.converter-drop-zone:hover{ -fx-background-color:#edf6f4; -fx-border-color:#56aa9d; }
+.converter-category-tab{ -fx-background-color:#ffffff; -fx-border-color:#cfdcdf; -fx-text-fill:#2d4149; -fx-padding:8 16; }
+.converter-category-active{ -fx-background-color:#a55336; -fx-border-color:#a55336; -fx-text-fill:#ffffff; }
+.offline-status{ -fx-background-color:#e0f1e8; -fx-text-fill:#31805d; -fx-background-radius:6; -fx-padding:7 10; -fx-font-size:10px; -fx-alignment:CENTER_RIGHT; }
+.storage-summary-row{ -fx-spacing:10; }
+.storage-summary-card{ -fx-background-color:#ffffff; -fx-border-color:#d1dade; -fx-border-radius:8; -fx-background-radius:8; -fx-padding:14; -fx-text-fill:#34474f; -fx-font-size:11px; -fx-effect:dropshadow(gaussian,rgba(33,52,63,.10),7,.1,0,2); }
+.main-panel{ -fx-background-color: linear-gradient(to bottom,#f5f7f8,#e9eef1); -fx-font-family:'Avenir Next','SF Pro Display','Segoe UI',sans-serif; }
+.label{ -fx-text-fill:#1d2a33; }
+.header-container,.nav-tab-bar{ -fx-background-color:#f8fafb; -fx-border-color:#d7dfe3; }
+.header-bar{ -fx-padding:10 18 8 18; }
+.brand-title{ -fx-text-fill:#1c3039; -fx-font-size:20px; }
+.app-title{ -fx-text-fill:#43525b; -fx-font-size:11px; -fx-letter-spacing:0.8px; }
+.active-badge{ -fx-background-color:#d9eee5; -fx-text-fill:#2e7b5a; }
+.icon-btn{ -fx-background-color:#f4f7f8; -fx-border-color:#d2dce1; -fx-text-fill:#384852; }
+.nav-tab-btn{ -fx-text-fill:#40505a; -fx-background-color:transparent; }
+.nav-tab-btn:hover,.nav-tab-active{ -fx-background-color:#e3ecee; -fx-text-fill:#15252d; -fx-border-color:#50a998; }
+.dashboard-scroll,.dashboard-scroll .viewport,.dashboard-scroll>.corner{ -fx-background-color:transparent; }
+.card,.hero-card,.component-health-card{ -fx-background-color:rgba(255,255,255,.96); -fx-border-color:#d1dade; -fx-effect:dropshadow(gaussian,rgba(33,52,63,.12),8,.12,0,2); }
+.hero-card{ -fx-background-color:linear-gradient(to bottom right,#ffffff,#f2f7f7); -fx-border-color:#cbd9dc; }
+.health-score,.metric-value,.battery-big{ -fx-text-fill:#24414a; }
+.health-grade,.status-good,.stat-sub-green{ -fx-text-fill:#368661; }
+.section-kicker,.stat-caption,.live-caption,.muted-note,.metric-hint,.hw-text,.footer-text{ -fx-text-fill:#68767d; }
+.mini-value,.chart-card-title,.prediction-text,.issue-line,.about-title{ -fx-text-fill:#25363e; }
+.metric-tile,.drainer-box,.bottleneck-box,.hardware-info-box,.power-info-box{ -fx-background-color:#f3f6f7; -fx-border-color:#d8e1e4; }
+.metric-tile:hover,.card:hover,.component-health-card:hover{ -fx-background-color:#f8fbfb; -fx-border-color:#6ab6aa; }
+.chart-card{ -fx-background-color:#ffffff; -fx-border-color:#d1dde0; }
+.chart-card .chart-plot-background{ -fx-background-color:#f7f9fa; }
+.chart-legend{ -fx-background-color:#ffffff; -fx-border-color:#d1dde0; }
+.chart-legend-item{ -fx-text-fill:#34454d; }
+.health-progress .track{ -fx-background-color:#dfe7e9; }
+.health-progress .bar{ -fx-background-color:linear-gradient(to right,#4ca395,#83c7a6); }
+.action-btn{ -fx-background-color:linear-gradient(to bottom,#a85437,#8e432d); -fx-border-color:#c47c62; }
+.action-btn:hover{ -fx-background-color:#b85f40; }
+.quick-nav-btn{ -fx-background-color:#edf3f4; -fx-border-color:#c9d6da; -fx-text-fill:#31434c; }
+.footer-bar{ -fx-background-color:#f7f9fa; -fx-border-color:#d5dfe3; }
+.footer-text-blue{ -fx-text-fill:#3e7780; }
+.list-view,.list-cell{ -fx-background-color:#ffffff; -fx-control-inner-background:#ffffff; -fx-text-fill:#3b4b53; -fx-border-color:#d5dfe2; }
+.text-field,.combo-box,.text-area{ -fx-background-color:#ffffff; -fx-control-inner-background:#ffffff; -fx-text-fill:#1f3038; -fx-prompt-text-fill:#8a969c; -fx-border-color:#cdd9dd; }
+.combo-box .list-cell,.combo-box-popup .list-view,.combo-box-popup .list-cell{ -fx-background-color:#ffffff; -fx-text-fill:#25363e; }
+.button{ -fx-background-color:#edf2f3; -fx-border-color:#cbd7db; -fx-text-fill:#25363e; }
+.button:hover{ -fx-background-color:#dfeaec; }
+.table-view,.table-view .virtual-flow,.table-view .corner{ -fx-background-color:#ffffff; }
+.table-view{ -fx-border-color:#d2dde0; }
+.table-view .column-header-background,.table-view .column-header{ -fx-background-color:#edf2f3; -fx-border-color:#d2dde0; }
+.table-view .column-header .label{ -fx-text-fill:#53636b; -fx-font-size:10px; }
+.table-row-cell{ -fx-background-color:#ffffff; -fx-border-color:#e5ebed; }
+.table-row-cell:filled:hover{ -fx-background-color:#f1f7f6; }
+.table-cell{ -fx-text-fill:#33454d; -fx-font-size:10px; }
+.alert-banner-red{ -fx-background-color:#faece7; -fx-border-color:#e1a08a; }
+.alert-title-red,.alert-sub-red{ -fx-text-fill:#9b4f37; }
 .main-panel {
     -fx-background-color: #0b0f17;
     -fx-font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
@@ -68,8 +136,8 @@
 .card {
     -fx-background-color: #111827;
     -fx-border-color: #1f2937;
-    -fx-border-radius: 6;
-    -fx-background-radius: 6;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
     -fx-padding: 12;
 }
 .card-header-title { -fx-text-fill: #9ca3af; -fx-font-size: 11px; -fx-font-weight: bold; }
@@ -77,11 +145,11 @@
 /* Stats Text */
 .stat-caption { -fx-text-fill: #6b7280; -fx-font-size: 11px; }
 .stat-caption-bold { -fx-text-fill: #3b82f6; -fx-font-size: 11px; -fx-font-weight: bold; }
-.stat-huge-value { -fx-text-fill: #60a5fa; -fx-font-size: 28px; -fx-font-weight: bold; }
-.stat-medium-value { -fx-text-fill: #38bdf8; -fx-font-size: 18px; -fx-font-weight: bold; }
+.stat-huge-value { -fx-text-fill: #60a5fa; -fx-font-size: 24px; -fx-font-weight: bold; }
+.stat-medium-value { -fx-text-fill: #38bdf8; -fx-font-size: 16px; -fx-font-weight: bold; }
 .stat-sub-green { -fx-text-fill: #22c55e; -fx-font-size: 11px; }
 .stat-sub { -fx-text-fill: #6b7280; -fx-font-size: 10px; }
-.stat-temp-normal { -fx-text-fill: #22c55e; -fx-font-size: 22px; -fx-font-weight: bold; }
+.stat-temp-normal { -fx-text-fill: #22c55e; -fx-font-size: 18px; -fx-font-weight: bold; }
 
 .hardware-info-box { -fx-background-color: #0b0f17; -fx-padding: 8; -fx-background-radius: 4; }
 .hw-text { -fx-text-fill: #9ca3af; -fx-font-size: 11px; }
@@ -126,15 +194,15 @@
 .dashboard-scroll, .dashboard-scroll .viewport { -fx-background-color: #0b0f17; }
 .dashboard-scroll > .corner { -fx-background-color: #0b0f17; }
 .hero-card { -fx-background-color: linear-gradient(to bottom right, #111827, #0d1622); -fx-border-color: #26364a; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 16; }
-.health-score { -fx-text-fill: #e2e8f0; -fx-font-size: 42px; -fx-font-weight: bold; }
+.health-score { -fx-text-fill: #e2e8f0; -fx-font-size: 36px; -fx-font-weight: bold; }
 .health-grade { -fx-text-fill: #22c55e; -fx-font-size: 11px; -fx-font-weight: bold; }
 .hero-subtitle { -fx-text-fill: #94a3b8; -fx-font-size: 11px; }
-.health-progress { -fx-pref-height: 7px; }
+.health-progress { -fx-pref-height: 6px; }
 .mini-label { -fx-text-fill: #64748b; -fx-font-size: 10px; -fx-min-width: 80px; }
 .mini-value { -fx-text-fill: #cbd5e1; -fx-font-size: 10px; -fx-font-weight: bold; }
 .metric-tile { -fx-background-color: #0b1220; -fx-border-color: #1d2a3b; -fx-border-radius: 7; -fx-background-radius: 7; -fx-padding: 12; }
 .metric-tile:hover { -fx-border-color: #3b82f6; -fx-background-color: #101a2b; }
-.metric-value { -fx-text-fill: #e2e8f0; -fx-font-size: 24px; -fx-font-weight: bold; }
+.metric-value { -fx-text-fill: #e2e8f0; -fx-font-size: 20px; -fx-font-weight: bold; }
 .metric-hint { -fx-text-fill: #64748b; -fx-font-size: 9px; }
 .chart-card { -fx-background-color: #111827; -fx-border-color: #1f2937; -fx-border-radius: 7; -fx-background-radius: 7; -fx-padding: 9; }
 .chart-card-header { -fx-padding: 1 2 5 2; }
@@ -163,22 +231,35 @@
 .chart-card { -fx-min-width: 0; -fx-pref-height: 250px; }
 .chart-card .chart-plot-background { -fx-background-color: #0b1220; }
 
-/* ===== Compact website-inspired dashboard layout ===== */
-.healthView { -fx-spacing: 6; }
+/* Remove redundant layout overrides to let the base styles balance the UI */
+.healthView { -fx-spacing: 10; }
 .dashboard-scroll { -fx-fit-to-width: true; }
-.hero-card { -fx-padding: 13; -fx-background-color: #11171d; -fx-border-color: #28313a; }
+.hero-card { -fx-padding: 15; -fx-background-color: #11171d; -fx-border-color: #28313a; }
 .health-summary-box { -fx-border-color: transparent #28313a transparent transparent; -fx-border-width: 0 1 0 0; -fx-padding: 0 18 0 0; }
-.health-score { -fx-font-size: 40px; }
+.health-score { -fx-font-size: 36px; }
 .hero-subtitle { -fx-font-size: 10px; }
 .health-progress { -fx-pref-height: 6px; }
-.card { -fx-padding: 11; -fx-border-radius: 8; -fx-background-radius: 8; -fx-background-color: #10161c; -fx-border-color: #26303a; }
+.card { -fx-padding: 12; -fx-border-radius: 8; -fx-background-radius: 8; -fx-background-color: #10161c; -fx-border-color: #26303a; }
 .metric-tile { -fx-padding: 10; -fx-background-color: #0c1217; -fx-border-color: #222d36; -fx-min-height: 78px; }
-.metric-value { -fx-font-size: 22px; }
+.metric-value { -fx-font-size: 20px; }
 .metric-hint { -fx-font-size: 8px; }
 .chart-card { -fx-padding: 10; -fx-min-height: 215px; }
 .chart-card-title { -fx-font-size: 10px; -fx-text-fill: #d5dbe0; -fx-font-weight: bold; }
 .chart-card-header { -fx-padding: 0 0 2 0; }
 .chart-backend { -fx-font-size: 8px; }
+
+.hardware-health-view { -fx-background-color: transparent; }
+.hardware-quick-nav { -fx-background-color: #0d141c; -fx-border-color: #26303a; -fx-border-radius: 7; -fx-background-radius: 7; -fx-padding: 8; }
+.quick-nav-btn { -fx-background-color: #17212c; -fx-border-color: #2d3d4c; -fx-text-fill: #cbd5e1; -fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 6 10; -fx-font-size: 10px; }
+.quick-nav-btn:hover { -fx-background-color: #24364a; -fx-border-color: #4b8bd8; -fx-text-fill: white; }
+.component-health-card { -fx-background-color: #10161c; -fx-border-color: #26303a; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 13; -fx-min-height: 125px; }
+.component-health-card:hover { -fx-border-color: #3b82f6; -fx-background-color: #121b26; }
+.component-health-card:problem { -fx-border-color: #8f3b42; -fx-background-color: #191215; }
+.component-status { -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 4 8; -fx-background-radius: 12; }
+.status-good { -fx-text-fill: #4ade80; -fx-background-color: #123322; }
+.status-warning { -fx-text-fill: #facc15; -fx-background-color: #352d12; }
+.status-problem { -fx-text-fill: #f87171; -fx-background-color: #3b161b; }
+.status-limited, .status-checking { -fx-text-fill: #94a3b8; -fx-background-color: #1d2733; }
 .issue-line { -fx-font-size: 10px; -fx-padding: 4 0; }
 .prediction-text { -fx-font-size: 11px; }
 .battery-big { -fx-font-size: 38px; }
@@ -241,3 +322,132 @@
 #storageCard .chart-pie.default-color1 { -fx-pie-color: #3656bd; }
 #storageCard .chart-legend-item-symbol.default-color0,
 #storageCard .chart-legend-item-symbol.default-color1 { -fx-background-radius: 3px; }
+
+/* ===== Final interface polish ===== */
+.main-panel {
+    -fx-background-color: linear-gradient(to bottom, #0b1017 0%, #0a0e14 58%, #080b10 100%);
+    -fx-font-family: 'Avenir Next', 'SF Pro Display', 'Segoe UI', sans-serif;
+}
+.header-container {
+    -fx-background-color: rgba(13, 19, 29, 0.98);
+    -fx-border-color: #273647;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.28), 16, 0.16, 0, 5);
+}
+.header-bar { -fx-padding: 12 20 10 20; }
+.brand-title { -fx-font-size: 20px; -fx-letter-spacing: 0.4px; }
+.app-title { -fx-text-fill: #8090a1; -fx-font-size: 10px; -fx-letter-spacing: 1.6px; }
+.active-badge { -fx-background-color: #102c24; -fx-background-radius: 20; -fx-padding: 5 10; -fx-text-fill: #6ee7a0; -fx-font-size: 10px; -fx-font-weight: bold; }
+.icon-btn { -fx-background-color: #172331; -fx-border-color: #2b3c4d; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 10; }
+.icon-btn:hover { -fx-background-color: #223449; -fx-border-color: #5b8ec4; }
+.icon-btn-close:hover { -fx-background-color: #441b24; }
+.nav-tab-bar { -fx-padding: 0 14 0 14; -fx-background-color: #0d131d; }
+.nav-tab-btn { -fx-background-color: transparent; -fx-border-color: transparent; -fx-text-fill: #8291a0; -fx-padding: 10 14 11 14; -fx-font-size: 11px; -fx-font-weight: 600; }
+.nav-tab-btn:hover { -fx-background-color: #172331; -fx-text-fill: #eef6ff; -fx-background-radius: 6 6 0 0; }
+.nav-tab-active { -fx-background-color: #172536; -fx-border-color: #65a4e8; -fx-border-width: 0 0 3 0; -fx-text-fill: #ffffff; }
+.dashboard-scroll .viewport { -fx-padding: 6 8 10 8; }
+.dashboard-scroll .scroll-bar:vertical { -fx-background-color: transparent; -fx-padding: 0 2 0 4; }
+.dashboard-scroll .scroll-bar:vertical .track { -fx-background-color: #0d141c; -fx-background-radius: 8; }
+.dashboard-scroll .scroll-bar:vertical .thumb { -fx-background-color: #35485b; -fx-background-radius: 8; }
+.dashboard-scroll .scroll-bar:vertical .thumb:hover { -fx-background-color: #5b7c9c; }
+.hero-card { -fx-background-color: linear-gradient(to bottom right, #162434, #101921); -fx-border-color: #35506a; -fx-padding: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.28), 18, 0.18, 0, 6); }
+.health-score { -fx-font-size: 46px; -fx-text-fill: #f1f7fc; }
+.health-grade { -fx-background-color: #123322; -fx-background-radius: 20; -fx-padding: 5 9; -fx-text-fill: #70e59a; }
+.card { -fx-background-color: rgba(16, 22, 28, 0.96); -fx-border-color: #293845; -fx-border-radius: 9; -fx-background-radius: 9; -fx-padding: 14; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.16), 10, 0.10, 0, 3); }
+.card:hover { -fx-border-color: #3f5c76; -fx-background-color: #131c25; }
+.metric-tile { -fx-background-color: #0d151e; -fx-border-color: #293b4d; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 12; }
+.metric-tile:hover { -fx-background-color: #142335; -fx-border-color: #65a4e8; -fx-effect: dropshadow(gaussian, rgba(54,137,218,0.17), 12, 0.2, 0, 2); }
+.metric-tile:pressed, .clickable-stat:pressed { -fx-background-color: #1a3047; }
+.metric-value { -fx-font-size: 25px; -fx-text-fill: #f0f6fb; }
+.section-kicker { -fx-text-fill: #7890a5; -fx-font-size: 9px; -fx-letter-spacing: 1.7px; }
+.chart-card { -fx-background-color: #101a24; -fx-border-color: #2a3e50; }
+.chart-card:hover { -fx-border-color: #5685ad; }
+.chart-card-title { -fx-font-size: 12px; -fx-text-fill: #e1ebf4; }
+.live-caption { -fx-background-color: #162330; -fx-background-radius: 12; -fx-padding: 4 7; -fx-text-fill: #87a2ba; -fx-font-size: 9px; }
+.action-btn { -fx-background-color: linear-gradient(to bottom, #2d76c5, #225a9a); -fx-border-color: #62a4e9; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 8 13; -fx-font-size: 10px; }
+.action-btn:hover { -fx-background-color: #3989dc; -fx-border-color: #a8d4ff; }
+.action-btn:pressed { -fx-background-color: #1d4d83; }
+.health-progress .track { -fx-background-color: #182632; -fx-background-radius: 5; }
+.health-progress .bar { -fx-background-color: linear-gradient(to right, #3a9a78, #65d39a); -fx-background-radius: 5; }
+.problem-count, .status-problem { -fx-background-color: #431b24; -fx-text-fill: #ff9ca7; }
+.status-good { -fx-background-color: #123729; -fx-text-fill: #72e3a0; }
+.status-warning { -fx-background-color: #3e3215; -fx-text-fill: #f6ce68; }
+.status-limited, .status-checking { -fx-background-color: #1c2a37; -fx-text-fill: #9eb0c1; }
+.component-health-card { -fx-padding: 15; -fx-background-color: #101923; -fx-border-color: #2b4053; -fx-min-height: 132px; }
+.component-health-card:hover { -fx-border-color: #66a7e8; -fx-background-color: #142332; -fx-effect: dropshadow(gaussian, rgba(61,145,220,0.15), 14, 0.18, 0, 3); }
+.component-health-card:problem { -fx-border-color: #a34854; -fx-background-color: #21171b; }
+.component-status { -fx-font-size: 9px; -fx-letter-spacing: 0.7px; }
+.hardware-quick-nav { -fx-background-color: #0e1822; -fx-border-color: #2d4255; -fx-padding: 9; }
+.quick-nav-btn { -fx-background-color: #172635; -fx-border-color: #36536b; -fx-padding: 7 11; }
+.quick-nav-btn:hover { -fx-background-color: #2d5a82; -fx-border-color: #83bdf0; }
+.footer-bar { -fx-background-color: #080d13; -fx-border-color: #273646; -fx-padding: 8 16 8 16; }
+.footer-text { -fx-text-fill: #7e91a2; -fx-font-size: 10px; }
+.footer-text-blue { -fx-text-fill: #68a9e9; -fx-font-size: 10px; }
+.list-view { -fx-background-color: #0c141d; -fx-border-color: #2a3b4b; }
+.list-cell { -fx-background-color: #0c141d; -fx-text-fill: #aebdca; -fx-padding: 7 9; }
+.list-cell:filled:hover { -fx-background-color: #17283a; }
+
+/* PDF reference theme must win over the legacy rules above. */
+.main-panel{ -fx-background-color:linear-gradient(to bottom,#f5f7f8,#e9eef1); -fx-font-family:'Avenir Next','SF Pro Display','Segoe UI',sans-serif; }
+.main-panel .header-container,.main-panel .nav-tab-bar{ -fx-background-color:#f8fafb; -fx-border-color:#d7dfe3; }
+.main-panel .brand-title{ -fx-text-fill:#1c3039; -fx-font-size:20px; }
+.main-panel .app-title{ -fx-text-fill:#43525b; -fx-font-size:11px; }
+.main-panel .active-badge{ -fx-background-color:#d9eee5; -fx-text-fill:#2e7b5a; }
+.main-panel .nav-tab-btn{ -fx-background-color:transparent; -fx-text-fill:#40505a; }
+.main-panel .nav-tab-btn:hover,.main-panel .nav-tab-active{ -fx-background-color:#e3ecee; -fx-border-color:#50a998; -fx-text-fill:#15252d; }
+.main-panel .dashboard-scroll,.main-panel .dashboard-scroll .viewport,.main-panel .dashboard-scroll>.corner{ -fx-background-color:transparent; }
+.main-panel .card,.main-panel .hero-card,.main-panel .component-health-card{ -fx-background-color:#ffffff; -fx-border-color:#d1dade; -fx-effect:dropshadow(gaussian,rgba(33,52,63,.12),8,.12,0,2); }
+.main-panel .hero-card{ -fx-background-color:linear-gradient(to bottom right,#ffffff,#f2f7f7); }
+.main-panel .metric-tile,.main-panel .drainer-box,.main-panel .bottleneck-box{ -fx-background-color:#f3f6f7; -fx-border-color:#d8e1e4; }
+.main-panel .chart-card{ -fx-background-color:#ffffff; -fx-border-color:#d1dde0; }
+.main-panel .chart-card .chart-plot-background{ -fx-background-color:#f7f9fa; }
+.main-panel .section-kicker,.main-panel .stat-caption,.main-panel .live-caption,.main-panel .muted-note,.main-panel .metric-hint,.main-panel .hw-text,.main-panel .footer-text{ -fx-text-fill:#68767d; }
+.main-panel .metric-value,.main-panel .health-score,.main-panel .battery-big,.main-panel .chart-card-title,.main-panel .prediction-text,.main-panel .issue-line{ -fx-text-fill:#25363e; }
+.main-panel .action-btn{ -fx-background-color:linear-gradient(to bottom,#a85437,#8e432d); -fx-border-color:#c47c62; }
+.main-panel .health-progress .track{ -fx-background-color:#dfe7e9; }
+.main-panel .health-progress .bar{ -fx-background-color:linear-gradient(to right,#4ca395,#83c7a6); }
+.main-panel .view-shell-sidebar{ -fx-background-color:#f3f6f7; -fx-border-color:#d3dde0; }
+.main-panel .sidebar-title,.main-panel .view-title,.main-panel .settings-card-title{ -fx-text-fill:#263841; }
+.main-panel .view-sidebar-button,.main-panel .settings-sidebar-item{ -fx-background-color:transparent; -fx-text-fill:#4a5a62; }
+.main-panel .view-sidebar-button:hover,.main-panel .view-sidebar-active,.main-panel .settings-sidebar-item:hover,.main-panel .settings-sidebar-active{ -fx-background-color:#dce9eb; -fx-border-color:#65b5a8; -fx-text-fill:#1e4c50; }
+.main-panel .settings-card,.main-panel .storage-summary-card{ -fx-background-color:#ffffff; -fx-border-color:#d1dade; }
+.main-panel .converter-drop-zone{ -fx-background-color:#f4f7f8; -fx-border-color:#aebdc2; -fx-text-fill:#40545d; }
+.main-panel .converter-category-tab{ -fx-background-color:#ffffff; -fx-border-color:#cfdcdf; -fx-text-fill:#2d4149; }
+.main-panel .converter-category-active{ -fx-background-color:#a55336; -fx-border-color:#a55336; -fx-text-fill:#ffffff; }
+.main-panel .offline-status{ -fx-background-color:#e0f1e8; -fx-text-fill:#31805d; }
+.main-panel .footer-bar{ -fx-background-color:#f7f9fa; -fx-border-color:#d5dfe3; }
+.main-panel .status-line{ -fx-padding:7 0; -fx-border-color:#e3e9eb; -fx-border-width:0 0 1 0; -fx-alignment:CENTER_LEFT; }
+.main-panel .status-line-name{ -fx-text-fill:#30434b; -fx-font-size:11px; }
+.main-panel .status-good-dot{ -fx-text-fill:#63a988; -fx-font-size:14px; }
+.main-panel .status-problem-dot{ -fx-text-fill:#c8725e; -fx-font-size:14px; }
+.main-panel .status-good-text{ -fx-text-fill:#4b8e6c; -fx-font-size:10px; }
+.main-panel .status-problem-text{ -fx-text-fill:#b55f4b; -fx-font-size:10px; }
+.main-panel .status-arrow{ -fx-text-fill:#718087; -fx-font-size:16px; }
+.main-panel .assistant-input{ -fx-background-color:#f5f8f8; -fx-border-color:#d4dfe1; -fx-border-radius:5; -fx-background-radius:5; -fx-padding:9; -fx-text-fill:#718087; -fx-font-size:10px; }
+.main-panel .device-identity-tile{ -fx-alignment:CENTER_LEFT; }
+.main-panel,.main-panel .label,.main-panel .button,.main-panel .text-field,.main-panel .combo-box,.main-panel .table-cell{ -fx-font-family:'Avenir Next','Helvetica Neue','Segoe UI',sans-serif; -fx-font-weight:normal; }
+.main-panel .label{ -fx-font-smoothing-type:gray; }
+.main-panel .section-kicker,.main-panel .stat-caption,.main-panel .live-caption,.main-panel .muted-note,.main-panel .metric-hint,.main-panel .hw-text,.main-panel .footer-text{ -fx-font-size:10px; -fx-font-weight:normal; -fx-letter-spacing:0px; }
+.main-panel .app-title,.main-panel .nav-tab-btn,.main-panel .button{ -fx-font-weight:normal; -fx-letter-spacing:0px; }
+.main-panel .card-header-title,.main-panel .view-title,.main-panel .settings-card-title,.main-panel .chart-card-title,.main-panel .prediction-text,.main-panel .about-title{ -fx-font-weight:normal; -fx-letter-spacing:0px; }
+.main-panel .view-title{ -fx-font-size:18px; }
+.main-panel .brand-title{ -fx-font-weight:normal; }
+.main-panel .overview-grid{ -fx-background-color:transparent; -fx-padding:4; }
+.main-panel .overview-grid > .card,.main-panel .overview-grid > .hero-card{ -fx-padding:7 8; -fx-effect:dropshadow(gaussian,rgba(33,52,63,.10),5,.1,0,1); }
+.main-panel .overview-grid .health-score{ -fx-font-size:28px; }
+.main-panel .overview-grid .hero-card{ -fx-padding:8; }
+.main-panel .overview-grid .metric-tile{ -fx-padding:6; -fx-min-height:0; -fx-pref-height:58px; }
+.main-panel .overview-grid .metric-value{ -fx-font-size:16px; }
+.main-panel .overview-grid .metric-hint{ -fx-font-size:7px; }
+.main-panel .overview-grid .chart-card{ -fx-min-height:0; -fx-pref-height:96px; -fx-padding:6; }
+.main-panel .overview-grid .chart-card-title{ -fx-font-size:9px; }
+.main-panel .overview-grid .chart-card .chart{ -fx-min-height:42px; -fx-pref-height:42px; }
+.main-panel .overview-grid .chart-backend{ -fx-font-size:7px; }
+.main-panel .overview-grid .drainer-box{ -fx-padding:5; }
+.main-panel .overview-grid .drainer-box .hw-text{ -fx-font-size:8px; }
+.main-panel .overview-grid .about-card{ -fx-padding:7; }
+.main-panel .overview-grid .about-text,.main-panel .overview-grid .about-title{ -fx-font-size:8px; }
+.main-panel .overview-grid .list-view{ -fx-pref-height:52px; }
+.main-panel .overview-grid .status-line{ -fx-padding:5 0; }
+.main-panel .overview-grid .status-line-name{ -fx-font-size:10px; }
+.main-panel .overview-grid .status-good-text,.main-panel .overview-grid .status-problem-text{ -fx-font-size:9px; }
+.main-panel .overview-grid .status-arrow{ -fx-font-size:14px; }

@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
@@ -42,8 +43,25 @@ public class SmartRouterView extends VBox {
     }
 
     private void buildUi() {
-        Label title = new Label("📡 SMART ROUTER — Running Services & Battery/Performance Impact");
-        title.getStyleClass().add("card-header-title");
+        VBox sidebar = new VBox(4);
+        sidebar.getStyleClass().add("view-shell-sidebar");
+        Label sideTitle = new Label("SMART ROUTER");
+        sideTitle.getStyleClass().add("sidebar-title");
+        sidebar.getChildren().add(sideTitle);
+        addSidebarButton(sidebar, "⌂  Overview", false);
+        addSidebarButton(sidebar, "◉  Hardware Health", false);
+        addSidebarButton(sidebar, "⌁  Smart Router", true);
+        addSidebarButton(sidebar, "▣  Storage Healer", false);
+        addSidebarButton(sidebar, "⇄  Converter", false);
+        addSidebarButton(sidebar, "⚙  Settings", false);
+        VBox.setVgrow(sidebar, Priority.ALWAYS);
+
+        VBox main = new VBox(12);
+        main.getStyleClass().add("view-shell-content");
+        Label title = new Label("Smart Router");
+        title.getStyleClass().add("view-title");
+        Label subtitle = new Label("Manage network services, processes and optimize your connection.");
+        subtitle.getStyleClass().add("view-subtitle");
 
         HBox summaryRow = new HBox(20, summaryLabel, impactSummaryLabel);
         summaryRow.setAlignment(Pos.CENTER_LEFT);
@@ -78,7 +96,18 @@ public class SmartRouterView extends VBox {
         table.setPlaceholder(new Label("Telemetry se data aane ka wait kar rahe hain..."));
 
         VBox.setVgrow(table, Priority.ALWAYS);
-        this.getChildren().addAll(title, summaryRow, table);
+        main.getChildren().addAll(title, subtitle, summaryRow, table);
+        VBox.setVgrow(main, Priority.ALWAYS);
+        HBox shell = new HBox(0, sidebar, main);
+        HBox.setHgrow(main, Priority.ALWAYS);
+        this.getChildren().add(shell);
+    }
+
+    private void addSidebarButton(VBox sidebar, String text, boolean active) {
+        Button button = new Button(text);
+        button.getStyleClass().add("view-sidebar-button");
+        if (active) button.getStyleClass().add("view-sidebar-active");
+        sidebar.getChildren().add(button);
     }
 
     private String impactLabel(double cpuPercent) {

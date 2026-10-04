@@ -9,6 +9,8 @@ export PATH="$JAVA_HOME/bin:$PATH"
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT/desktop"
+APP_VERSION="${PULSEOS_VERSION:-1.0.8}"
+APP_VERSION="${APP_VERSION#v}"
 
 mvn clean package
 rm -rf target/jpackage-input
@@ -22,13 +24,13 @@ rm -rf target/installer
 jpackage \
   --type dmg \
   --name PulseOS \
-  --app-version 1.0.0 \
+  --app-version "$APP_VERSION" \
   --vendor PulseOS \
   --description "PulseOS device health and healing center" \
   --input target/jpackage-input \
   --main-jar pulseos-1.0-SNAPSHOT.jar \
   --main-class com.pulseos.Main \
-  --java-options "--module-path \$APPDIR/javafx --add-modules javafx.controls,javafx.fxml" \
+  --java-options "--module-path \$APPDIR/javafx --add-modules javafx.controls,javafx.fxml,javafx.web" \
   --dest target/installer \
   --java-options "-Xmx1g"
 

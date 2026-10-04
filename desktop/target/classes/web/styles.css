@@ -1,0 +1,2159 @@
+.router-layout{display:grid;grid-template-columns:minmax(0,2.35fr) minmax(250px,.95fr);gap:10px}.router-main,.router-side{display:grid;align-content:start;gap:10px}.router-hero{display:flex;align-items:center;gap:14px;min-height:84px}.router-icon{width:48px;height:48px;border-radius:11px;background:#075d59;color:#b8f3e5;display:grid;place-items:center;font-size:31px}.router-hero h2{margin:0;font-size:18px}.router-hero p,.scan-copy p{margin:3px 0 0;color:var(--muted);font-size:11px}.router-live{align-self:start;background:#e9dfd9;color:#915039}.network-scan{display:grid;grid-template-columns:45px 1fr 95px 75px;align-items:center;gap:12px;min-height:93px}.scan-icon{width:42px;height:42px;border:3px solid #3e5d6c;border-radius:50%;display:grid;place-items:center;font-size:24px}.scan-copy h2{font-size:14px;margin:0}.scan-copy .primary-button{margin-top:8px;padding:6px 12px;font-size:10px}.network-scan>div:not(.scan-copy):not(.scan-icon){border-left:1px solid var(--line);padding-left:11px;font-size:10px}.network-scan>div:not(.scan-copy):not(.scan-icon) b,.network-scan>div:not(.scan-copy):not(.scan-icon) span{display:block}.network-scan>div:not(.scan-copy):not(.scan-icon) span{color:var(--muted);margin-top:4px}.process-panel{padding:10px}.process-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}.process-heading h2{font-size:13px;margin:0}.process-heading h2 em,.router-performance h2 em,.network-health h2 em{font-style:normal;color:#8e4a32;background:#f3e3d9;border-radius:12px;padding:3px 7px;font-size:9px;margin-left:5px}.process-heading>div{display:flex;gap:5px}.process-heading input,.process-heading select,.process-heading button{border:1px solid var(--line);background:#f7f9f9;border-radius:5px;padding:6px 8px;font-size:10px}.process-heading input{width:165px}.process-table{border:1px solid var(--line);border-radius:6px;overflow:hidden}.process-head,.process-row{display:grid;grid-template-columns:22px 2.1fr .55fr .65fr .65fr 1fr .8fr 1.1fr;gap:7px;align-items:center;padding:7px 8px;font-size:10px}.process-head{color:#56646d;background:#f5f7f8;font-size:9px}.process-row{border-top:1px solid #e8edef;min-height:35px}.process-row b small{display:block;color:var(--muted);font-size:8px;font-weight:400}.process-row em{font-style:normal;color:#996242}.process-row strong{font-size:9px;background:#a45b3d;color:white;border-radius:11px;padding:4px 8px;text-align:center;font-weight:600}.process-row button{border:1px solid var(--line);background:#f4f7f7;border-radius:5px;padding:4px;font-size:9px}.network-health h2,.connection-details h2,.quick-router h2,.router-performance h2,.recent-router h2,.guided-actions h2{font-size:12px;margin:0}.network-health h2 em{background:#e1f0e8;color:#3b805f}.network-metrics{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:10px;margin-top:14px}.network-metrics span{font-size:9px;color:var(--muted);border-right:1px solid var(--line)}.network-metrics b{display:block;color:var(--ink);margin-top:6px;font-size:10px}.network-metrics span:first-child b{color:#40815f}.connection-details{display:grid;gap:7px}.connection-details h2{margin-bottom:4px}.connection-details span{display:flex;justify-content:space-between;color:var(--muted);font-size:10px}.connection-details b{color:var(--ink)}.quick-router>div{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}.quick-router button{border:1px solid var(--line);background:#fff;border-radius:6px;padding:9px 5px;text-align:left;color:#9c5137;font-size:17px}.quick-router button b,.quick-router button small{display:block}.quick-router button b{color:var(--ink);font-size:9px;margin-top:5px}.quick-router button small{color:var(--muted);font-size:8px;margin-top:3px}.router-performance h2 em{float:right}.mini-rings{display:flex;justify-content:space-around;margin:12px 0}.mini-rings span{width:59px;height:59px;border-radius:50%;background:conic-gradient(#6fa79a 0 32%,#e5eaeb 32%);display:grid;place-content:center;text-align:center}.mini-rings span:first-child{background:conic-gradient(#6fa79a 0 9%,#e5eaeb 9%)}.mini-rings i{font-style:normal;font-weight:700;font-size:13px}.mini-rings small{font-size:8px;color:var(--muted)}.router-stats{display:grid;grid-template-columns:1fr 1fr;gap:7px}.router-stats span{font-size:9px;color:var(--muted)}.router-stats b{display:block;color:var(--ink);font-size:10px;margin-top:4px}.recent-router{display:grid;gap:0}.recent-router h2{margin-bottom:5px}.recent-router h2 a{float:right;color:#4b6f74;font-size:9px}.recent-router>span{border-top:1px solid var(--line);padding:7px 0;font-size:9px;color:#4d5d65}.recent-router b{float:right;font-weight:400;color:var(--muted)}.guided-actions{display:grid;gap:6px}.guided-actions button{position:relative;text-align:left;border:1px solid var(--line);border-radius:6px;background:#f7f8f8;padding:8px 25px 8px 9px;font-size:10px;font-weight:700}.guided-actions small{display:block;font-weight:400;color:var(--muted);font-size:8px;margin-top:2px}.guided-actions b{position:absolute;right:8px;top:14px;font-size:17px;color:#65747c}@media(max-width:760px){.router-layout{grid-template-columns:1fr}.network-scan{grid-template-columns:40px 1fr}.network-scan>div:not(.scan-copy):not(.scan-icon){border-left:0;padding-left:0}.process-heading{display:block}.process-heading>div{margin-top:8px}.process-heading input{width:100%}.process-head{display:none}.process-row{grid-template-columns:22px 1fr 55px 65px}.process-row span:nth-of-type(1),.process-row span:nth-of-type(2),.process-row em{display:none}.process-row strong{grid-column:3}.process-row button{grid-column:4}}
+:root{--bg:#eef2f5;--panel:#fff;--ink:#16212b;--muted:#6d7881;--line:#d8e0e5;--teal:#54b7a8;--teal-dark:#278c82;--good:#3e9e78;--coral:#b7674a;--shadow:0 2px 8px #27313d18;--radius:8px}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(135deg,#f2f5f7 0%,#e8edf0 48%,#f5f7f8 100%);color:var(--ink);font:13px/1.35 "Avenir Next",Avenir,Helvetica,sans-serif}button,input,select{font:inherit}button{cursor:pointer}.app-header{height:80px;background:#f8fafb;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 22px;gap:26px;position:sticky;top:0;z-index:20}.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);min-width:225px}.brand-mark{width:27px;height:27px;display:grid;place-items:center;border-radius:5px 11px 5px 11px;background:var(--teal);color:white;font-size:20px;font-weight:800}.brand strong{display:block;font-size:20px;letter-spacing:-.8px}.brand small{display:block;font-size:8px;letter-spacing:.25px;font-weight:700;color:#4a5660;margin-top:2px}.top-nav{display:flex;align-self:stretch;gap:6px;flex:1}.nav-item{border:0;background:transparent;padding:0 11px;color:#34424d;font-size:12px;white-space:nowrap;border-bottom:3px solid transparent}.nav-item:hover,.nav-item.active{background:#e7eff1;border-bottom-color:var(--teal-dark)}.header-tools{display:flex;align-items:center;gap:8px;white-space:nowrap}.mode-pill,.live-pill{background:#d6eee4;color:#267054;border-radius:18px;padding:6px 10px;font-size:11px;font-weight:700}.live-pill{background:#e8f3ee}.mode-pill i,.live-pill i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--good);margin-right:4px}.live-pill small{font-weight:400;margin-left:3px}.refresh-button,.window-button,.soft-button{border:1px solid var(--line);background:#f7fafb;border-radius:6px;padding:7px 11px;color:var(--ink);box-shadow:var(--shadow)}.window-button{font-size:17px;padding:5px 9px}.app-main{max-width:1440px;margin:auto;padding:18px 22px 38px}.view{display:none}.view.active-view{display:block;animation:appear .2s ease-out}@keyframes appear{from{opacity:.2;transform:translateY(4px)}to{opacity:1;transform:none}}.page-title{display:flex;align-items:end;justify-content:space-between;gap:14px;margin-bottom:10px}.kicker{font-size:11px;letter-spacing:1.1px;font-weight:800;color:#65737d}.page-title h1{font-size:18px;margin:5px 0 2px;letter-spacing:-.3px}.page-title p{margin:0;color:var(--muted);font-size:11px}.title-actions,.action-row{display:flex;gap:8px}.primary-button,.secondary-button{border:0;border-radius:6px;padding:9px 15px;background:#9f4d31;color:#fff;box-shadow:0 2px 4px #56302035;font-weight:700}.secondary-button{background:#67ad9e}.panel{background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:9px 10px}.panel-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}.panel-heading h2{font-size:12px;margin:0}.panel-heading small{display:block;color:var(--muted);font-size:9px;font-weight:400;margin-top:2px}.panel-heading>a,.predictive a{color:#3f6f76;font-size:11px}.status-good{color:#39815e;background:#dcefe5;border-radius:13px;padding:4px 8px;font-size:10px}.overview-grid{display:grid;grid-template-columns:1.08fr 2.1fr 1.12fr;gap:4px;align-items:start}.score-layout{display:flex;align-items:center;gap:12px;padding:8px 0}.score-ring{width:82px;height:82px;flex:0 0 auto;display:grid;place-content:center;text-align:center;border-radius:50%;background:conic-gradient(var(--teal) 0 91%,#e4e9eb 91%);position:relative}.score-ring:after{content:"";position:absolute;inset:7px;background:#fff;border-radius:50%}.score-ring strong,.score-ring small{position:relative;z-index:1}.score-ring strong{font-size:24px;color:#65a48f}.score-ring small{font-size:10px;color:#7c878e}.score-layout p{font-size:10px;color:#34444d;margin:0;line-height:1.35}.chip-button{border:0;background:#e3e8ea;border-radius:12px;font-size:10px;padding:5px 9px;color:#3f4b53}.snapshot-panel{grid-column:2}.snapshot-content{display:grid;grid-template-columns:110px 1fr 1.18fr;gap:10px;align-items:center;margin-top:8px}.device-illustration{width:104px;height:72px;position:relative;margin:auto}.device-screen{position:absolute;top:0;left:14px;width:78px;height:48px;border:4px solid #45505a;border-radius:5px;background:linear-gradient(150deg,#378cb3,#97d2e4 50%,#1b5b78);display:grid;place-items:center;color:white;font-size:9px;font-weight:700;box-shadow:inset 0 0 12px #124d625e}.device-screen:after{content:"";position:absolute;bottom:7px;left:16px;width:36px;height:14px;background:#96dcf2;border-radius:50% 50% 0 50%;transform:rotate(-25deg);opacity:.8}.device-base{position:absolute;bottom:5px;left:3px;width:96px;height:10px;background:linear-gradient(#8b949a,#313a41);clip-path:polygon(8% 0,92% 0,100% 100%,0 100%);border-radius:2px}.device-details,.spec-list{display:grid;gap:6px;font-size:9px}.device-details span,.spec-list span{color:var(--muted)}.device-details b,.spec-list b{display:block;color:var(--ink);font-weight:700}.spec-list{border:1px solid var(--line);border-radius:6px;padding:6px 10px}.status-dot{color:var(--good)}.status-list{display:grid;margin-top:6px}.status-list button{display:grid;grid-template-columns:11px 1fr auto 10px;align-items:center;gap:4px;border:0;border-bottom:1px solid var(--line);background:transparent;padding:6px 0;text-align:left;color:#34444d}.status-list b{font-size:10px;color:#4b8b69;font-weight:600}.status-list span{font-size:16px;color:#68747b}.status-good-dot,.status-list i{width:10px;height:10px;border-radius:50%;background:#8fc0a7;display:inline-block}.status-list .problem-row i{background:#cf755f}.problem-row b{color:#b9614e}.drainers{grid-column:1}.drainer-list{display:grid;gap:6px;margin-top:8px}.drainer-list>div{display:grid;grid-template-columns:18px 1fr auto;align-items:center;gap:6px;font-size:9px}.drainer-list i{font-style:normal;color:#71818b}.drainer-list span{font-weight:700}.drainer-list small{display:block;color:var(--muted);font-size:8px;font-weight:400}.drainer-list b{font-size:9px}.assistant{grid-column:3}.assistant h2 small{font-size:8px;background:#e1e7e8;padding:2px 4px;border-radius:4px}.assistant p{font-size:10px;color:var(--muted);margin:12px 0 10px}.ask-box{border:1px solid var(--line);border-radius:5px;display:flex}.ask-box input{border:0;background:transparent;min-width:0;width:100%;padding:8px;font-size:10px;outline:0}.ask-box button{border:0;background:transparent;color:#65747b}.live-performance{grid-column:2 / 4}.range-buttons{display:flex}.range-buttons button{border:1px solid var(--line);background:#f4f6f7;color:var(--muted);font-size:10px;padding:5px 8px}.range-buttons .selected{background:#d9e2e5;color:var(--ink)}.chart-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.chart-card{border:1px solid var(--line);border-radius:6px;padding:9px}.chart-card>span{font-weight:700;font-size:11px}.chart-card>span b{float:right}.chart{height:74px;background:repeating-linear-gradient(0deg,transparent 0 24px,#e9edef 25px),repeating-linear-gradient(90deg,transparent 0 42px,#e9edef 43px);margin:8px 0 3px}.chart svg{width:100%;height:100%}.chart path{fill:none;stroke-width:2.5}.chart.blue path{stroke:#76a6be}.chart.teal path{stroke:#68a49c}.chart.coral path{stroke:#c57964}.chart-card small{font-size:8px;color:var(--muted)}.hardware-info{grid-column:1 / 2}.predictive{grid-column:2 / 4}.predictive p{font-size:10px;color:#435159;margin:11px 0 0}.predictive a{display:block;margin-top:9px}.info-rows{display:grid;gap:7px;margin-top:10px}.info-rows span{display:grid;grid-template-columns:1fr 1.3fr auto;gap:6px;border-bottom:1px solid #edf0f1;padding-bottom:5px;color:var(--muted);font-size:10px}.info-rows b,.info-rows em{color:var(--ink);font-style:normal}.activity{grid-column:1}.activity-list{margin-top:8px}.activity-list span{display:grid;grid-template-columns:10px 1fr auto;gap:6px;border-bottom:1px solid var(--line);padding:7px 0;font-size:10px}.activity-list i{width:7px;height:7px;background:#6daa91;border-radius:50%;margin-top:4px}.activity-list span b{color:var(--muted);font-size:9px;font-weight:400}.health-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}.health-item{display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:12px;min-height:80px}.health-icon{width:36px;height:36px;border:1px solid var(--line);border-radius:8px;display:grid;place-items:center;font-size:20px}.health-item h3{font-size:13px;margin:0 0 4px}.health-item p{font-size:11px;color:var(--muted);margin:0}.health-state{font-size:10px;background:#e3efe9;color:#418264;padding:4px 8px;border-radius:12px;margin-left:5px;font-style:normal}.health-item button{border:0;background:#984a30;color:white;border-radius:6px;padding:8px 12px;font-size:10px}.router-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}.router-summary strong{display:block;font-size:24px;margin:7px 0}.router-summary p{color:var(--muted);margin:0}.table-panel{padding:0;overflow:hidden}.table-panel .panel-heading{padding:14px;border-bottom:1px solid var(--line)}.table-head,.table-row{display:grid;grid-template-columns:2fr .6fr .8fr .9fr 1.1fr .7fr;gap:10px;align-items:center;padding:12px 14px}.table-head{font-size:10px;color:var(--muted);background:#f6f8f8}.table-row{border-top:1px solid #edf0f1;font-size:11px}.table-row button,.file-row button{border:1px solid var(--line);background:#f2f6f6;border-radius:5px;padding:5px;font-size:10px}.impact{font-style:normal;border-radius:12px;padding:3px 7px;text-align:center;font-size:9px}.impact.medium{background:#f6e7da;color:#a35d3b}.impact.low{background:#e3f0e9;color:#398161}.action-row{margin-bottom:10px}.ai-safe{color:#3d866c;font-weight:700}.ai-safe small{display:block;color:var(--muted);font-weight:400}.storage-top{display:grid;grid-template-columns:1.25fr 1.2fr 1.4fr;gap:10px;margin-bottom:10px}.storage-side{display:grid;gap:10px}.storage-usage .panel-heading h2,.candidate-panel h2{font-size:11px}.disk-line{display:flex;justify-content:space-between;margin:18px 0 8px;font-size:11px}.usage-bar{height:12px;border-radius:10px;background:#e1e5e7;overflow:hidden}.usage-bar i{display:block;width:62%;height:100%;background:linear-gradient(90deg,#325778,#99917e)}.storage-usage p{font-size:10px;color:var(--muted)}.category-panel{display:flex;align-items:center;justify-content:center;gap:22px}.donut{width:104px;height:104px;border-radius:50%;background:conic-gradient(#6bafaa 0 30%,#7599b1 30% 43%,#aa7890 43% 59%,#e4ab50 59% 63%,#8abd7e 63% 70%,#738389 70% 100%);display:grid;place-items:center;position:relative}.donut:after{content:"";position:absolute;inset:18px;border-radius:50%;background:white}.donut strong{position:relative;z-index:1;text-align:center;font-size:18px}.donut small{display:block;font-size:10px}.category-list{display:grid;gap:6px;font-size:10px;min-width:160px}.category-list span{display:grid;grid-template-columns:10px 1fr auto;gap:5px}.category-list i{width:9px;height:9px;background:#6bafaa;border-radius:50%}.category-list span:nth-child(2) i{background:#7599b1}.category-list span:nth-child(3) i{background:#aa7890}.category-list span:nth-child(4) i{background:#e4ab50}.category-list span:nth-child(5) i{background:#8abd7e}.category-list b{font-weight:600}.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.quick-actions button{display:flex;gap:8px;text-align:left;border:1px solid var(--line);border-radius:6px;background:#fff;padding:8px;font-weight:700}.quick-actions small{display:block;font-weight:400;color:var(--muted);margin-top:3px;font-size:9px}.candidate-panel{padding:10px}.candidate-list{display:grid;margin-top:7px}.candidate-list span{border-top:1px solid var(--line);padding:6px 0;font-size:10px}.candidate-list b{display:block;color:var(--muted);font-weight:400;font-size:9px}.files-panel{padding:0;overflow:hidden}.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);padding:9px}.tabs button{border:0;background:transparent;padding:7px 10px;font-size:10px}.tabs .selected{font-weight:700;border-bottom:2px solid var(--teal-dark)}.tabs b{background:#57a68f;color:white;padding:2px 5px;border-radius:8px}.file-head,.file-row{display:grid;grid-template-columns:25px 2fr 1.7fr .7fr .7fr .9fr .7fr;align-items:center;gap:8px;padding:9px 12px;font-size:10px}.file-head{color:var(--muted);background:#f7f9f9}.file-row{border-top:1px solid #edf0f1}.file-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)}.file-row em{font-style:normal;background:#f4e4d9;color:#a25b3f;border-radius:10px;padding:3px 6px;text-align:center}.converter-layout{display:grid;grid-template-columns:2.3fr 1fr;gap:10px}.converter-tabs{display:flex;gap:8px;margin-bottom:10px}.converter-tabs button{flex:1;border:1px solid var(--line);border-radius:7px;background:white;padding:10px;font-weight:700}.converter-tabs .selected{background:#a95739;color:white}.offline-pill{color:#31805d;background:#e0f1e9;border:1px solid #c3dfd1;border-radius:6px;padding:9px 12px;font-size:11px}.drop-zone{text-align:center;border:1px dashed #aab5ba;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f6f8f9}.drop-zone>div{font-size:40px;color:#7d8990}.drop-zone h2{font-size:15px;margin:7px 0}.drop-zone p{margin:0;color:var(--muted)}.drop-zone small{margin:10px 0;color:#4e5a62}.convert-controls{margin-top:10px;display:grid;grid-template-columns:1fr 1.2fr 1.3fr auto;align-items:end;gap:8px;padding:10px}.convert-controls label{font-size:10px;font-weight:700}.convert-controls input,.convert-controls select{display:block;width:100%;margin-top:5px;border:1px solid var(--line);border-radius:5px;padding:7px;background:white}.convert-controls label:nth-child(2){display:grid;grid-template-columns:1fr 30px}.convert-controls label:nth-child(2) input{grid-column:1/-1}.convert-controls label:nth-child(3){position:relative}.convert-controls label:nth-child(3) button{position:absolute;right:4px;bottom:4px;border:0;background:#eef2f2;padding:4px}.recent-panel{margin-top:10px;padding:0}.recent-panel .panel-heading{padding:12px}.conversion-row{display:grid;grid-template-columns:28px 1.5fr 1.2fr .7fr 1fr;align-items:center;border-top:1px solid var(--line);padding:9px 12px;font-size:10px}.conversion-row>span:first-child{font-size:18px;color:#6c96bf}.conversion-row em{font-style:normal;color:#3b8a62}.converter-side{display:grid;align-content:start;gap:10px}.progress-panel>div:not(.panel-heading){border-top:1px solid var(--line);padding:11px 0}.progress-panel span{display:block;color:var(--muted);font-size:10px}.progress-panel i{display:block;height:7px;background:#dce1e4;border-radius:6px;margin:8px 0}.progress-panel i em{display:block;height:100%;background:#3b9a72;border-radius:6px}.progress-panel small{color:var(--muted)}.supported-panel h2{font-size:12px;margin:0 0 12px}.supported-panel h2:nth-of-type(2){margin-top:23px}.supported-panel>div{display:grid;grid-template-columns:1fr 1fr;gap:7px}.supported-panel>div span{border:1px solid var(--line);border-radius:5px;padding:8px;font-weight:700}.supported-panel>div b{float:right;color:var(--muted);font-weight:400}.supported-panel p{color:#43865d;line-height:2}.settings-layout{display:grid;grid-template-columns:225px 1fr;gap:10px}.settings-nav{display:grid;align-content:start;gap:3px}.settings-nav button{border:0;border-left:2px solid transparent;background:transparent;text-align:left;padding:11px;color:var(--ink);font-weight:700}.settings-nav button.selected{background:#e1eaec;border-left-color:var(--teal)}.settings-nav small{display:block;font-weight:400;color:var(--muted);margin-top:3px}.settings-content{display:grid;grid-template-columns:1fr 1fr;gap:10px}.settings-card h2{font-size:13px;margin:0 0 8px}.settings-card label{position:relative;display:block;border-bottom:1px solid var(--line);padding:9px 45px 9px 0;font-weight:700;font-size:11px}.settings-card label small{display:block;color:var(--muted);font-weight:400;font-size:10px}.settings-card label input[type=checkbox]{position:absolute;right:0;top:12px;appearance:none;width:29px;height:16px;border-radius:10px;background:#cad1d5}.settings-card label input[type=checkbox]:checked{background:var(--teal)}.settings-card label input[type=checkbox]:after{content:"";display:block;width:12px;height:12px;margin:2px;background:#fff;border-radius:50%;transition:.2s}.settings-card label input[type=checkbox]:checked:after{transform:translateX(13px)}.settings-card select{position:absolute;right:0;top:8px;border:1px solid var(--line);border-radius:5px;padding:5px;background:#f1f4f5}.settings-card label>b,.settings-card label>.enabled{position:absolute;right:0;top:13px;color:#3c8c6a}.settings-card label>.enabled{font-size:10px;font-style:normal}.segmented,.swatches{position:absolute;right:0;top:9px;display:flex}.segmented button{border:1px solid var(--line);background:#f3f5f6;padding:5px 8px;font-size:10px}.segmented .selected{background:#cbe9e3;color:#257f77}.swatches{gap:7px}.swatches i{width:23px;height:23px;border-radius:50%;background:#64b5a4;border:2px solid white;box-shadow:0 0 0 1px #a9b8bc}.swatches i:nth-child(2){background:#81529a}.swatches i:nth-child(3){background:#4d8e91}.swatches i:nth-child(4){background:#df9950}.swatches i:nth-child(5){background:#dc7180}.swatches i:nth-child(6){background:#82909b}.app-management{grid-column:1}.about-card{grid-column:2}.about-brand{display:flex;align-items:center;gap:10px;margin:13px 0}.about-brand b small{display:block;color:var(--muted);font-weight:400}.about-card p{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding:6px 0;margin:0;color:var(--muted)}.about-card p b{color:var(--ink)}.about-card p strong{color:#3c8c6a}.toast{position:fixed;bottom:24px;right:24px;background:#193c3c;color:#fff;border-radius:6px;padding:11px 15px;opacity:0;pointer-events:none;transition:.2s;z-index:40}.toast.show{opacity:1}.app-footer{max-width:1440px;margin:auto;padding:10px 22px 18px;display:flex;justify-content:space-between;color:#5c6b73;font-size:10px}.app-footer span:first-child{font-weight:800}@media(max-width:1120px){.top-nav{gap:0}.nav-item{padding:0 6px}.header-tools .mode-pill,.header-tools .live-pill{display:none}.overview-grid{grid-template-columns:1fr 1.5fr}.quick-status{grid-column:1/-1}.live-performance{grid-column:1/-1}.predictive{grid-column:2}.storage-top{grid-template-columns:1fr 1fr}.storage-side{grid-column:1/-1;grid-template-columns:1fr 1fr}.snapshot-panel{grid-column:2}.assistant{grid-column:1/-1}}@media(max-width:760px){.app-header{height:auto;min-height:64px;flex-wrap:wrap;padding:10px 14px;gap:10px}.brand{min-width:180px}.top-nav{order:3;overflow:auto;width:100%;flex-basis:100%;height:38px}.nav-item{padding:0 9px;font-size:11px}.nav-item span{display:none}.app-main{padding:14px 10px}.page-title{display:block}.page-title .primary-button,.title-actions{margin-top:12px}.overview-grid,.health-list,.router-summary,.storage-top,.converter-layout,.settings-layout{grid-template-columns:1fr}.snapshot-panel,.live-performance,.hardware-info,.predictive,.activity,.assistant,.drainers,.storage-side,.app-management,.about-card{grid-column:auto}.snapshot-content{grid-template-columns:1fr 1fr}.spec-list{grid-column:1/-1}.chart-grid,.settings-content{grid-template-columns:1fr}.health-list{gap:8px}.health-item{grid-template-columns:36px 1fr}.health-item button{grid-column:2;justify-self:start}.converter-tabs{overflow:auto}.converter-tabs button{min-width:92px}.convert-controls{grid-template-columns:1fr 1fr}.convert-controls>.primary-button{grid-column:1/-1}.file-head{display:none}.file-row{grid-template-columns:22px 1fr auto}.file-row span,.file-row strong,.file-row em{display:none}.file-row button{grid-column:3;grid-row:1}.table-head{display:none}.table-row{grid-template-columns:1fr 1fr;gap:7px}.table-row button{justify-self:end}.app-footer{padding:10px;display:block}.app-footer span{display:block;margin:3px 0}}
+
+/* =========================================================
+   PulseOS — Overview-only layout correction
+   Keeps all existing typography/content; only rearranges cards.
+   ========================================================= */
+#view-overview .overview-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.55fr) minmax(0, 1.55fr) minmax(0, 1fr);
+  grid-template-rows: auto auto auto auto;
+  gap: 4px;
+  grid-template-columns: minmax(0, 1.9fr) minmax(270px, .9fr) !important;
+  grid-template-rows: auto minmax(240px, 1fr) auto minmax(125px, auto);
+  gap: 12px !important;
+  min-height: calc(100vh - 220px);
+  align-items: stretch;
+}
+
+#view-overview .overview-grid > .panel {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+#view-overview .health-score-panel { grid-column: 1; grid-row: 1; }
+  padding: 8px;
+#view-overview .quick-status { grid-column: 4; grid-row: 1; }
+
+#view-overview .drainers { grid-column: 1; grid-row: 2; }
+  overflow-x: auto;
+#view-overview .live-performance { grid-column: 2 / span 2; grid-row: 2; }
+#view-overview .assistant { grid-column: 4; grid-row: 2; }
+  min-width: 105px;
+  min-height: 42px;
+  padding: 8px 12px;
+  text-align: center;
+#view-overview .system-watcher { grid-column: 1; grid-row: 4; }
+  font-size: 11px;
+#view-overview .network-health { grid-column: 3; grid-row: 4; }
+#view-converter .drop-zone { grid-column: 1; grid-row: 2; min-height: 240px; margin: 0; }
+#view-converter .drop-zone .primary-button { padding: 9px 16px; font-size: 11px; }
+/* Compact only the Overview's internal spacing; existing font sizes remain unchanged. */
+  grid-column: 1;
+  grid-row: 3;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+#view-overview .chart-grid { gap: 6px; margin-top: 7px; }
+  gap: 12px;
+  padding: 16px;
+#view-overview .drainer-list,
+#view-converter .convert-controls > .primary-button { grid-column: 1 / -1; justify-self: end; min-width: 150px; }
+#view-converter .recent-panel { grid-column: 1; grid-row: 4; margin-top: 0; min-height: 125px; }
+#view-overview .info-rows { gap: 5px; margin-top: 6px; }
+  grid-column: 2;
+  grid-row: 2 / span 3;
+  grid-template-rows: minmax(130px, auto) minmax(0, 1fr);
+  gap: 12px;
+}
+
+/* Settings: a toggle-led horizontal menu with one selected content panel. */
+#view-settings .settings-layout {
+  display: block !important;
+}
+#view-settings .settings-navbar {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  min-height: 62px;
+  padding: 8px 10px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+#view-settings .settings-nav-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+#view-settings .settings-toggle {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--soft);
+  color: var(--ink);
+}
+#view-settings .settings-nav-items {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+#view-settings .settings-nav-items button {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 180px;
+  min-height: 44px;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  opacity: 1;
+  transform: translateX(0);
+  transform-origin: left center;
+  transition: flex-basis .3s cubic-bezier(.2,.8,.2,1), max-width .3s cubic-bezier(.2,.8,.2,1), opacity .2s ease, transform .3s cubic-bezier(.2,.8,.2,1), padding .25s ease;
+  transition-delay: var(--settings-delay, 0ms);
+}
+#view-settings .settings-nav-items button:hover,
+#view-settings .settings-nav-items button.selected {
+  background: var(--soft);
+  border-color: var(--line);
+}
+#view-settings .settings-nav-items button small {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#view-settings .settings-navbar.collapsed { gap: 0; }
+#view-settings .settings-navbar.collapsed .settings-navbar-label { display: none; }
+#view-settings .settings-navbar.collapsed .settings-nav-items { flex: 0 1 0; gap: 0; }
+#view-settings .settings-navbar.collapsed .settings-nav-items button {
+  flex: 0 0 0;
+  max-width: 0;
+  padding-left: 0;
+  padding-right: 0;
+  border-width: 0;
+  opacity: 0;
+  transform: translateX(-12px);
+  pointer-events: none;
+}
+#view-settings .settings-content {
+  display: block !important;
+  min-width: 0;
+  margin-top: 12px;
+}
+#view-settings .settings-content .settings-card {
+  display: none !important;
+  width: 100%;
+  min-height: 390px;
+  padding: 18px;
+}
+#view-settings .settings-content .settings-card.settings-card-active {
+  display: block !important;
+}
+
+@media (max-width: 1100px) {
+  #view-converter .converter-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: auto minmax(220px, auto) auto auto auto;
+    min-height: 0;
+  }
+  #view-converter .drop-zone,
+  #view-converter .convert-controls,
+  #view-converter .recent-panel,
+  #view-converter .converter-side { grid-column: 1; }
+  #view-converter .drop-zone { grid-row: 2; }
+  #view-converter .convert-controls { grid-row: 3; }
+  #view-converter .recent-panel { grid-row: 4; }
+  #view-converter .converter-side {
+    grid-row: 5;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto;
+  }
+  #view-settings .settings-nav-items button { padding: 6px; font-size: 9px; }
+}
+
+  #view-converter .converter-tabs { grid-template-columns: repeat(6, minmax(105px, 1fr)); }
+  #view-converter .convert-controls { grid-template-columns: minmax(0, 1fr); }
+  #view-converter .convert-controls > .primary-button { grid-column: 1; justify-self: stretch; }
+  #view-overview .system-watcher { grid-column: 1; grid-row: 5; }
+  #view-settings .settings-navbar { align-items: flex-start; gap: 8px; }
+  #view-settings .settings-nav-header { align-items: flex-start; }
+  #view-settings .settings-navbar-label { display: none; }
+  #view-settings .settings-nav-items { overflow-x: auto; }
+  #view-settings .settings-nav-items button { flex: 0 0 140px; }
+  #view-settings .settings-content .settings-card { padding: 14px; }
+
+
+/* ===== Overview full-screen + collapsible side navigation ===== */
+.app-header{padding-left:12px;gap:12px;position:sticky;top:0}
+.sidebar-toggle{width:34px;height:34px;border:1px solid var(--line);background:#f7fafb;border-radius:7px;color:var(--ink);font-size:18px;box-shadow:var(--shadow);flex:0 0 auto}
+.side-nav{position:fixed;left:0;top:80px;bottom:0;width:190px;background:#f8fafb;border-right:1px solid var(--line);z-index:15;padding:14px 10px;transition:transform .22s ease, width .22s ease;overflow-y:auto}
+.side-nav-title{font-size:9px;font-weight:800;letter-spacing:1.2px;color:#7a878f;padding:0 10px 10px}
+.side-nav-links{display:grid;gap:4px}
+.side-nav .nav-item{width:100%;min-height:38px;display:flex;align-items:center;gap:9px;text-align:left;border:0;border-left:3px solid transparent;border-radius:6px;padding:0 10px;background:transparent;color:#34424d;font-size:12px}
+.side-nav .nav-item:hover,.side-nav .nav-item.active{background:#e7eff1;border-left-color:var(--teal-dark);border-bottom:0}
+.side-nav .nav-item span{display:inline}
+.app-main{max-width:none;margin:0;padding:12px 14px 20px;margin-left:190px;transition:margin-left .22s ease}
+.app-footer{max-width:none;margin-left:190px;padding-left:14px;padding-right:14px;transition:margin-left .22s ease}
+.app-shell.sidebar-collapsed .side-nav{transform:translateX(-100%)}
+.app-shell.sidebar-collapsed .app-main,.app-shell.sidebar-collapsed .app-footer{margin-left:0}
+#view-overview .page-title{margin-bottom:7px}
+#view-overview .overview-grid{grid-template-columns:minmax(210px,1fr) minmax(420px,2.15fr) minmax(210px,1.05fr) minmax(210px,1.05fr);grid-auto-rows:auto;gap:4px;width:100%;max-width:100%;min-width:0;align-items:stretch}
+#view-overview .overview-grid>.panel{min-width:0;max-width:100%;overflow:visible;padding:8px 10px}
+#view-overview .health-score-panel{grid-column:1;grid-row:1}
+#view-overview .snapshot-panel{grid-column:2 / span 2;grid-row:1}
+#view-overview .quick-status{grid-column:4;grid-row:1}
+#view-overview .drainers{grid-column:1;grid-row:2}
+#view-overview .live-performance{grid-column:2 / span 2;grid-row:2}
+#view-overview .assistant{grid-column:4;grid-row:2}
+#view-overview .hardware-info{grid-column:1 / span 2;grid-row:3}
+#view-overview .predictive{grid-column:3 / span 2;grid-row:3}
+#view-overview .system-watcher{grid-column:1;grid-row:4}
+#view-overview .activity{grid-column:2;grid-row:4}
+#view-overview .network-health{grid-column:3;grid-row:4}
+#view-overview .storage-intelligence{grid-column:4;grid-row:4}
+#view-overview .snapshot-content{grid-template-columns:105px minmax(140px,1fr) minmax(230px,1.2fr);min-width:0}
+#view-overview .device-details,#view-overview .spec-list,#view-overview .chart-card,#view-overview .info-rows span,#view-overview .activity-list span{min-width:0}
+#view-overview .spec-list span,#view-overview .info-rows span{white-space:nowrap}
+#view-overview .chart-grid{grid-template-columns:repeat(3,minmax(0,1fr));min-width:0}
+#view-overview .chart-card{overflow:hidden}
+#view-overview .chart-card small{white-space:nowrap;font-size:8px}
+#view-overview .watcher-list{display:grid;gap:0;margin-top:5px}
+#view-overview .watcher-list span{display:grid;grid-template-columns:18px minmax(0,1fr) auto 10px;align-items:center;border-bottom:1px solid var(--line);padding:5px 0;font-size:10px;min-width:0}
+#view-overview .watcher-list em{font-style:normal;color:var(--muted);white-space:nowrap}
+#view-overview .watcher-list i{font-style:normal;color:var(--good);font-size:8px}
+#view-overview .network-health-content p{margin:7px 0;font-size:10px;color:var(--muted)}
+#view-overview .network-mini{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:7px;font-size:8px;color:var(--muted)}
+#view-overview .network-mini span{min-width:0}
+#view-overview .network-mini b{display:block;color:var(--ink);font-size:9px;white-space:nowrap}
+#view-overview .storage-mini{display:grid;grid-template-columns:70px minmax(0,1fr);gap:8px;align-items:start;margin:7px 0}
+#view-overview .storage-mini>strong{font-size:18px;white-space:nowrap}
+#view-overview .storage-mini>strong small{display:block;font-size:8px;color:var(--muted);font-weight:400}
+#view-overview .storage-mini>div{display:grid;gap:4px;font-size:9px}
+#view-overview .storage-mini span{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:3px;gap:6px;white-space:nowrap}
+#view-overview .storage-mini b{color:var(--ink)}
+#view-overview .system-watcher .status-good,#view-overview .network-health .status-good,#view-overview .storage-intelligence .status-good{font-size:8px;padding:3px 6px;white-space:nowrap}
+#view-overview .primary-button,#view-overview .soft-button{white-space:nowrap}
+@media (max-width:900px){
+ .side-nav{width:175px}.app-main,.app-footer{margin-left:0}.app-shell:not(.sidebar-collapsed) .app-main{margin-left:175px}
+ #view-overview .overview-grid{grid-template-columns:minmax(180px,1fr) minmax(320px,2fr) minmax(180px,1fr)}
+ #view-overview .snapshot-panel{grid-column:2;}.quick-status{grid-column:3!important}
+ #view-overview .live-performance{grid-column:2 / span 2}.assistant{grid-column:1!important;grid-row:3!important}.hardware-info{grid-column:2 / span 2!important;grid-row:3!important}
+ #view-overview .predictive{grid-column:1 / span 3;grid-row:4}.system-watcher{grid-column:1;grid-row:5}.activity{grid-column:2;grid-row:5}.network-health{grid-column:3;grid-row:5}.storage-intelligence{grid-column:1 / span 3;grid-row:6}
+}
+@media (max-width:700px){
+ .side-nav{top:64px;width:220px;box-shadow:8px 0 20px #27313d20}.app-shell:not(.sidebar-collapsed) .app-main{margin-left:0}.app-main{padding:10px}.app-header{height:auto;min-height:64px;flex-wrap:nowrap}.header-tools .mode-pill,.header-tools .live-pill{display:none}
+ #view-overview .overview-grid{grid-template-columns:1fr}.side-nav .nav-item{font-size:12px}
+ #view-overview .overview-grid>*{grid-column:1!important;grid-row:auto!important}.snapshot-content{grid-template-columns:1fr 1fr}.chart-grid{grid-template-columns:1fr}
+}
+
+body{font-family:Arial,Helvetica,sans-serif;font-weight:400}
+.side-nav>.sidebar-toggle{display:block;margin:0 0 14px 0;width:34px;height:34px;padding:0}
+.app-shell.sidebar-collapsed .side-nav>.sidebar-toggle{position:fixed;left:10px;top:90px;z-index:30}
+.floating-toggle{position:fixed;left:10px;top:90px;z-index:30}
+.app-shell.sidebar-collapsed .app-main,.app-shell.sidebar-collapsed .app-footer{padding-left:60px}
+.side-nav-title{display:none}
+.settings-layout{display:block}
+.settings-layout .settings-nav{display:none}
+.diagnosis-status-bar{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.diagnosis-status-bar .mode-pill,.diagnosis-status-bar .live-pill{display:inline-flex;align-items:center}
+.detail-overlay{position:fixed;inset:0;display:grid;place-items:center;background:#16212b55;opacity:0;pointer-events:none;transition:opacity .18s;z-index:50;padding:20px}.detail-overlay.show{opacity:1;pointer-events:auto}.detail-dialog{width:min(560px,100%);max-height:min(680px,calc(100vh - 40px));overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 16px 40px #27313d35;padding:18px}.detail-dialog-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;border-bottom:1px solid var(--line);padding-bottom:10px}.detail-dialog h2{margin:3px 0 0;font-size:18px}.detail-subtitle{color:var(--muted);font-size:11px;margin:12px 0}.detail-close{border:1px solid var(--line);background:#f7fafb;border-radius:6px;color:var(--ink);font-size:19px;line-height:1;padding:5px 9px;cursor:pointer}.detail-rows{display:grid;gap:7px}.detail-row{display:grid;grid-template-columns:minmax(130px,.8fr) minmax(0,1.5fr);gap:12px;border-bottom:1px solid #edf1f3;padding:8px 0;font-size:11px}.detail-row span{color:var(--muted)}.detail-row b{font-weight:700;overflow-wrap:anywhere}.overview-grid>.panel,.chart-card{cursor:pointer}.overview-grid>.panel:hover{outline:1px solid #8fc8be;outline-offset:-1px}
+:root{--ui-font-size:13px}
+body{font-size:var(--ui-font-size)}
+body.theme-dark{--bg:#11191d;--panel:#182328;--ink:#edf5f5;--muted:#9eafb5;--line:#304047;background:linear-gradient(135deg,#10171b,#172126 48%,#11191d)}
+body.theme-dark .app-header,body.theme-dark .panel,body.theme-dark .drop-zone,body.theme-dark .converter-tabs button,body.theme-dark .quick-actions button,body.theme-dark .settings-nav button.selected,body.theme-dark .settings-card select,body.theme-dark .segmented button,body.theme-dark .file-head{background:#182328;color:var(--ink)}
+body.theme-dark .app-header{border-color:var(--line)}
+body.theme-dark .file-head{background:#202d32}
+body.theme-dark .detail-dialog{background:#182328;color:var(--ink);border-color:var(--line)}
+body.theme-dark .detail-row{border-color:var(--line)}
+body.theme-dark input,body.theme-dark select{background:#202d32!important;color:var(--ink);border-color:var(--line)!important}
+body.theme-dark .settings-nav button{color:var(--ink)}
+body.theme-dark .settings-nav button.selected{border-left-color:var(--teal)}
+body.compact-mode .panel{padding:8px}body.compact-mode .app-main{padding-top:10px;padding-bottom:10px}body.compact-mode .health-item{padding:7px}
+.conversion-empty{padding:16px;color:var(--muted);font-size:10px;text-align:center}
+
+/* Keep the complete Settings navigation visible; all existing options remain available. */
+.settings-layout{display:grid;grid-template-columns:225px 1fr;gap:10px}.settings-layout .settings-nav{display:grid}
+
+/* ===== PulseOS precise UI pass ===== */
+.app-header{height:62px;padding:8px 18px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.brand{gap:10px}.brand strong{font-size:19px}.brand small{font-size:10px}.header-tools{margin-left:auto}.header-tools .live-pill{display:inline-flex}
+.side-nav{top:62px;width:188px;padding:10px 10px}.side-nav .sidebar-toggle{display:flex;align-items:center;justify-content:center;margin:0 0 12px;width:36px;height:36px;border:1px solid var(--line);background:var(--panel);border-radius:7px;color:var(--ink);font-size:18px;box-shadow:var(--shadow);cursor:pointer}
+.side-nav-links{gap:3px}.side-nav .nav-item{min-height:40px}.app-main{margin-left:188px;padding:14px 14px 18px}.app-footer{margin-left:188px}
+.page-title-minimal{min-height:26px;margin-bottom:8px;align-items:center}.page-title-minimal .kicker{font-size:11px;font-weight:800;letter-spacing:1.4px}.page-title-minimal h1,.page-title-minimal p,.page-title-minimal .title-actions{display:none}
+
+/* Overview */
+#view-overview .overview-grid{grid-template-columns:minmax(300px,1.35fr) minmax(260px,1fr) minmax(230px,1fr) minmax(230px,1fr);gap:7px}
+#view-overview .health-score-panel{grid-column:1;grid-row:1 / span 2}.overview-health-card{min-height:250px}.compact-snapshot{grid-column:2 / span 2!important;grid-row:1!important}
+#view-overview .quick-status{grid-column:4;grid-row:1}.score-visual{display:grid;place-items:center;padding:2px 0 4px}.score-ring-animated{position:relative;width:132px;height:132px}.score-ring-animated svg{width:100%;height:100%;transform:rotate(-90deg)}.score-track,.score-arc{fill:none;stroke-width:7}.score-track{stroke:var(--line)}.score-arc{stroke:var(--teal);stroke-linecap:round;stroke-dasharray:314;stroke-dashoffset:314;transition:stroke-dashoffset .8s ease}.score-center{position:absolute;inset:0;display:grid;place-content:center;text-align:center}.score-center strong{font-size:25px;line-height:1}.score-center small{font-size:9px;color:var(--muted)}
+.health-four-rows{display:grid;gap:0;margin:2px 0 5px}.health-four-rows div{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding:5px 2px;font-size:10px}.health-four-rows b{font-weight:800}.overview-health-card #healthReason{font-size:9px;color:var(--muted);margin:5px 0 7px}.overview-health-card .primary-button{width:100%}
+#view-overview .drainers{grid-column:1;grid-row:3}.#view-overview .live-performance{grid-column:2 / span 2;grid-row:2}
+#view-overview .live-performance{grid-column:2 / span 2;grid-row:2}.#view-overview .assistant{grid-column:4;grid-row:2}
+#view-overview .assistant{grid-column:4;grid-row:2}#view-overview .hardware-info{grid-column:1 / span 2;grid-row:4}#view-overview .predictive{grid-column:3 / span 2;grid-row:4}#view-overview .system-watcher{grid-column:1;grid-row:5}#view-overview .activity{grid-column:2;grid-row:5}#view-overview .network-health{grid-column:3;grid-row:5}#view-overview .storage-intelligence{grid-column:4;grid-row:5}
+
+/* Router */
+#view-router .page-title-minimal{margin-bottom:8px}.router-hero-row{display:grid;grid-template-columns:1.55fr 1.15fr .72fr;gap:7px}.router-hero{display:flex;align-items:center;gap:12px;min-height:88px}.router-icon{width:46px;height:46px;border-radius:12px;background:#d8efe9;color:#176f67;display:grid;place-items:center;font-size:27px;flex:none}.router-hero h2{margin:0;font-size:19px}.router-hero p{margin:4px 0 0;color:var(--muted);font-size:10px}.router-network{min-height:88px}.network-metrics{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:7px;margin-top:8px}.network-metrics span{border-right:1px solid var(--line);padding-right:6px;font-size:8px;color:var(--muted)}.network-metrics span:last-child{border:0}.network-metrics b{display:block;color:var(--ink);font-size:10px;margin-top:4px;white-space:nowrap}.connection-details{min-height:88px}.connection-details>span{display:flex;justify-content:space-between;font-size:8px;padding:2px 0}.connection-details b{font-size:9px;color:var(--ink)}
+.router-action-row{display:grid;grid-template-columns:1.8fr 1fr;gap:7px;margin-top:7px}.network-scan{display:grid;grid-template-columns:62px minmax(0,1fr) 155px;align-items:center;gap:10px;min-height:96px}.scan-icon{width:50px;height:50px;border:3px solid #153f57;border-radius:50%;display:grid;place-items:center;font-size:22px}.network-scan h2{margin:0;font-size:13px}.network-scan p{font-size:9px;color:var(--muted);margin:3px 0 7px;max-width:440px}.scan-meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;border-left:1px solid var(--line);padding-left:12px}.scan-meta span{font-size:8px;color:var(--muted)}.scan-meta b{display:block;color:var(--ink);font-size:11px;margin-top:4px}.quick-router{min-height:96px}.quick-router>div:last-child{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.quick-router button{border:1px solid var(--line);background:var(--soft);border-radius:6px;padding:8px 6px;color:var(--ink);font-size:11px;cursor:pointer}.quick-router button:first-letter{font-size:14px}.quick-router button span{display:block;font-size:9px;font-weight:700}.quick-router button small{display:block;color:var(--muted);font-size:7px;margin-top:2px}
+.router-main-row{display:grid;grid-template-columns:minmax(0,1fr) 235px;gap:7px;margin-top:7px}.table-panel{min-width:0}.table-panel>.panel-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}.table-panel h2{font-size:12px;white-space:nowrap}.live-tag{font-size:8px;background:#e9ded6;border-radius:9px;padding:3px 6px;font-weight:700}.table-tools{display:flex;gap:5px}.table-tools input,.table-tools select{height:27px;border:1px solid var(--line);border-radius:5px;background:var(--soft);color:var(--ink);font-size:9px;padding:0 7px;max-width:160px}.data-table{width:100%;overflow:hidden}.table-head,.table-row{display:grid;grid-template-columns:28px minmax(190px,1.8fr) 55px 65px 65px 110px 80px 78px;align-items:center;gap:6px;font-size:9px}.table-head{padding:7px 6px;background:var(--soft);border:1px solid var(--line);border-radius:5px}.table-row{padding:6px;border-bottom:1px solid var(--line);min-height:38px}.table-row b{font-size:9px}.table-row span{white-space:nowrap}.table-row button{border:0;border-radius:5px;background:#9d5738;color:#fff;padding:5px 8px;font-size:8px;cursor:pointer}.table-row input{width:13px;height:13px}.impact{font-style:normal;font-size:8px}.impact.low{color:#5c866f}.impact.medium{color:#a56545}.router-side{display:grid;gap:7px}.router-performance .meter-row{display:grid;grid-template-columns:58px 1fr 58px 1fr;gap:5px;align-items:center}.circle-meter{width:52px;height:52px;border:3px solid var(--line);border-right-color:var(--teal);border-bottom-color:var(--teal);border-radius:50%;display:grid;place-items:center;position:relative}.circle-meter b{font-size:10px}.circle-meter i{position:absolute;inset:-3px;border-radius:50%;border:3px solid transparent;border-top-color:var(--teal);transform:rotate(-35deg);transition:.5s}.meter-row>span{font-size:8px;color:var(--muted)}.router-io{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);margin-top:8px;padding-top:8px;gap:8px}.router-io span{font-size:8px;color:var(--muted)}.router-io b{display:block;color:var(--ink);font-size:9px;margin-top:3px}.router-activity .activity-list span{padding:6px 0}.guided-actions{display:grid;gap:5px}.guided-actions button{text-align:left;border:1px solid var(--line);background:var(--soft);border-radius:6px;padding:8px;color:var(--ink);font-size:9px;cursor:pointer}.guided-actions small{display:block;color:var(--muted);font-size:7px;margin-top:2px}.guided-actions button::first-letter{font-size:12px}
+
+/* Hardware */
+.hardware-diagnosis-bar{display:flex;align-items:center;gap:10px;margin-bottom:8px}.hardware-diagnosis-bar>span{font-size:9px;color:var(--muted)}.health-item{grid-template-columns:40px 1fr auto;align-items:center}.health-item .health-icon{font-size:18px}.health-item button{visibility:hidden}.health-item.problem button{visibility:visible}.health-item .health-state{font-style:normal;margin-left:8px}.health-item .health-state.status-good{color:var(--good)}
+
+/* Storage */
+#view-storage .page-title-minimal{margin-bottom:8px}.storage-top{margin-top:7px}.storage-intelligence .soft-button{cursor:pointer}.storage-top .category-panel .donut{transition:background .7s ease}.storage-top .category-panel .donut strong{position:relative;z-index:2}.storage-top .category-panel .donut::after{content:"";position:absolute;inset:9px;border-radius:50%;background:var(--panel)}
+
+/* Settings horizontal expandable navigation */
+#view-settings .settings-layout{display:block}.settings-layout .settings-nav{display:flex;align-items:center;gap:5px;overflow:hidden;background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:5px;transition:max-height .3s ease,opacity .25s ease}.settings-layout .settings-nav button{min-width:125px;flex:1;text-align:left;border:1px solid transparent;border-radius:5px;background:transparent;color:var(--ink);padding:7px 8px;font-size:9px;cursor:pointer}.settings-layout .settings-nav button small{display:block;color:var(--muted);font-size:7px;margin-top:2px}.settings-layout .settings-nav .settings-toggle{min-width:36px;max-width:36px;text-align:center;font-size:15px;padding:7px}.settings-layout .settings-nav.collapsed{max-height:48px}.settings-layout .settings-nav.collapsed button:not(.settings-toggle){display:none}.settings-layout .settings-content{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.settings-layout .settings-content .settings-card{display:none}.settings-layout .settings-content .settings-card.settings-card-active{display:block;grid-column:1 / -1;min-height:300px}.settings-layout .settings-content .settings-card.settings-card-active label{min-height:48px}.settings-layout .settings-nav button.selected{background:var(--soft);border-color:var(--line)}
+
+/* Diagnosis actions */
+.detail-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}.detail-actions button{border:1px solid var(--line);border-radius:5px;padding:7px 12px;background:var(--soft);color:var(--ink);font-size:9px;cursor:pointer}.detail-actions .fix-action{background:#9d5738;color:#fff;border-color:#9d5738}
+
+/* Dark-mode readability fixes */
+body.theme-dark .sidebar-toggle,body.theme-dark .table-tools input,body.theme-dark .table-tools select,body.theme-dark .quick-router button,body.theme-dark .guided-actions button,body.theme-dark .detail-actions button{background:#202d32;color:var(--ink);border-color:var(--line)}
+body.theme-dark .side-nav{background:#182328}.theme-dark .router-icon{background:#21443f;color:#9be0d0}.theme-dark .table-head{background:#202d32}.theme-dark .health-item.problem{background:#2a2220}.theme-dark .settings-layout .settings-nav{background:#182328}
+@media(max-width:1050px){#view-overview .overview-grid{grid-template-columns:1.2fr 1fr 1fr}.compact-snapshot{grid-column:2/span 2!important}.router-hero-row{grid-template-columns:1.4fr 1fr}.connection-details{grid-column:1/-1}.router-main-row{grid-template-columns:1fr}.router-side{grid-template-columns:1fr 1fr 1fr}.table-tools input{max-width:120px}.table-head,.table-row{grid-template-columns:24px minmax(150px,1.7fr) 48px 55px 55px 95px 65px 65px}}
+@media(max-width:760px){.app-header{height:58px}.side-nav{top:58px;width:220px}.app-main,.app-footer{margin-left:0}.app-shell:not(.sidebar-collapsed) .app-main{margin-left:220px}.router-hero-row,.router-action-row,.router-main-row{grid-template-columns:1fr}.router-side{grid-template-columns:1fr}.network-metrics{grid-template-columns:1fr 1fr}.scan-meta{display:none}.network-scan{grid-template-columns:52px 1fr}.quick-router>div:last-child{grid-template-columns:1fr}.table-tools{display:none}.table-head{display:none}.table-row{grid-template-columns:22px 1fr 55px 70px}.table-row>*:nth-child(3),.table-row>*:nth-child(4),.table-row>*:nth-child(5),.table-row>*:nth-child(6){display:none}.settings-layout .settings-nav{flex-wrap:wrap}.settings-layout .settings-nav:not(.collapsed) button:not(.settings-toggle){min-width:145px}.settings-layout .settings-content{grid-template-columns:1fr}.settings-layout .settings-content .settings-card.settings-card-active{grid-column:1}.#view-overview .overview-grid{grid-template-columns:1fr}.#view-overview .overview-grid>*{grid-column:1!important;grid-row:auto!important}.overview-health-card{min-height:auto}}
+
+/* ===== Overview reference-image layout ===== */
+#view-overview .overview-grid{
+  display:grid;
+  grid-template-columns:minmax(300px,34fr) minmax(380px,42fr) minmax(210px,24fr);
+  grid-template-rows:auto auto auto auto;
+  gap:8px;
+  align-items:stretch;
+}
+#view-overview .overview-grid>.panel{min-width:0;padding:9px 10px;overflow:hidden}
+#view-overview .health-score-panel{grid-column:1;grid-row:1;min-height:158px}
+#view-overview .compact-snapshot{grid-column:2;grid-row:1;min-height:158px}
+#view-overview .quick-status{grid-column:3;grid-row:1;min-height:158px}
+#view-overview .drainers{grid-column:1;grid-row:2;min-height:206px}
+#view-overview .live-performance{grid-column:2;grid-row:2;min-height:206px}
+#view-overview .assistant{grid-column:3;grid-row:2;min-height:206px}
+#view-overview .activity{grid-column:1;grid-row:3;min-height:148px}
+#view-overview .hardware-info{grid-column:2;grid-row:3;min-height:148px}
+#view-overview .predictive{grid-column:3;grid-row:3;min-height:148px}
+#view-overview .network-health{grid-column:2;grid-row:4;min-height:120px}
+#view-overview .storage-intelligence{grid-column:3;grid-row:4;min-height:120px}
+#view-overview .overview-hidden-card{display:none!important}
+#view-overview .health-score-layout{display:grid;grid-template-columns:92px minmax(125px,1fr) minmax(150px,1.15fr);gap:11px;align-items:center;height:118px}
+#view-overview .score-visual{display:grid;place-items:center;padding:0}
+#view-overview .score-ring-animated{width:96px;height:96px}
+#view-overview .score-center strong{font-size:25px;color:#75a893}
+#view-overview .score-center small{font-size:9px}
+#view-overview .health-score-summary{min-width:0}
+#view-overview .health-grade-chip{display:inline-block;background:#d7e9de;color:#3c6d58;border-radius:12px;padding:4px 9px;font-size:9px;font-weight:800}
+#view-overview .health-score-summary p{font-size:9px;line-height:1.35;margin:10px 0 9px;color:var(--ink)}
+#view-overview .health-score-summary .chip-button{font-size:8px;padding:5px 8px}
+#view-overview .health-four-rows{display:grid;gap:0;margin:0}
+#view-overview .health-four-rows div{display:grid;grid-template-columns:1fr auto;align-items:center;border-top:1px solid var(--line);padding:6px 2px;font-size:9px}
+#view-overview .health-four-rows div:first-child{border-top:0}
+#view-overview .health-four-rows b{font-weight:800}
+#view-overview .snapshot-panel .panel-heading small{display:block;color:var(--muted);font-size:8px;margin-top:1px}
+#view-overview .snapshot-content{display:grid;grid-template-columns:105px minmax(110px,1fr) minmax(190px,1.25fr);gap:11px;align-items:center;margin-top:7px}
+#view-overview .image-device{height:82px;width:105px;display:grid;place-items:center}
+#view-overview .image-device img{display:block;width:104px;height:auto;max-height:80px;object-fit:contain}
+#view-overview .device-details,#view-overview .spec-list{display:grid;gap:6px;font-size:9px}
+#view-overview .device-details span,#view-overview .spec-list span{color:var(--muted)}
+#view-overview .device-details b,#view-overview .spec-list b{display:block;color:var(--ink);font-size:9px}
+#view-overview .spec-list{border:1px solid var(--line);border-radius:6px;padding:7px 9px;gap:6px}
+#view-overview .spec-list span{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:4px;gap:8px}
+#view-overview .spec-list span:last-child{border-bottom:0;padding-bottom:0}
+#view-overview .quick-status .status-list{display:grid;gap:0;margin-top:4px}
+#view-overview .quick-status .status-list button{display:grid;grid-template-columns:14px 1fr auto 12px;align-items:center;gap:6px;border:0;border-top:1px solid var(--line);background:transparent;padding:7px 1px;color:var(--ink);font-size:9px;text-align:left}
+#view-overview .quick-status .status-list button:first-child{border-top:0}
+#view-overview .quick-status .status-list button b{font-weight:500;color:#3d8062}
+#view-overview .status-good-dot,#view-overview .network-status-dot{width:9px;height:9px;border-radius:50%;background:#86b59f;display:inline-block}
+#view-overview .quick-status .problem-row b{color:#b45f4a}
+#view-overview .quick-status .problem-row i{background:#c87362}
+#view-overview .drainer-list{display:grid;gap:0;margin-top:4px}
+#view-overview .drainer-list>div{display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:6px;align-items:center;border-top:1px solid var(--line);padding:7px 0;font-size:9px}
+#view-overview .drainer-list>div:first-child{border-top:0}
+#view-overview .drainer-list i{font-style:normal;font-size:12px;color:#657780}
+#view-overview .drainer-list span{font-weight:700}
+#view-overview .drainer-list small{display:block;color:var(--muted);font-weight:400;font-size:7px}
+#view-overview .drainer-list b{font-size:8px}
+#view-overview .live-performance .panel-heading{margin-bottom:6px}
+#view-overview .range-buttons{display:flex;gap:0}
+#view-overview .range-buttons button{border:1px solid var(--line);background:var(--panel);padding:5px 8px;font-size:8px;color:var(--ink)}
+#view-overview .range-buttons button:first-child{border-radius:6px 0 0 6px}.range-buttons button:last-child{border-radius:0 6px 6px 0}
+#view-overview .range-buttons button.selected{background:#dfe6eb}
+#view-overview .chart-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+#view-overview .chart-card{border:1px solid var(--line);border-radius:6px;padding:6px;min-width:0;background:var(--panel)}
+#view-overview .chart-card>span{display:flex;justify-content:space-between;font-size:9px;font-weight:700}
+#view-overview .chart-card>span b{font-size:12px}
+#view-overview .chart{height:80px;margin-top:5px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:repeating-linear-gradient(to right,transparent 0,transparent calc(16.66% - 1px),var(--line) 16.66%,transparent calc(16.66% + 1px)),repeating-linear-gradient(to bottom,transparent 0,transparent calc(25% - 1px),var(--line) 25%,transparent calc(25% + 1px))}
+#view-overview .chart svg{width:100%;height:100%}
+#view-overview .chart path{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#view-overview .chart.blue path{stroke:#78a9b7}.chart.teal path{stroke:#76a99c}.chart.coral path{stroke:#d48b80}
+#view-overview .chart-card small{font-size:7px;color:var(--muted);display:block;margin-top:4px}
+#view-overview .assistant p{font-size:9px;line-height:1.35;color:var(--ink);margin:10px 0}
+#view-overview .ask-box{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--panel)}
+#view-overview .ask-box input{border:0;outline:0;flex:1;min-width:0;padding:8px;font-size:9px;background:transparent;color:var(--ink)}
+#view-overview .ask-box button{border:0;background:transparent;padding:0 9px;color:var(--ink)}
+#view-overview .activity-list{display:grid;gap:0;margin-top:4px}
+#view-overview .activity-list span{display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:6px;border-top:1px solid var(--line);padding:7px 0;font-size:8px}
+#view-overview .activity-list span:first-child{border-top:0}
+#view-overview .activity-list i{width:7px;height:7px;border-radius:50%;background:#6da58d;margin-top:2px}
+#view-overview .activity-list b{font-weight:400;color:var(--muted)}
+#view-overview .info-rows{display:grid;gap:0;margin-top:5px}
+#view-overview .info-rows span{display:grid;grid-template-columns:78px minmax(0,1fr) auto;gap:8px;border-top:1px solid var(--line);padding:6px 0;font-size:8px}
+#view-overview .info-rows span:first-child{border-top:0}
+#view-overview .info-rows b{font-weight:700}.info-rows em{font-style:normal;color:var(--muted)}
+#view-overview .predictive p{font-size:9px;line-height:1.35;margin:8px 0;color:var(--ink)}
+#view-overview .predictive a{font-size:8px}
+#view-overview .network-health-content{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 10px;align-items:center;margin-top:7px}
+#view-overview .network-health-content p{margin:0;font-size:8px;color:var(--muted)}
+#view-overview .network-health-content .primary-button{font-size:8px;padding:6px 10px}
+#view-overview .network-mini{grid-column:1 / -1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+#view-overview .network-mini span{font-size:7px;color:var(--muted);border-left:1px solid var(--line);padding-left:7px}
+#view-overview .network-mini b{display:block;color:var(--ink);font-size:8px;margin-top:3px;white-space:nowrap}
+#view-overview .storage-mini{display:grid;grid-template-columns:72px 1fr;gap:9px;margin:8px 0}
+#view-overview .storage-mini>strong{font-size:18px;color:var(--ink)}
+#view-overview .storage-mini>strong small{display:block;font-size:7px;color:var(--muted);font-weight:400}
+#view-overview .storage-mini>div{display:grid;gap:4px}
+#view-overview .storage-mini span{display:flex;justify-content:space-between;font-size:7px;border-bottom:1px solid var(--line);padding-bottom:3px}
+#view-overview .storage-intelligence .soft-button{font-size:8px;padding:5px 8px}
+@media(max-width:1000px){
+ #view-overview .overview-grid{grid-template-columns:1fr 1.55fr 1fr}
+ #view-overview .snapshot-content{grid-template-columns:90px 1fr 1fr}
+ #view-overview .health-score-layout{grid-template-columns:82px 1fr 1fr}
+}
+@media(max-width:760px){
+ #view-overview .overview-grid{grid-template-columns:1fr}
+ #view-overview .overview-grid>.panel{grid-column:1!important;grid-row:auto!important}
+ #view-overview .health-score-layout,#view-overview .snapshot-content{grid-template-columns:1fr 1fr}
+ #view-overview .health-four-rows{grid-column:1/-1}
+ #view-overview .chart-grid{grid-template-columns:1fr}
+ #view-overview .network-health-content{grid-template-columns:1fr}
+}
+
+/* Stable sidebar toggle: lives outside the transformed sidebar so it cannot disappear when collapsed. */
+.sidebar-toggle{position:fixed;left:10px;top:88px;z-index:40;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);background:var(--panel);border-radius:7px;color:var(--ink);font-size:18px;box-shadow:var(--shadow);padding:0}
+.side-nav{padding-top:58px}
+@media(max-width:760px){.sidebar-toggle{top:68px}.side-nav{padding-top:58px}}
+
+/* ===== Corrected stable overview layout ===== */
+#view-overview .overview-grid{
+  grid-template-columns:minmax(300px,34fr) minmax(390px,42fr) minmax(210px,24fr) !important;
+  grid-template-rows:auto auto auto auto !important;
+  gap:8px !important;
+  align-items:stretch;
+}
+#view-overview .overview-grid>.panel{min-width:0;max-width:100%;overflow:hidden}
+#view-overview .health-score-panel{grid-column:1 !important;grid-row:1 !important;min-height:158px}
+#view-overview .compact-snapshot{grid-column:2 !important;grid-row:1 !important;min-height:158px}
+#view-overview .quick-status{grid-column:3 !important;grid-row:1 !important;min-height:158px}
+#view-overview .drainers{grid-column:1 !important;grid-row:2 !important;min-height:206px}
+#view-overview .live-performance{grid-column:2 !important;grid-row:2 !important;min-height:206px}
+#view-overview .assistant{grid-column:3 !important;grid-row:2 !important;min-height:206px}
+#view-overview .activity{grid-column:1 !important;grid-row:3 !important;min-height:148px}
+#view-overview .hardware-info{grid-column:2 !important;grid-row:3 !important;min-height:148px}
+#view-overview .predictive{grid-column:3 !important;grid-row:3 !important;min-height:148px}
+#view-overview .network-health{grid-column:2 !important;grid-row:4 !important;min-height:120px}
+#view-overview .storage-intelligence{grid-column:3 !important;grid-row:4 !important;min-height:120px}
+#view-overview .system-watcher{display:none !important}
+#view-overview .health-score-layout{grid-template-columns:92px minmax(130px,1fr) minmax(150px,1.05fr);height:118px}
+#view-overview .snapshot-content{grid-template-columns:105px minmax(120px,1fr) minmax(185px,1.15fr)}
+
+/* The navigation toggle is outside the transformed sidebar, so it remains visible after collapse. */
+.sidebar-toggle{position:fixed !important;left:10px !important;top:88px !important;z-index:100 !important;display:flex !important;align-items:center;justify-content:center;width:36px !important;height:36px !important;margin:0 !important;padding:0 !important;border:1px solid var(--line);background:var(--panel);border-radius:7px;color:var(--ink);box-shadow:var(--shadow)}
+.side-nav{top:80px !important;padding-top:58px !important}
+@media(max-width:760px){
+  .sidebar-toggle{top:68px !important}
+  .side-nav{top:58px !important;padding-top:58px !important}
+}
+
+
+/* PulseOS final layout correction: stable 3-column Overview, no empty gaps. */
+.overview-grid{grid-template-columns:minmax(235px,1.15fr) minmax(430px,2.05fr) minmax(235px,1.05fr)!important;grid-template-rows:auto auto auto auto!important;grid-auto-rows:auto!important;gap:8px!important;align-items:stretch!important;}
+.overview-grid>.health-score-panel{grid-column:1!important;grid-row:1!important;min-height:158px;}
+.overview-grid>.snapshot-panel{grid-column:2!important;grid-row:1!important;min-height:158px;}
+.overview-grid>.quick-status{grid-column:3!important;grid-row:1!important;min-height:158px;}
+.overview-grid>.drainers{grid-column:1!important;grid-row:2 / span 2!important;min-height:285px;}
+.overview-grid>.live-performance{grid-column:2!important;grid-row:2!important;min-height:285px;}
+.overview-grid>.assistant{grid-column:3!important;grid-row:2 / span 2!important;min-height:285px;}
+.overview-grid>.hardware-info{grid-column:2!important;grid-row:3!important;min-height:170px;}
+.overview-grid>.predictive{grid-column:3!important;grid-row:4!important;min-height:130px;}
+.overview-grid>.activity{grid-column:1!important;grid-row:4!important;min-height:130px;}
+.overview-grid>.network-health{grid-column:2!important;grid-row:4!important;min-height:130px;}
+.overview-grid>.storage-intelligence{grid-column:3!important;grid-row:5!important;min-height:130px;}
+.overview-grid>.system-watcher{display:block!important;grid-column:1 / span 2!important;grid-row:5!important;min-height:180px;}
+.health-score-layout{display:grid!important;grid-template-columns:90px minmax(140px,1fr) minmax(150px,1.1fr)!important;align-items:center!important;gap:12px!important;}
+.score-visual{display:flex;justify-content:center;}
+.health-four-rows{display:grid;gap:8px;}
+.health-four-rows>div{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:8px;}
+.health-four-rows>div b{text-align:right;}
+.snapshot-content{grid-template-columns:105px minmax(120px,1fr) minmax(170px,1.15fr)!important;}
+.live-performance .chart-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;}
+.live-performance .chart-card{min-width:0!important;}
+.assistant .panel-heading{align-items:flex-start;}
+.assistant-scope{margin:2px 0 0!important;font-size:9px!important;color:var(--muted)!important;}
+.ai-live{font-size:9px;background:#dcefe5;color:#2f7659;padding:4px 7px;border-radius:12px;white-space:nowrap;}
+.assistant-messages{height:150px;overflow:auto;display:flex;flex-direction:column;gap:6px;padding:5px 0;}
+.assistant-message{max-width:92%;padding:7px 9px;border-radius:7px;font-size:9px;line-height:1.35;white-space:pre-wrap;word-break:break-word;}
+.assistant-message.ai{align-self:flex-start;background:#eef3f4;color:var(--ink);border:1px solid var(--line);}
+.assistant-message.user{align-self:flex-end;background:#d9ece7;color:#24594f;}
+.assistant .ask-box{margin-top:auto;}
+.assistant .ask-box input{min-width:0;}
+/* Keep the sidebar toggle visible even when navigation is collapsed. */
+.sidebar-toggle{position:fixed!important;left:10px!important;top:88px!important;z-index:1000!important;display:flex!important;visibility:visible!important;opacity:1!important;}
+.sidebar-collapsed .sidebar-toggle{display:flex!important;visibility:visible!important;opacity:1!important;left:10px!important;top:88px!important;}
+@media (max-width:1100px){.overview-grid{grid-template-columns:minmax(190px,1fr) minmax(340px,1.7fr) minmax(190px,.9fr)!important;}.overview-grid>.drainers{grid-row:2 / span 2!important;}.assistant-message{font-size:8px;}}
+@media (max-width:820px){.overview-grid{grid-template-columns:1fr!important;}.overview-grid>.panel{grid-column:1!important;grid-row:auto!important;}.health-score-layout{grid-template-columns:80px 1fr!important;}.health-four-rows{grid-column:1 / -1;}.live-performance .chart-grid{grid-template-columns:1fr!important;}.assistant{min-height:260px!important;}}
+
+/* Dark theme readability for every overview/router/storage control. */
+body.theme-dark .panel,body.theme-dark .overview-grid>.panel{background:#111a1f;color:#edf4f5;border-color:#2a3940;}
+body.theme-dark .panel h2,body.theme-dark .panel h3,body.theme-dark .panel p,body.theme-dark .panel span,body.theme-dark .panel b,body.theme-dark .panel small{color:inherit;}
+body.theme-dark .assistant-message.ai,body.theme-dark .metric-tile,body.theme-dark .table-row,body.theme-dark .table-head{background:#182329;color:#e8f0f2;border-color:#314149;}
+body.theme-dark .assistant-message.user{background:#1e3b36;color:#dff6ef;}
+body.theme-dark .sidebar-toggle{background:#172228;color:#f1f7f8;border-color:#3b4b53;}
+body.theme-dark .health-four-rows>div,body.theme-dark .network-mini span,body.theme-dark .info-rows span{color:#dce7ea;}
+body.theme-dark input,body.theme-dark select{background:#182329;color:#eef5f6;border-color:#3a4a52;}
+
+/* Final Overview proportions tuned for the 1280–1440 desktop window. */
+#view-overview .overview-grid{grid-template-columns:minmax(330px,1.15fr) minmax(430px,1.35fr) minmax(200px,.62fr)!important;}
+#view-overview .health-score-layout{grid-template-columns:82px minmax(130px,1fr) minmax(135px,1fr)!important;}
+#view-overview .health-score-panel{overflow:hidden!important;}
+#view-overview .snapshot-panel{overflow:hidden!important;}
+#view-overview .live-performance{overflow:hidden!important;}
+#view-overview .live-performance .chart-grid{min-width:0!important;}
+#view-overview .live-performance .chart-card{overflow:hidden!important;}
+#view-overview .drainer-list,#view-overview .info-rows{min-width:0!important;}
+#view-overview .panel-heading h2{min-width:0;}
+@media (max-width:1120px){
+  #view-overview .overview-grid{grid-template-columns:minmax(290px,1fr) minmax(360px,1.25fr) minmax(180px,.7fr)!important;}
+  #view-overview .health-score-layout{grid-template-columns:78px minmax(110px,1fr)!important;}
+  #view-overview .health-four-rows{grid-column:1 / -1;}
+  #view-overview .assistant-messages{height:125px;}
+}
+
+/* System Watcher + live activity */
+#view-overview .system-watcher{display:block!important;grid-column:1!important;grid-row:5!important;min-height:220px}
+#view-overview .activity{grid-column:1!important;grid-row:4!important}
+.watcher-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.watcher-summary div{padding:9px;border:1px solid var(--line);border-radius:10px;background:var(--panel-soft)}.watcher-summary b{display:block;font-size:16px}.watcher-summary small{display:block;margin-top:3px;color:var(--muted);font-size:9px}.watcher-list{display:grid;gap:6px;max-height:115px;overflow:hidden}.watcher-list span{display:flex;justify-content:space-between;gap:10px;padding:7px 9px;border-bottom:1px solid var(--line);font-size:10px}.watcher-list small{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.system-watcher .soft-button{margin-top:9px}.panel-note{font-size:9px;color:var(--muted);margin:2px 0 0}.activity .activity-list{max-height:180px;overflow:auto}
+@media(max-width:1100px){#view-overview .system-watcher,#view-overview .activity{grid-column:1 / -1!important;grid-row:auto!important}.watcher-summary{grid-template-columns:repeat(3,1fr)}}
+
+
+/* ===== Overview reference layout: flexible cards, readable typography, straight bottom ===== */
+#view-overview .overview-grid{
+  display:grid!important;
+  grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  grid-auto-flow:row dense!important;
+  grid-auto-rows:minmax(0,auto)!important;
+  gap:12px!important;
+  align-items:stretch!important;
+}
+#view-overview .overview-grid>.panel{
+  min-width:0!important;
+  max-width:none!important;
+  height:auto!important;
+  padding:15px 16px!important;
+  overflow:hidden!important;
+  border-radius:12px!important;
+  box-shadow:0 3px 12px rgba(35,52,62,.08)!important;
+}
+#view-overview .overview-grid>.health-score-panel{grid-column:span 5!important;grid-row:auto!important;min-height:205px!important}
+#view-overview .overview-grid>.snapshot-panel{grid-column:span 5!important;grid-row:auto!important;min-height:205px!important}
+#view-overview .overview-grid>.quick-status{grid-column:span 2!important;grid-row:auto!important;min-height:205px!important}
+#view-overview .overview-grid>.drainers{grid-column:span 3!important;grid-row:span 2!important;min-height:310px!important}
+#view-overview .overview-grid>.live-performance{grid-column:span 6!important;grid-row:span 1!important;min-height:310px!important}
+#view-overview .overview-grid>.assistant{grid-column:span 3!important;grid-row:span 2!important;min-height:310px!important}
+#view-overview .overview-grid>.hardware-info{grid-column:span 4!important;min-height:180px!important}
+#view-overview .overview-grid>.activity{grid-column:span 5!important;min-height:180px!important;cursor:pointer}
+#view-overview .overview-grid>.predictive{grid-column:span 3!important;min-height:180px!important}
+#view-overview .overview-grid>.network-health{grid-column:span 4!important;min-height:155px!important}
+#view-overview .overview-grid>.storage-intelligence{grid-column:span 4!important;min-height:155px!important}
+#view-overview .overview-grid>.system-watcher{grid-column:1/-1!important;grid-row:auto!important;min-height:210px!important}
+#view-overview .panel-heading h2,
+#view-overview .panel-heading>span:first-child{font-size:14px!important;letter-spacing:-.15px!important}
+#view-overview .panel-heading small{font-size:10px!important}
+#view-overview .panel p,
+#view-overview .panel-note{font-size:11px!important;line-height:1.45!important}
+#view-overview .activity-list span{font-size:11px!important;padding:9px 0!important}
+#view-overview .activity-list b{font-size:10px!important}
+#view-overview .health-four-rows{gap:9px!important}
+#view-overview .health-four-rows>div{font-size:11px!important}
+#view-overview .health-four-rows b{font-size:12px!important}
+#view-overview .snapshot-content{grid-template-columns:135px 1fr 1.15fr!important;gap:14px!important}
+#view-overview .device-illustration{width:125px!important;height:86px!important}
+#view-overview .device-details,.overview-grid .spec-list{font-size:11px!important;gap:8px!important}
+#view-overview .device-details b,.overview-grid .spec-list b{font-size:12px!important}
+#view-overview .status-list button{font-size:11px!important;padding:8px 0!important;gap:6px!important}
+#view-overview .status-list b{font-size:10px!important}
+#view-overview .drainer-list{gap:10px!important}
+#view-overview .drainer-list>div{font-size:11px!important}
+#view-overview .drainer-list small{font-size:9px!important}
+#view-overview .drainer-list b{font-size:11px!important}
+#view-overview .chart-grid{gap:10px!important}
+#view-overview .chart-card{padding:11px!important}
+#view-overview .chart-card>span{font-size:12px!important}
+#view-overview .chart{height:105px!important}
+#view-overview .assistant{display:flex!important;flex-direction:column!important}
+#view-overview .assistant-messages{flex:1;min-height:180px!important;max-height:245px!important}
+#view-overview .assistant-message{font-size:11px!important;line-height:1.45!important;padding:9px 10px!important}
+#view-overview .ask-box input{font-size:11px!important;padding:10px!important}
+#view-overview .watcher-summary b{font-size:20px!important}
+#view-overview .watcher-summary small{font-size:10px!important}
+#view-overview .watcher-list{max-height:125px!important}
+#view-overview .watcher-list span{font-size:11px!important;padding:8px 10px!important}
+#view-overview .watcher-list small{font-size:9px!important}
+.heading-with-icon{display:flex!important;align-items:center!important;gap:8px!important}
+.ui-icon,.panel-icon{width:18px;height:18px;flex:0 0 18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;color:#438e84}
+.nav-item .ui-icon{width:19px;height:19px;flex-basis:19px}
+.heading-with-icon .panel-icon{width:17px;height:17px;flex-basis:17px}
+#view-overview .assistant .panel-icon{color:#438e84}
+#view-overview .activity:hover,#view-overview .system-watcher:hover{border-color:#a9cfc8;transform:translateY(-1px);transition:transform .18s,border-color .18s}
+@media(max-width:1200px){
+  #view-overview .overview-grid{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+  #view-overview .overview-grid>.health-score-panel,#view-overview .overview-grid>.snapshot-panel{grid-column:span 3!important}
+  #view-overview .overview-grid>.quick-status{grid-column:span 6!important}
+  #view-overview .overview-grid>.drainers,#view-overview .overview-grid>.assistant{grid-column:span 3!important}
+  #view-overview .overview-grid>.live-performance{grid-column:span 6!important}
+  #view-overview .overview-grid>.hardware-info,#view-overview .overview-grid>.activity,#view-overview .overview-grid>.predictive{grid-column:span 3!important}
+  #view-overview .overview-grid>.network-health,#view-overview .overview-grid>.storage-intelligence{grid-column:span 3!important}
+}
+@media(max-width:760px){
+  #view-overview .overview-grid{grid-template-columns:1fr!important}
+  #view-overview .overview-grid>.panel{grid-column:1!important;grid-row:auto!important;min-height:auto!important}
+  #view-overview .snapshot-content{grid-template-columns:1fr!important}
+}
+
+/* ===== Final reference layout: cards positioned like the supplied reference image ===== */
+#view-overview .overview-grid{
+  display:grid !important;
+  grid-template-columns:repeat(12,minmax(0,1fr)) !important;
+  grid-template-rows:auto auto auto auto auto !important;
+  grid-auto-flow:row !important;
+  gap:12px !important;
+  align-items:stretch !important;
+}
+
+/* Row 1: Health / Snapshot / Quick Health */
+#view-overview .overview-grid > .health-score-panel{grid-column:1 / 6 !important;grid-row:1 !important;min-height:205px !important;}
+#view-overview .overview-grid > .snapshot-panel{grid-column:6 / 11 !important;grid-row:1 !important;min-height:205px !important;}
+#view-overview .overview-grid > .quick-status{grid-column:11 / 13 !important;grid-row:1 !important;min-height:205px !important;}
+
+/* Row 2: Performance / Drainers / Recent Activity */
+#view-overview .overview-grid > .live-performance{grid-column:1 / 6 !important;grid-row:2 !important;min-height:270px !important;}
+#view-overview .overview-grid > .drainers{grid-column:6 / 9 !important;grid-row:2 !important;min-height:270px !important;}
+#view-overview .overview-grid > .activity{grid-column:9 / 13 !important;grid-row:2 !important;min-height:270px !important;}
+
+/* Row 3: Hardware / Predictive / Storage / Network */
+#view-overview .overview-grid > .hardware-info{grid-column:1 / 4 !important;grid-row:3 !important;min-height:175px !important;}
+#view-overview .overview-grid > .predictive{grid-column:4 / 7 !important;grid-row:3 !important;min-height:175px !important;}
+#view-overview .overview-grid > .storage-intelligence{grid-column:7 / 10 !important;grid-row:3 !important;min-height:175px !important;}
+#view-overview .overview-grid > .network-health{grid-column:10 / 13 !important;grid-row:3 !important;min-height:175px !important;}
+
+/* Row 4: System Watcher */
+#view-overview .overview-grid > .system-watcher{grid-column:1 / 13 !important;grid-row:4 !important;min-height:205px !important;}
+
+/* Row 5: AI is always the final/lowest card on Overview. */
+#view-overview .overview-grid > .assistant{
+  grid-column:1 / 13 !important;
+  grid-row:5 !important;
+  min-height:118px !important;
+  height:auto !important;
+  align-self:start !important;
+  display:flex !important;
+  flex-direction:column !important;
+}
+
+/* Let the AI card grow naturally as the conversation grows instead of clipping it. */
+#view-overview .assistant .assistant-messages{
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  flex:0 0 auto !important;
+  overflow:visible !important;
+  padding:7px 0 2px !important;
+}
+#view-overview .assistant-message{
+  max-width:min(78%,820px) !important;
+}
+#view-overview .assistant .ask-box{
+  margin-top:10px !important;
+  flex:0 0 auto !important;
+}
+
+/* Reference-like proportions inside the wider AI card. */
+#view-overview .assistant .panel-heading{margin-bottom:0 !important;}
+#view-overview .assistant .assistant-scope{font-size:10px !important;}
+#view-overview .assistant .ask-box input{font-size:12px !important;min-height:40px !important;}
+#view-overview .assistant .ask-box button{min-width:42px !important;min-height:40px !important;}
+
+@media(max-width:1200px){
+  #view-overview .overview-grid{grid-template-columns:repeat(6,minmax(0,1fr)) !important;grid-template-rows:auto auto auto auto auto auto !important;}
+  #view-overview .overview-grid > .health-score-panel{grid-column:1 / 4 !important;grid-row:1 !important;}
+  #view-overview .overview-grid > .snapshot-panel{grid-column:4 / 7 !important;grid-row:1 !important;}
+  #view-overview .overview-grid > .quick-status{grid-column:1 / 7 !important;grid-row:2 !important;min-height:150px !important;}
+  #view-overview .overview-grid > .live-performance{grid-column:1 / 4 !important;grid-row:3 !important;}
+  #view-overview .overview-grid > .drainers{grid-column:4 / 7 !important;grid-row:3 !important;}
+  #view-overview .overview-grid > .activity{grid-column:1 / 7 !important;grid-row:4 !important;}
+  #view-overview .overview-grid > .hardware-info{grid-column:1 / 3 !important;grid-row:5 !important;}
+  #view-overview .overview-grid > .predictive{grid-column:3 / 5 !important;grid-row:5 !important;}
+  #view-overview .overview-grid > .storage-intelligence{grid-column:5 / 7 !important;grid-row:5 !important;}
+  #view-overview .overview-grid > .network-health{grid-column:1 / 7 !important;grid-row:6 !important;}
+  #view-overview .overview-grid > .system-watcher{grid-column:1 / 7 !important;grid-row:7 !important;}
+  #view-overview .overview-grid > .assistant{grid-column:1 / 7 !important;grid-row:8 !important;}
+}
+
+@media(max-width:760px){
+  #view-overview .overview-grid{grid-template-columns:1fr !important;grid-template-rows:none !important;}
+  #view-overview .overview-grid > .panel{grid-column:1 !important;grid-row:auto !important;min-height:auto !important;}
+  #view-overview .overview-grid > .assistant{grid-column:1 !important;grid-row:auto !important;min-height:118px !important;}
+  #view-overview .assistant-message{max-width:92% !important;}
+}
+
+/* ===== FINAL CONTENT-SAFE LAYOUT =====
+   No Overview card is allowed to clip its own content.
+   Card height is content-driven; rows grow with the tallest card. */
+#view-overview .overview-grid{
+  grid-template-rows:max-content max-content max-content max-content max-content !important;
+  align-items:start !important;
+}
+#view-overview .overview-grid > .panel{
+  box-sizing:border-box !important;
+  min-width:0 !important;
+  width:100% !important;
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  overflow:visible !important;
+  align-self:start !important;
+}
+
+/* Never hide text just to preserve the reference proportions. */
+#view-overview .panel,
+#view-overview .panel *{
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+#view-overview .panel-heading,
+#view-overview .panel-heading > div{
+  min-width:0;
+}
+#view-overview .panel-heading h2{
+  white-space:normal !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
+}
+
+/* Dense information rows wrap instead of being clipped. */
+#view-overview .spec-list span,
+#view-overview .info-rows span,
+#view-overview .storage-mini span{
+  white-space:normal !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
+}
+#view-overview .spec-list b,
+#view-overview .info-rows b,
+#view-overview .info-rows em,
+#view-overview .storage-mini b{
+  white-space:normal !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
+  overflow-wrap:anywhere !important;
+}
+#view-overview .info-rows span{
+  grid-template-columns:minmax(70px,.7fr) minmax(0,1.4fr) minmax(70px,.8fr) !important;
+  align-items:start !important;
+}
+
+/* Performance charts stay inside their card without hiding labels. */
+#view-overview .chart-grid{
+  min-width:0 !important;
+  align-items:stretch !important;
+}
+#view-overview .chart-card{
+  min-width:0 !important;
+  height:auto !important;
+  overflow:visible !important;
+}
+#view-overview .chart-card > span{
+  white-space:normal !important;
+}
+#view-overview .chart-card small{
+  white-space:normal !important;
+  overflow:visible !important;
+  display:block !important;
+}
+
+/* Activity and watcher lists expand with their content. */
+#view-overview .activity-list,
+#view-overview .watcher-list{
+  max-height:none !important;
+  height:auto !important;
+  overflow:visible !important;
+}
+#view-overview .activity-list span,
+#view-overview .watcher-list span{
+  min-width:0 !important;
+  white-space:normal !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
+}
+#view-overview .activity-list span b,
+#view-overview .watcher-list small,
+#view-overview .watcher-list em{
+  white-space:normal !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
+  overflow-wrap:anywhere !important;
+}
+
+/* AI is always the last card and grows with every message. */
+#view-overview .overview-grid > .assistant{
+  grid-column:1 / 13 !important;
+  grid-row:5 !important;
+  min-height:0 !important;
+  height:auto !important;
+  max-height:none !important;
+  overflow:visible !important;
+  display:flex !important;
+  flex-direction:column !important;
+}
+#view-overview .assistant .assistant-messages{
+  display:flex !important;
+  flex-direction:column !important;
+  gap:8px !important;
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  overflow:visible !important;
+  flex:none !important;
+  padding:8px 0 2px !important;
+}
+#view-overview .assistant-message{
+  width:fit-content;
+  max-width:min(82%,900px) !important;
+  height:auto !important;
+  min-height:0 !important;
+  white-space:pre-wrap !important;
+  overflow:visible !important;
+  overflow-wrap:anywhere !important;
+  word-break:break-word !important;
+}
+#view-overview .assistant .ask-box{
+  width:100% !important;
+  flex:none !important;
+  margin-top:10px !important;
+}
+#view-overview .assistant .ask-box input{
+  min-width:0 !important;
+  width:100% !important;
+  white-space:normal !important;
+}
+
+/* The reference layout is preserved on desktop; smaller screens stack safely. */
+@media(max-width:1200px){
+  #view-overview .overview-grid > .assistant{
+    grid-column:1 / 7 !important;
+    grid-row:8 !important;
+  }
+}
+@media(max-width:760px){
+  #view-overview .overview-grid > .panel,
+  #view-overview .overview-grid > .assistant{
+    grid-column:1 !important;
+    grid-row:auto !important;
+  }
+  #view-overview .chart-grid{grid-template-columns:1fr !important;}
+  #view-overview .health-score-layout{height:auto !important;}
+  #view-overview .snapshot-content{grid-template-columns:1fr !important;}
+  #view-overview .assistant-message{max-width:94% !important;}
+}
+
+/* ===== FINAL FIXED OVERVIEW FIT =====
+   Match the supplied reference proportions. Every non-AI card keeps a fixed
+   footprint and its internal typography/spacing is sized to fit. Only AI grows. */
+@media (min-width:1201px){
+  #view-overview .overview-grid{
+    display:grid!important;
+    grid-template-columns:repeat(12,minmax(0,1fr))!important;
+    grid-template-rows:283px 168px 168px 194px 226px auto!important;
+    gap:12px!important;
+    align-items:stretch!important;
+    grid-auto-flow:row!important;
+  }
+  #view-overview .overview-grid>.panel{
+    min-width:0!important;
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+    box-sizing:border-box!important;
+    align-self:stretch!important;
+  }
+
+  /* Row 1 — exactly three cards. */
+  #view-overview .health-score-panel{grid-column:1/6!important;grid-row:1!important}
+  #view-overview .snapshot-panel{grid-column:6/11!important;grid-row:1!important}
+  #view-overview .quick-status{grid-column:11/13!important;grid-row:1!important}
+
+  /* Row 2–3 — performance and drainers use the large reference footprint. */
+  #view-overview .live-performance{grid-column:1/7!important;grid-row:2/4!important}
+  #view-overview .drainers{grid-column:7/10!important;grid-row:2/4!important}
+  #view-overview .activity{grid-column:1/6!important;grid-row:4!important}
+  #view-overview .hardware-info{grid-column:1/4!important;grid-row:3!important}
+  #view-overview .predictive{grid-column:4/7!important;grid-row:3!important}
+
+  /* Row 4 — activity / network / storage. */
+  #view-overview .network-health{grid-column:6/10!important;grid-row:4!important}
+  #view-overview .storage-intelligence{grid-column:10/13!important;grid-row:4!important}
+
+  /* Row 5 — watcher. */
+  #view-overview .system-watcher{grid-column:1/13!important;grid-row:5!important}
+
+  /* AI is deliberately the only card whose height is content-driven. */
+  #view-overview .assistant{
+    grid-column:1/13!important;
+    grid-row:6!important;
+    height:auto!important;
+    min-height:150px!important;
+    max-height:none!important;
+    overflow:visible!important;
+    align-self:start!important;
+    display:flex!important;
+    flex-direction:column!important;
+  }
+
+  /* Compact the fixed cards enough that nothing is clipped. */
+  #view-overview .panel{padding:14px!important}
+  #view-overview .panel-heading{min-height:22px!important}
+  #view-overview .panel-heading h2{font-size:14px!important;line-height:1.15!important}
+  #view-overview .panel-heading small{font-size:9px!important}
+  #view-overview .panel-heading>a{font-size:10px!important}
+
+  #view-overview .health-score-layout{grid-template-columns:125px minmax(120px,1fr) 1fr!important;gap:12px!important;align-items:center!important}
+  #view-overview .score-ring-animated{width:102px!important;height:102px!important}
+  #view-overview .score-center strong{font-size:23px!important}
+  #view-overview .health-score-summary p{font-size:10px!important;line-height:1.3!important}
+  #view-overview .health-four-rows div{padding:7px 2px!important;font-size:11px!important}
+
+  #view-overview .snapshot-content{grid-template-columns:120px minmax(125px,1fr) minmax(150px,1.2fr)!important;gap:12px!important}
+  #view-overview .device-details{font-size:10px!important;gap:7px!important}
+  #view-overview .device-details b{font-size:12px!important}
+  #view-overview .spec-list{font-size:10px!important;gap:6px!important}
+  #view-overview .spec-list b{font-size:11px!important}
+
+  #view-overview .status-list{gap:0!important}
+  #view-overview .status-list button{min-height:42px!important;padding:7px 3px!important;font-size:11px!important}
+  #view-overview .status-list button b{font-size:10px!important}
+
+  #view-overview .drainer-list{gap:0!important}
+  #view-overview .drainer-list>div{min-height:48px!important;padding:8px 0!important;font-size:11px!important}
+  #view-overview .drainer-list small{font-size:8px!important}
+  #view-overview .drainer-list b{font-size:10px!important}
+
+  #view-overview .live-performance .chart-grid{gap:10px!important}
+  #view-overview .live-performance .chart-card{padding:9px!important;min-width:0!important}
+  #view-overview .live-performance .chart-card>span{font-size:11px!important}
+  #view-overview .live-performance .chart-card>span b{font-size:12px!important}
+  #view-overview .live-performance .chart-card small{font-size:7px!important}
+
+  #view-overview .info-rows{gap:0!important}
+  #view-overview .info-rows span{min-height:28px!important;padding:5px 0!important;font-size:9px!important}
+  #view-overview .info-rows b{font-size:9px!important}
+
+  #view-overview .predictive p{font-size:10px!important;line-height:1.35!important}
+  #view-overview .predictive .metric-line{font-size:10px!important}
+
+  #view-overview .activity-list span{min-height:31px!important;padding:6px 0!important;font-size:10px!important}
+  #view-overview .activity-list span b{font-size:9px!important}
+  #view-overview .network-health-content p{font-size:10px!important;margin:6px 0!important}
+  #view-overview .network-mini{font-size:8px!important;gap:6px!important}
+  #view-overview .network-mini b{font-size:9px!important}
+  #view-overview .storage-mini{grid-template-columns:65px minmax(0,1fr)!important;gap:7px!important}
+  #view-overview .storage-mini>strong{font-size:20px!important}
+  #view-overview .storage-mini>div{font-size:8px!important;gap:3px!important}
+  #view-overview .storage-mini span{padding-bottom:3px!important}
+
+  #view-overview .system-watcher .watcher-summary{gap:10px!important}
+  #view-overview .system-watcher .watcher-list span{padding:5px 0!important;font-size:9px!important}
+
+  /* AI: no fixed message area, no clipping, natural expansion. */
+  #view-overview .assistant .assistant-messages{
+    height:auto!important;min-height:38px!important;max-height:none!important;
+    overflow:visible!important;flex:none!important;display:flex!important;
+    flex-direction:column!important;gap:8px!important;padding:9px 0 2px!important;
+  }
+  #view-overview .assistant-message{
+    width:fit-content!important;max-width:78%!important;height:auto!important;
+    min-height:0!important;overflow:visible!important;white-space:pre-wrap!important;
+    overflow-wrap:anywhere!important;word-break:break-word!important;
+    font-size:11px!important;line-height:1.45!important;padding:9px 11px!important;
+  }
+  #view-overview .assistant .ask-box{margin-top:10px!important;flex:none!important}
+}
+
+/* Tablet: preserve equal gaps and safe stacking. */
+@media (min-width:761px) and (max-width:1200px){
+  #view-overview .overview-grid{gap:12px!important;align-items:stretch!important}
+  #view-overview .overview-grid>.panel:not(.assistant){height:100%!important;min-height:0!important;max-height:none!important;overflow:visible!important}
+  #view-overview .assistant{height:auto!important;min-height:150px!important;max-height:none!important;overflow:visible!important}
+}
+
+/* ===== PulseOS reference screenshot layout — FINAL FIT =====
+   Desktop proportions intentionally mirror the supplied reference image.
+   Only the AI Assistant is content-growing; every other Overview card has
+   a fixed footprint and compact internal layout so cards never overlap. */
+@media (min-width:1201px){
+  #view-overview .overview-grid{
+    display:grid!important;
+    grid-template-columns:repeat(12,minmax(0,1fr))!important;
+    grid-template-rows:202px 230px 155px 130px auto!important;
+    gap:12px!important;
+    align-items:stretch!important;
+    grid-auto-flow:row!important;
+  }
+  #view-overview .overview-grid>.panel{
+    box-sizing:border-box!important;
+    width:100%!important;
+    min-width:0!important;
+    min-height:0!important;
+    height:100%!important;
+    max-height:none!important;
+    align-self:stretch!important;
+    overflow:hidden!important;
+  }
+
+  /* Row 1 */
+  #view-overview .health-score-panel{grid-column:1/6!important;grid-row:1!important}
+  #view-overview .snapshot-panel{grid-column:6/11!important;grid-row:1!important}
+  #view-overview .quick-status{grid-column:11/13!important;grid-row:1!important}
+
+  /* Row 2 */
+  #view-overview .live-performance{grid-column:1/7!important;grid-row:2!important}
+  #view-overview .drainers{grid-column:7/10!important;grid-row:2!important}
+  #view-overview .activity{grid-column:10/13!important;grid-row:2!important}
+
+  /* Row 3 */
+  #view-overview .hardware-info{grid-column:1/4!important;grid-row:3!important}
+  #view-overview .predictive{grid-column:4/7!important;grid-row:3!important}
+  #view-overview .storage-intelligence{grid-column:7/10!important;grid-row:3!important}
+  #view-overview .network-health{grid-column:10/13!important;grid-row:3!important}
+
+  /* Row 4 */
+  #view-overview .system-watcher{grid-column:1/13!important;grid-row:4!important;display:flex!important}
+
+  /* Row 5 — only AI grows */
+  #view-overview .assistant{
+    grid-column:1/13!important;grid-row:5!important;
+    height:auto!important;min-height:76px!important;max-height:none!important;
+    overflow:visible!important;align-self:start!important;
+    display:flex!important;flex-direction:column!important;
+  }
+
+  /* Shared compact sizing */
+  #view-overview .panel{padding:12px!important}
+  #view-overview .panel-heading{margin-bottom:5px!important;min-height:20px!important}
+  #view-overview .panel-heading h2{font-size:14px!important;line-height:1.15!important}
+  #view-overview .panel-heading small{font-size:8px!important;line-height:1.2!important}
+  #view-overview .panel-heading>a{font-size:9px!important;white-space:nowrap!important}
+
+  /* Health */
+  #view-overview .health-score-layout{
+    grid-template-columns:105px minmax(110px,1fr) minmax(135px,1.05fr)!important;
+    gap:10px!important;height:155px!important;align-items:center!important;
+  }
+  #view-overview .score-ring-animated{width:100px!important;height:100px!important}
+  #view-overview .score-center strong{font-size:24px!important}
+  #view-overview .health-grade-chip{font-size:8px!important;padding:4px 8px!important}
+  #view-overview .health-score-summary p{font-size:9px!important;line-height:1.25!important;margin:8px 0!important}
+  #view-overview .health-score-summary .chip-button{font-size:7px!important;padding:5px 7px!important}
+  #view-overview .health-four-rows div{padding:6px 2px!important;font-size:10px!important}
+
+  /* Snapshot */
+  #view-overview .snapshot-content{
+    grid-template-columns:105px minmax(115px,1fr) minmax(150px,1.2fr)!important;
+    gap:10px!important;margin-top:4px!important;align-items:center!important;
+  }
+  #view-overview .image-device{width:105px!important;height:78px!important}
+  #view-overview .image-device img{width:100px!important;max-height:76px!important}
+  #view-overview .device-details{gap:5px!important;font-size:8px!important}
+  #view-overview .device-details b{font-size:11px!important}
+  #view-overview .spec-list{padding:6px 8px!important;gap:5px!important;font-size:8px!important}
+  #view-overview .spec-list span{padding-bottom:3px!important;gap:5px!important}
+  #view-overview .spec-list b{font-size:9px!important;max-width:68%!important}
+
+  /* Quick health */
+  #view-overview .quick-status .status-list{margin-top:0!important}
+  #view-overview .quick-status .status-list button{min-height:33px!important;padding:5px 0!important;font-size:10px!important;grid-template-columns:11px minmax(0,1fr) auto 9px!important}
+  #view-overview .quick-status .status-list button b{font-size:9px!important}
+  #view-overview .status-good-dot,#view-overview .network-status-dot{width:8px!important;height:8px!important}
+
+  /* Performance */
+  #view-overview .live-performance .panel-heading{margin-bottom:5px!important}
+  #view-overview .range-buttons button{padding:4px 7px!important;font-size:7px!important}
+  #view-overview .chart-grid{gap:8px!important;margin-top:0!important}
+  #view-overview .chart-card{padding:7px!important;height:168px!important;box-sizing:border-box!important;overflow:hidden!important}
+  #view-overview .chart-card>span{font-size:10px!important;line-height:1.1!important;gap:4px!important}
+  #view-overview .chart-card>span b{font-size:11px!important}
+  #view-overview .chart{height:102px!important;margin-top:6px!important}
+  #view-overview .chart-card small{font-size:7px!important;margin-top:3px!important;white-space:nowrap!important}
+
+  /* Resource drainers */
+  #view-overview .drainer-list{margin-top:0!important}
+  #view-overview .drainer-list>div{min-height:40px!important;padding:5px 0!important;grid-template-columns:18px minmax(0,1fr) auto!important;font-size:10px!important}
+  #view-overview .drainer-list i{font-size:10px!important}
+  #view-overview .drainer-list small{font-size:7px!important}
+  #view-overview .drainer-list b{font-size:9px!important}
+
+  /* Activity */
+  #view-overview .activity-list{margin-top:0!important}
+  #view-overview .activity-list span{min-height:34px!important;padding:6px 0!important;font-size:9px!important;grid-template-columns:8px minmax(0,1fr) auto!important}
+  #view-overview .activity-list b{font-size:8px!important;white-space:nowrap!important}
+
+  /* Hardware / predictive */
+  #view-overview .info-rows{margin-top:0!important}
+  #view-overview .info-rows span{min-height:22px!important;padding:3px 0!important;font-size:7px!important;grid-template-columns:62px minmax(0,1fr) auto!important;gap:5px!important}
+  #view-overview .info-rows b{font-size:8px!important}
+  #view-overview .info-rows em{font-size:7px!important;white-space:nowrap!important}
+  #view-overview .predictive p{font-size:8px!important;line-height:1.25!important;margin:5px 0!important}
+  #view-overview .predictive a{font-size:7px!important}
+  #view-overview .predictive .panel-heading{margin-bottom:2px!important}
+
+  /* Storage */
+  #view-overview .storage-mini{grid-template-columns:62px minmax(0,1fr)!important;gap:7px!important;margin:5px 0!important}
+  #view-overview .storage-mini>strong{font-size:20px!important;line-height:1!important}
+  #view-overview .storage-mini>strong small{font-size:7px!important}
+  #view-overview .storage-mini>div{gap:3px!important}
+  #view-overview .storage-mini span{font-size:7px!important;padding-bottom:2px!important;gap:4px!important}
+  #view-overview .storage-intelligence .soft-button{font-size:7px!important;padding:4px 7px!important}
+
+  /* Network */
+  #view-overview .network-health-content{grid-template-columns:minmax(0,1fr) auto minmax(92px,1.15fr)!important;gap:7px!important;margin-top:4px!important}
+  #view-overview .network-health-content p{font-size:7px!important;line-height:1.2!important}
+  #view-overview .network-health-content .primary-button{font-size:7px!important;padding:5px 8px!important}
+  #view-overview .network-mini{gap:5px!important}
+  #view-overview .network-mini span{font-size:6px!important;padding-left:5px!important}
+  #view-overview .network-mini b{font-size:7px!important;line-height:1.15!important;white-space:normal!important}
+
+  /* System watcher — fixed reference footprint; card itself never pushes neighbours. */
+  #view-overview .system-watcher{padding:10px 12px!important}
+  #view-overview .system-watcher .panel-heading{margin-bottom:3px!important}
+  #view-overview .system-watcher .panel-note{font-size:7px!important;margin:1px 0!important}
+  #view-overview .system-watcher .watcher-summary{gap:8px!important;margin:3px 0!important}
+  #view-overview .system-watcher .watcher-summary>div{padding:5px 8px!important;min-height:40px!important}
+  #view-overview .system-watcher .watcher-summary b{font-size:16px!important;line-height:1!important}
+  #view-overview .system-watcher .watcher-summary small{font-size:7px!important}
+  #view-overview .system-watcher .watcher-list{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:0 14px!important;margin:2px 0!important;max-height:25px!important;overflow:hidden!important}
+  #view-overview .system-watcher .watcher-list span{padding:3px 0!important;font-size:7px!important;min-height:22px!important;overflow:hidden!important}
+  #view-overview .system-watcher .watcher-list span:nth-child(n+3){display:none!important}
+  #view-overview .system-watcher>#watcherViewAll{font-size:7px!important;padding:4px 7px!important;margin-top:2px!important}
+
+  /* AI only: natural expansion with every new message. */
+  #view-overview .assistant{padding:11px 12px!important}
+  #view-overview .assistant .panel-heading{margin-bottom:0!important}
+  #view-overview .assistant .assistant-scope{font-size:8px!important;margin:2px 0!important}
+  #view-overview .assistant .assistant-messages{
+    display:flex!important;flex-direction:column!important;gap:7px!important;
+    height:auto!important;min-height:30px!important;max-height:none!important;
+    overflow:visible!important;flex:none!important;padding:7px 0 1px!important;
+  }
+  #view-overview .assistant-message{
+    width:fit-content!important;max-width:78%!important;height:auto!important;min-height:0!important;
+    font-size:10px!important;line-height:1.35!important;padding:8px 10px!important;
+    white-space:pre-wrap!important;overflow:visible!important;overflow-wrap:anywhere!important;word-break:break-word!important;
+  }
+  #view-overview .assistant .ask-box{margin-top:8px!important;flex:none!important;min-height:38px!important}
+  #view-overview .assistant .ask-box input{font-size:10px!important;padding:8px!important}
+  #view-overview .assistant .ask-box button{min-width:38px!important}
+}
+
+@media (min-width:761px) and (max-width:1200px){
+  #view-overview .overview-grid{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:12px!important}
+  #view-overview .health-score-panel{grid-column:1/4!important;grid-row:auto!important}
+  #view-overview .snapshot-panel{grid-column:4/7!important;grid-row:auto!important}
+  #view-overview .quick-status{grid-column:1/7!important;grid-row:auto!important}
+  #view-overview .live-performance{grid-column:1/4!important;grid-row:auto!important}
+  #view-overview .drainers{grid-column:4/7!important;grid-row:auto!important}
+  #view-overview .activity{grid-column:1/7!important;grid-row:auto!important}
+  #view-overview .hardware-info,#view-overview .predictive,#view-overview .storage-intelligence{grid-column:span 2!important;grid-row:auto!important}
+  #view-overview .network-health{grid-column:1/7!important;grid-row:auto!important}
+  #view-overview .system-watcher{grid-column:1/7!important;grid-row:auto!important}
+  #view-overview .assistant{grid-column:1/7!important;grid-row:auto!important;height:auto!important;min-height:76px!important}
+}
+
+/* FINAL OVERVIEW FIT: fixed normal-card footprints, content-safe sizing, AI is the only expanding card. */
+@media (min-width: 1201px){
+  #view-overview .overview-grid{
+    display:grid!important;
+    grid-template-columns:repeat(12,minmax(0,1fr))!important;
+    grid-template-rows:205px 225px 180px 160px auto!important;
+    grid-auto-rows:auto!important;
+    gap:12px!important;
+    align-items:stretch!important;
+  }
+  #view-overview .overview-grid>.panel{min-width:0!important;min-height:0!important;box-sizing:border-box!important;overflow:hidden!important}
+  #view-overview .health-score-panel{grid-column:1/5!important;grid-row:1!important}
+  #view-overview .snapshot-panel{grid-column:5/10!important;grid-row:1!important}
+  #view-overview .quick-status{grid-column:10/13!important;grid-row:1!important}
+  #view-overview .live-performance{grid-column:1/6!important;grid-row:2!important}
+  #view-overview .drainers{grid-column:6/9!important;grid-row:2!important}
+  #view-overview .activity{grid-column:9/13!important;grid-row:2!important}
+  #view-overview .hardware-info{grid-column:1/4!important;grid-row:3!important}
+  #view-overview .predictive{grid-column:4/7!important;grid-row:3!important}
+  #view-overview .storage-intelligence{grid-column:7/10!important;grid-row:3!important}
+  #view-overview .network-health{grid-column:10/13!important;grid-row:3!important}
+  #view-overview .system-watcher{grid-column:1/13!important;grid-row:4!important}
+  #view-overview .assistant{grid-column:1/13!important;grid-row:5!important;height:auto!important;min-height:82px!important;max-height:none!important;overflow:visible!important}
+
+  #view-overview .panel{padding:12px!important}
+  #view-overview .panel-heading{margin-bottom:7px!important;min-height:21px!important}
+  #view-overview .panel-heading h2{font-size:15px!important;line-height:1.15!important}
+  #view-overview .panel-heading small,.panel-note{font-size:9px!important}
+
+  /* Health score: three columns, no clipped score details. */
+  #view-overview .health-score-layout{height:155px!important;grid-template-columns:105px minmax(0,1fr) 155px!important;gap:13px!important}
+  #view-overview .score-ring-animated{width:98px!important;height:98px!important}
+  #view-overview .score-center strong{font-size:25px!important}
+  #view-overview .health-score-summary p{font-size:10px!important;line-height:1.35!important;margin:7px 0!important}
+  #view-overview .health-four-rows>div{min-height:29px!important;padding:5px 0!important;font-size:11px!important}
+
+  /* Snapshot keeps image + device details + specs on one horizontal line. */
+  #view-overview .snapshot-content{grid-template-columns:120px minmax(145px,1fr) minmax(190px,1.2fr)!important;gap:14px!important;align-items:center!important}
+  #view-overview .image-device{width:115px!important;height:82px!important}
+  #view-overview .image-device img{width:108px!important;max-height:80px!important}
+  #view-overview .device-details{gap:7px!important;font-size:9px!important}
+  #view-overview .device-details b{font-size:12px!important;white-space:nowrap!important}
+  #view-overview .spec-list{padding:7px 9px!important;gap:5px!important}
+  #view-overview .spec-list span{font-size:9px!important;padding-bottom:4px!important;grid-template-columns:55px minmax(0,1fr)!important}
+  #view-overview .spec-list b{font-size:10px!important;max-width:none!important;white-space:normal!important}
+
+  /* Quick status: all five rows visible. */
+  #view-overview .quick-status .status-list button{min-height:32px!important;padding:5px 0!important;font-size:11px!important}
+  #view-overview .quick-status .status-list button b{font-size:10px!important}
+
+  /* Performance charts have enough vertical room; no clipping. */
+  #view-overview .live-performance .chart-grid{gap:8px!important}
+  #view-overview .chart-card{height:174px!important;padding:8px!important;overflow:hidden!important}
+  #view-overview .chart-card>span{font-size:11px!important}
+  #view-overview .chart-card>span b{font-size:12px!important}
+  #view-overview .chart{height:108px!important;margin-top:6px!important}
+  #view-overview .chart-card small{font-size:8px!important}
+
+  /* Drainers: five complete rows including Battery. */
+  #view-overview .drainer-list>div{min-height:36px!important;padding:5px 0!important;grid-template-columns:18px minmax(0,1fr) auto!important}
+  #view-overview .drainer-list span{font-size:11px!important}
+  #view-overview .drainer-list small{font-size:8px!important}
+  #view-overview .drainer-list b{font-size:10px!important}
+
+  /* Recent activity: all five rows fit in the fixed card. */
+  #view-overview .activity-list{max-height:none!important;overflow:hidden!important}
+  #view-overview .activity-list span{min-height:31px!important;padding:5px 0!important;font-size:9px!important}
+  #view-overview .activity-list b{font-size:8px!important}
+
+  /* Hardware: six complete rows, larger row height instead of clipping. */
+  #view-overview .info-rows span{min-height:25px!important;padding:4px 0!important;font-size:9px!important;grid-template-columns:62px minmax(0,1fr) auto!important;gap:5px!important}
+  #view-overview .info-rows b{font-size:9px!important;white-space:nowrap!important}
+  #view-overview .info-rows em{font-size:8px!important;white-space:nowrap!important}
+  #view-overview .predictive p{font-size:9px!important;line-height:1.3!important;margin:6px 0!important}
+  #view-overview .predictive a{font-size:8px!important}
+
+  /* Storage and network use compact readable columns rather than forcing text into tiny widths. */
+  #view-overview .storage-mini{grid-template-columns:66px minmax(0,1fr)!important;gap:8px!important;margin:7px 0!important}
+  #view-overview .storage-mini>strong{font-size:23px!important}
+  #view-overview .storage-mini>strong small{font-size:8px!important}
+  #view-overview .storage-mini span{font-size:8px!important;padding-bottom:3px!important}
+  #view-overview .storage-mini span b{font-size:8px!important;white-space:nowrap!important}
+  #view-overview .storage-intelligence .soft-button{font-size:8px!important;padding:5px 8px!important}
+  #view-overview .network-health-content{grid-template-columns:minmax(75px,1fr) auto minmax(90px,1.1fr)!important;gap:8px!important}
+  #view-overview .network-health-content p{font-size:8px!important;line-height:1.3!important}
+  #view-overview .network-health-content .primary-button{font-size:8px!important;padding:6px 9px!important;white-space:nowrap!important}
+  #view-overview .network-mini{gap:5px!important}
+  #view-overview .network-mini span{font-size:7px!important;padding-left:5px!important;min-width:0!important}
+  #view-overview .network-mini b{font-size:8px!important;line-height:1.15!important;white-space:normal!important;overflow-wrap:anywhere!important}
+
+  /* System Watcher is an actual spreadsheet-like table, NOT nested cards. */
+  #view-overview .system-watcher{padding:10px 12px!important;display:block!important}
+  #view-overview .system-watcher .panel-heading{margin-bottom:4px!important}
+  #view-overview .watcher-table-wrap{width:100%!important;overflow:hidden!important}
+  #view-overview .watcher-table{width:100%!important;border-collapse:collapse!important;table-layout:fixed!important;font-size:8px!important}
+  #view-overview .watcher-table th,#view-overview .watcher-table td{padding:4px 7px!important;border-bottom:1px solid var(--line)!important;text-align:left!important;vertical-align:middle!important;line-height:1.15!important}
+  #view-overview .watcher-table th{font-size:8px!important;color:var(--muted)!important;font-weight:600!important;background:var(--panel-soft)!important}
+  #view-overview .watcher-table th:nth-child(1),#view-overview .watcher-table td:nth-child(1){width:8%!important}
+  #view-overview .watcher-table th:nth-child(2),#view-overview .watcher-table td:nth-child(2){width:25%!important}
+  #view-overview .watcher-table th:nth-child(3),#view-overview .watcher-table td:nth-child(3){width:35%!important}
+  #view-overview .watcher-table th:nth-child(4),#view-overview .watcher-table td:nth-child(4){width:12%!important}
+  #view-overview .watcher-table th:nth-child(5),#view-overview .watcher-table td:nth-child(5){width:10%!important}
+  #view-overview .watcher-table th:nth-child(6),#view-overview .watcher-table td:nth-child(6){width:10%!important}
+  #view-overview .watcher-table .file-name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #view-overview .watcher-table .file-path{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted)}
+  #view-overview .watcher-status,#view-overview .watcher-risk{display:inline-block;font-size:7px!important;white-space:nowrap!important}
+  #view-overview .watcher-status.safe{color:#2d8b68}.watcher-status.review{color:#b44b2b}.watcher-risk.low{color:#2d8b68}.watcher-risk.review{color:#b44b2b}
+  #view-overview .watcher-footer{display:flex!important;justify-content:space-between!important;align-items:center!important;margin-top:5px!important}
+  #view-overview #watcherSummary{font-size:7px!important;color:var(--muted)!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis}
+  #view-overview .system-watcher>#watcherViewAll{font-size:7px!important;padding:4px 8px!important;margin:0!important;flex:none!important}
+
+  /* AI only grows. */
+  #view-overview .assistant{padding:11px 12px!important}
+  #view-overview .assistant .assistant-messages{height:auto!important;max-height:none!important;overflow:visible!important;display:flex!important;flex-direction:column!important;gap:7px!important;padding:6px 0 1px!important}
+  #view-overview .assistant-message{height:auto!important;max-width:78%!important;min-height:0!important;font-size:10px!important;line-height:1.35!important;padding:8px 10px!important;white-space:pre-wrap!important;overflow-wrap:anywhere!important}
+  #view-overview .assistant .ask-box{margin-top:7px!important;min-height:38px!important;flex:none!important}
+}
+
+/* OVERVIEW CONTENT FIT v2: preserve fixed card footprints, give each row enough room for its real content. */
+@media (min-width: 1100px){
+  #view-overview .overview-grid{
+    grid-template-rows:230px 255px 190px 150px auto!important;
+    row-gap:12px!important;
+    column-gap:12px!important;
+    align-items:stretch!important;
+  }
+  #view-overview .overview-grid>.panel{height:100%!important;min-height:0!important;max-height:none!important;overflow:hidden!important}
+
+  /* Snapshot: keep illustration, device facts and specs on one clean horizontal line. */
+  #view-overview .snapshot-content{
+    grid-template-columns:105px minmax(135px,1fr) minmax(205px,1.15fr)!important;
+    gap:10px!important;
+    align-items:center!important;
+    min-width:0!important;
+  }
+  #view-overview .image-device{width:100px!important;height:76px!important;display:flex!important;align-items:center!important;justify-content:center!important}
+  #view-overview .image-device img{width:94px!important;max-height:70px!important;object-fit:contain!important}
+  #view-overview .device-details{gap:6px!important;min-width:0!important}
+  #view-overview .device-details span{font-size:9px!important;min-width:0!important}
+  #view-overview .device-details b{font-size:11px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;display:block!important}
+  #view-overview .spec-list{min-width:0!important;padding:6px 8px!important;gap:3px!important}
+  #view-overview .spec-list span{grid-template-columns:48px minmax(0,1fr)!important;gap:5px!important;font-size:9px!important;padding:4px 0!important;min-width:0!important}
+  #view-overview .spec-list b{font-size:9px!important;line-height:1.15!important;white-space:normal!important;overflow-wrap:break-word!important}
+
+  /* Quick status: all five rows, including Network, stay readable. */
+  #view-overview .quick-status .status-list{gap:0!important}
+  #view-overview .quick-status .status-list button{min-height:34px!important;height:34px!important;padding:5px 0!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto auto!important;column-gap:6px!important;align-items:center!important}
+  #view-overview .quick-status .status-list button span:first-child{font-size:10px!important;white-space:nowrap!important}
+  #view-overview .quick-status .status-list button b{font-size:9px!important;white-space:nowrap!important}
+
+  /* Performance row: chart bottoms have breathing room instead of touching the card edge. */
+  #view-overview .live-performance{padding:12px 12px 11px!important}
+  #view-overview .live-performance .chart-grid{gap:9px!important;min-height:0!important}
+  #view-overview .chart-card{height:196px!important;padding:9px!important;box-sizing:border-box!important}
+  #view-overview .chart-card>span{font-size:11px!important;line-height:1.15!important}
+  #view-overview .chart-card>span b{font-size:12px!important}
+  #view-overview .chart{height:128px!important;margin-top:8px!important;min-height:0!important}
+  #view-overview .chart-card small{font-size:8px!important;line-height:1.2!important;display:block!important;margin-top:5px!important}
+
+  /* Resource drainers: five rows including Battery are visible. */
+  #view-overview .drainer-list{min-height:0!important}
+  #view-overview .drainer-list>div{min-height:39px!important;height:39px!important;padding:5px 0!important;box-sizing:border-box!important}
+  #view-overview .drainer-list span{font-size:10px!important;line-height:1.15!important}
+  #view-overview .drainer-list small{font-size:8px!important}
+  #view-overview .drainer-list b{font-size:9px!important}
+
+  /* Hardware: six rows have enough height and never bleed into the next card. */
+  #view-overview .hardware-info .info-rows{min-height:0!important}
+  #view-overview .info-rows span{min-height:26px!important;height:26px!important;padding:4px 0!important;box-sizing:border-box!important;grid-template-columns:58px minmax(0,1fr) auto!important;gap:5px!important;font-size:8px!important}
+  #view-overview .info-rows b{font-size:8.5px!important;white-space:nowrap!important}
+  #view-overview .info-rows em{font-size:8px!important;white-space:nowrap!important}
+
+  /* Network: readable three-part layout without microscopic text. */
+  #view-overview .network-health-content{grid-template-columns:minmax(78px,1fr) 60px minmax(112px,1.25fr)!important;gap:8px!important;align-items:center!important}
+  #view-overview .network-health-content p{font-size:9px!important;line-height:1.25!important;margin:0!important}
+  #view-overview .network-health-content .primary-button{font-size:9px!important;padding:7px 7px!important;white-space:nowrap!important}
+  #view-overview .network-mini{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important;min-width:0!important}
+  #view-overview .network-mini span{font-size:7.5px!important;line-height:1.1!important;padding-left:5px!important;min-width:0!important;overflow:hidden!important}
+  #view-overview .network-mini b{font-size:8px!important;line-height:1.15!important;white-space:normal!important;overflow-wrap:anywhere!important;display:block!important}
+
+  /* System Watcher: true table, no nested summary cards. */
+  #view-overview .system-watcher{padding:10px 12px!important;display:flex!important;flex-direction:column!important;justify-content:flex-start!important}
+  #view-overview .system-watcher .panel-heading{flex:none!important;margin-bottom:4px!important}
+  #view-overview .watcher-table-wrap{width:100%!important;flex:1 1 auto!important;min-height:0!important;overflow:hidden!important}
+  #view-overview .watcher-table{width:100%!important;height:auto!important;table-layout:fixed!important;font-size:8px!important}
+  #view-overview .watcher-table th,#view-overview .watcher-table td{padding:3px 7px!important;line-height:1.15!important;height:20px!important;box-sizing:border-box!important}
+  #view-overview .watcher-table th{font-size:8px!important}
+  #view-overview .watcher-table th:nth-child(1),#view-overview .watcher-table td:nth-child(1){width:8%!important}
+  #view-overview .watcher-table th:nth-child(2),#view-overview .watcher-table td:nth-child(2){width:25%!important}
+  #view-overview .watcher-table th:nth-child(3),#view-overview .watcher-table td:nth-child(3){width:35%!important}
+  #view-overview .watcher-table th:nth-child(4),#view-overview .watcher-table td:nth-child(4){width:12%!important}
+  #view-overview .watcher-table th:nth-child(5),#view-overview .watcher-table td:nth-child(5){width:10%!important}
+  #view-overview .watcher-table th:nth-child(6),#view-overview .watcher-table td:nth-child(6){width:10%!important}
+  #view-overview .watcher-table .file-name,#view-overview .watcher-table .file-path{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  #view-overview .watcher-footer{flex:none!important;margin-top:3px!important}
+}
+
+/* ===== FINAL CONTENT-FIT OVERVIEW =====
+   Flexible auto rows and overflow hidden prevent any card from overflowing or overwriting neighboring cards. */
+@media (min-width: 1101px){
+  #view-overview .overview-grid{
+    display:grid!important;
+    grid-template-columns:repeat(12,minmax(0,1fr))!important;
+    grid-template-rows:auto auto auto auto auto!important;
+    gap:14px!important;
+    align-items:stretch!important;
+    grid-auto-flow:unset!important;
+  }
+  #view-overview .overview-grid>.panel{
+    min-width:0!important;
+    min-height:0!important;
+    max-width:none!important;
+    height:auto!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+    display:flex!important;
+    flex-direction:column!important;
+    border-radius:var(--radius)!important;
+    box-shadow:var(--shadow)!important;
+  }
+  /* Row 1 */
+  #view-overview .health-score-panel{grid-column:1 / span 5!important;grid-row:1!important;}
+  #view-overview .snapshot-panel{grid-column:6 / span 5!important;grid-row:1!important;}
+  #view-overview .quick-status{grid-column:11 / span 2!important;grid-row:1!important;}
+  /* Row 2 */
+  #view-overview .live-performance{grid-column:1 / span 5!important;grid-row:2!important;}
+  #view-overview .drainers{grid-column:6 / span 3!important;grid-row:2!important;}
+  #view-overview .activity{grid-column:9 / span 4!important;grid-row:2!important;}
+  /* Row 3 */
+  #view-overview .hardware-info{grid-column:1 / span 3!important;grid-row:3!important;}
+  #view-overview .predictive{grid-column:4 / span 3!important;grid-row:3!important;}
+  #view-overview .storage-intelligence{grid-column:7 / span 3!important;grid-row:3!important;}
+  #view-overview .network-health{grid-column:10 / span 3!important;grid-row:3!important;}
+  /* Row 4 */
+  #view-overview .system-watcher{grid-column:1 / span 12!important;grid-row:4!important;display:flex!important;}
+  /* AI is the only expanding card */
+  #view-overview .assistant{grid-column:1 / span 12!important;grid-row:5!important;height:auto!important;min-height:104px!important;max-height:none!important;overflow:visible!important;}
+
+  /* Snapshot: all facts stay on one horizontal line and never get pushed out of the card. */
+  #view-overview .snapshot-content{
+    display:grid!important;
+    grid-template-columns:105px minmax(120px,1fr) minmax(205px,1.18fr)!important;
+    gap:12px!important;
+    align-items:center!important;
+    width:100%!important;
+    min-width:0!important;
+  }
+  #view-overview .image-device{width:100px!important;height:76px!important;justify-self:center!important;}
+  #view-overview .image-device img{width:94px!important;max-width:100%!important;max-height:70px!important;object-fit:contain!important;}
+  #view-overview .device-details{min-width:0!important;gap:7px!important;}
+  #view-overview .device-details span{font-size:9px!important;min-width:0!important;}
+  #view-overview .device-details b{font-size:11px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;display:block!important;max-width:100%!important;}
+  #view-overview .spec-list{min-width:0!important;width:100%!important;padding:6px 9px!important;gap:3px!important;box-sizing:border-box!important;}
+  #view-overview .spec-list span{display:grid!important;grid-template-columns:54px minmax(0,1fr)!important;gap:6px!important;padding:4px 0!important;min-width:0!important;font-size:9px!important;}
+  #view-overview .spec-list b{font-size:9px!important;line-height:1.15!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;min-width:0!important;}
+
+  /* Quick Health: five rows get the full card height. */
+  #view-overview .quick-status .panel-heading{margin-bottom:4px!important;}
+  #view-overview .quick-status .status-list{margin-top:2px!important;}
+  #view-overview .quick-status .status-list button{height:35px!important;min-height:35px!important;padding:5px 0!important;grid-template-columns:12px minmax(0,1fr) auto 8px!important;gap:5px!important;}
+  #view-overview .quick-status .status-list button span:nth-child(2){font-size:10px!important;white-space:nowrap!important;}
+  #view-overview .quick-status .status-list button b{font-size:9px!important;white-space:nowrap!important;}
+
+  /* Performance: chart + caption fit cleanly. */
+  #view-overview .live-performance{padding:12px!important;}
+  #view-overview .live-performance .chart-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px!important;margin-top:10px!important;}
+  #view-overview .chart-card{height:auto!important;min-height:160px!important;min-width:0!important;padding:9px!important;overflow:hidden!important;}
+  #view-overview .chart-card>span{font-size:11px!important;line-height:1.15!important;display:block!important;}
+  #view-overview .chart-card>span b{font-size:12px!important;}
+  #view-overview .chart{height:110px!important;margin:8px 0 5px!important;min-height:0!important;}
+  #view-overview .chart-card small{font-size:8px!important;line-height:1.2!important;display:block!important;}
+
+  /* Resource Drainers: all five entries including Battery are visible. */
+  #view-overview .drainer-list{gap:0!important;margin-top:6px!important;}
+  #view-overview .drainer-list>div{height:47px!important;min-height:47px!important;padding:6px 0!important;grid-template-columns:18px minmax(0,1fr) auto!important;box-sizing:border-box!important;}
+  #view-overview .drainer-list span{font-size:10px!important;line-height:1.15!important;}
+  #view-overview .drainer-list small{font-size:8px!important;line-height:1.1!important;}
+  #view-overview .drainer-list b{font-size:9px!important;}
+
+  /* Recent Activity: compact but readable rows. */
+  #view-overview .activity-list{max-height:none!important;overflow:hidden!important;margin-top:6px!important;}
+  #view-overview .activity-list span{min-height:36px!important;padding:6px 0!important;font-size:9px!important;}
+  #view-overview .activity-list span b{font-size:8px!important;}
+
+  /* Hardware: six rows fit without touching the next card. */
+  #view-overview .hardware-info .info-rows{gap:0!important;margin-top:6px!important;}
+  #view-overview .hardware-info .info-rows span{height:27px!important;min-height:27px!important;padding:5px 0!important;grid-template-columns:62px minmax(0,1fr) auto!important;gap:5px!important;font-size:8.5px!important;box-sizing:border-box!important;}
+  #view-overview .hardware-info .info-rows b{font-size:8.5px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;min-width:0!important;}
+  #view-overview .hardware-info .info-rows em{font-size:8px!important;white-space:nowrap!important;}
+
+  /* Network: keep the diagnosis action above a full-width metrics row. */
+  #view-overview .network-health-content{display:grid!important;grid-template-columns:minmax(0,1fr) 70px!important;gap:8px!important;align-items:center!important;min-width:0!important;}
+  #view-overview .network-health-content p{font-size:9px!important;line-height:1.3!important;margin:0!important;}
+  #view-overview .network-health-content .primary-button{font-size:9px!important;padding:7px 9px!important;white-space:nowrap!important;}
+  #view-overview .network-mini{grid-column:1 / -1!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important;min-width:0!important;}
+  #view-overview .network-mini span{font-size:8px!important;line-height:1.15!important;padding-left:6px!important;min-width:0!important;overflow:visible!important;}
+  #view-overview .network-mini b{font-size:8.5px!important;line-height:1.2!important;display:block!important;white-space:nowrap!important;overflow-wrap:normal!important;word-break:normal!important;}
+
+  /* System Watcher: spreadsheet layout. */
+  #view-overview .system-watcher{padding:11px 12px!important;flex-direction:column!important;justify-content:flex-start!important;}
+  #view-overview .system-watcher .panel-heading{flex:none!important;margin-bottom:5px!important;}
+  #view-overview .watcher-table-wrap{width:100%!important;flex:1 1 auto!important;min-height:0!important;overflow:hidden!important;}
+  #view-overview .watcher-table{width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;font-size:9px!important;}
+  #view-overview .watcher-table th,#view-overview .watcher-table td{height:23px!important;padding:4px 8px!important;line-height:1.15!important;vertical-align:middle!important;text-align:left!important;box-sizing:border-box!important;}
+  #view-overview .watcher-table th{font-size:8px!important;}
+  #view-overview .watcher-table th:nth-child(1),#view-overview .watcher-table td:nth-child(1){width:10%!important;}
+  #view-overview .watcher-table th:nth-child(2),#view-overview .watcher-table td:nth-child(2){width:18%!important;}
+  #view-overview .watcher-table th:nth-child(3),#view-overview .watcher-table td:nth-child(3){width:39%!important;}
+  #view-overview .watcher-table th:nth-child(4),#view-overview .watcher-table td:nth-child(4){width:10%!important;}
+  #view-overview .watcher-table th:nth-child(5),#view-overview .watcher-table td:nth-child(5){width:11%!important;}
+  #view-overview .watcher-table th:nth-child(6),#view-overview .watcher-table td:nth-child(6){width:12%!important;}
+  #view-overview .watcher-table .file-name,#view-overview .watcher-table .file-path{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;}
+  #view-overview .watcher-status,#view-overview .watcher-risk{font-size:8px!important;white-space:nowrap!important;}
+  #view-overview .watcher-footer{flex:none!important;margin-top:4px!important;}
+
+  /* AI expanding card */
+  #view-overview .assistant{padding:11px 12px!important;}
+  #view-overview .assistant .assistant-messages{height:auto!important;max-height:none!important;overflow:visible!important;display:flex!important;flex-direction:column!important;gap:7px!important;padding:5px 0 1px!important;}
+  #view-overview .assistant-message{height:auto!important;min-height:0!important;max-width:78%!important;padding:8px 10px!important;font-size:10px!important;line-height:1.35!important;white-space:pre-wrap!important;overflow-wrap:anywhere!important;}
+  #view-overview .assistant .ask-box{margin-top:7px!important;min-height:40px!important;height:auto!important;}
+}
+
+@media (max-width:1100px){
+  #view-overview .overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;}
+  #view-overview .overview-grid>.panel{grid-column:auto!important;grid-row:auto!important;height:auto!important;min-height:0!important;overflow:hidden!important;}
+  #view-overview .quick-status,#view-overview .snapshot-panel{grid-column:span 2!important;}
+  #view-overview .assistant{grid-column:1/-1!important;}
+}
+@media (max-width:760px){
+  #view-overview .overview-grid{grid-template-columns:1fr!important;gap:12px!important;}
+  #view-overview .overview-grid>.panel{grid-column:1!important;grid-row:auto!important;}
+  #view-overview .snapshot-content{grid-template-columns:1fr 1fr!important;}
+  #view-overview .spec-list{grid-column:1/-1!important;}
+  #view-overview .live-performance .chart-grid{grid-template-columns:1fr!important;}
+}
+
+/* Sidebar toggle: permanent in header, never disappears */
+.app-header .sidebar-toggle {
+  position: relative !important;
+  left: auto !important;
+  top: auto !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 36px !important;
+  height: 36px !important;
+  border: 1px solid var(--line) !important;
+  background: var(--panel) !important;
+  border-radius: 7px !important;
+  color: var(--ink) !important;
+  font-size: 18px !important;
+  cursor: pointer !important;
+  z-index: 50 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  flex: 0 0 auto !important;
+  margin-right: 6px !important;
+}
+.app-shell.sidebar-collapsed .sidebar-toggle {
+  position: relative !important;
+  left: auto !important;
+  top: auto !important;
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Router Process Filter Tabs */
+.process-filter-tabs {
+  display: inline-flex;
+  gap: 3px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 3px;
+  border-radius: 6px;
+}
+.process-filter-tabs button {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.process-filter-tabs button.selected {
+  background: var(--panel);
+  color: var(--teal-dark);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* Hardware page state badges and cards */
+.health-state.state-good {
+  background: #e3efe9;
+  color: #2b7754;
+}
+.health-state.state-problem {
+  background: #fbebe8;
+  color: #c0392b;
+  font-weight: 700;
+}
+.health-item.problem {
+  border-color: #e09888;
+  background: #fff8f7;
+}
+
+/* Settings: staggered cascade animation on toggle */
+.settings-layout {
+  display: flex !important;
+  gap: 14px !important;
+  align-items: flex-start !important;
+}
+.settings-layout .settings-nav {
+  width: 225px !important;
+  flex: 0 0 225px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), flex-basis 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 10px;
+  box-sizing: border-box;
+}
+.settings-layout .settings-nav.collapsed {
+  width: 56px !important;
+  flex: 0 0 56px !important;
+  padding: 10px 8px !important;
+}
+.settings-layout .settings-nav .settings-toggle {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 36px !important;
+  height: 36px !important;
+  border: 1px solid var(--line) !important;
+  background: var(--bg) !important;
+  border-radius: 7px !important;
+  color: var(--ink) !important;
+  font-size: 16px !important;
+  cursor: pointer !important;
+  margin-bottom: 6px !important;
+  flex: 0 0 auto !important;
+}
+.settings-layout .settings-nav button:not(.settings-toggle) {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-left: 3px solid transparent;
+  background: transparent;
+  text-align: left;
+  padding: 10px 12px;
+  color: var(--ink);
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  box-sizing: border-box;
+  overflow: hidden;
+  white-space: nowrap;
+  max-height: 56px;
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity .25s ease, transform .25s ease, max-height .25s ease, padding .25s ease, margin .25s ease;
+  transition-delay: var(--settings-delay, 0ms);
+}
+.settings-layout .settings-nav.collapsed button:not(.settings-toggle) {
+  opacity: 0;
+  transform: translateX(-14px);
+  max-height: 0;
+  padding: 0 12px;
+  margin: 0;
+  pointer-events: none;
+}
+.settings-layout .settings-nav button.selected {
+  background: var(--bg);
+  border-left-color: var(--teal);
+}
+.settings-layout .settings-content {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 12px !important;
+}
+.settings-card {
+  display: none !important;
+}
+.settings-card.settings-card-active {
+  display: block !important;
+}
+
+/* Converter: horizontal category navigation and a spacious work area. */
+#view-converter .converter-layout {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.9fr) minmax(270px, .9fr) !important;
+  grid-template-rows: auto minmax(240px, 1fr) auto minmax(125px, auto);
+  gap: 12px !important;
+  min-height: calc(100vh - 220px);
+  align-items: stretch;
+}
+#view-converter .converter-layout > div:first-child { display: contents; }
+#view-converter .converter-tabs {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 8px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow-x: auto;
+}
+#view-converter .converter-tabs button {
+  min-width: 105px;
+  min-height: 42px;
+  padding: 8px 12px;
+  text-align: center;
+  white-space: nowrap;
+  font-size: 11px;
+}
+#view-converter .drop-zone { grid-column: 1; grid-row: 2; min-height: 240px; margin: 0; }
+#view-converter .drop-zone .primary-button { padding: 9px 16px; font-size: 11px; }
+#view-converter .convert-controls {
+  grid-column: 1;
+  grid-row: 3;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 0;
+  gap: 12px;
+  padding: 16px;
+}
+#view-converter .convert-controls > .primary-button { grid-column: 1 / -1; justify-self: end; min-width: 150px; }
+#view-converter .recent-panel { grid-column: 1; grid-row: 4; margin-top: 0; min-height: 125px; }
+#view-converter .converter-side {
+  grid-column: 2;
+  grid-row: 2 / span 3;
+  grid-template-rows: minmax(130px, auto) minmax(0, 1fr);
+  gap: 12px;
+}
+
+/* Settings: a toggle-led horizontal menu with one selected content panel. */
+#view-settings .settings-layout { display: block !important; }
+#view-settings .settings-navbar {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 12px;
+  width: 100% !important;
+  min-height: 62px;
+  padding: 8px 10px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+#view-settings .settings-nav-header { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; white-space: nowrap; }
+#view-settings .settings-toggle { display: grid; place-items: center; width: 38px; height: 38px; padding: 0; border: 1px solid var(--line); border-radius: 6px; background: var(--soft); color: var(--ink); }
+#view-settings .settings-nav-items { display: flex; align-items: stretch; gap: 6px; flex: 1 1 auto; min-width: 0; overflow: hidden; }
+#view-settings .settings-nav-items button {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 180px;
+  min-height: 44px;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  opacity: 1;
+  transform: translateX(0);
+  transition: flex-basis .25s ease, max-width .25s ease, opacity .2s ease, transform .25s ease, padding .25s ease;
+  transition-delay: var(--settings-delay, 0ms);
+}
+#view-settings .settings-nav-items button:hover,
+#view-settings .settings-nav-items button.selected { background: var(--soft); border-color: var(--line); }
+#view-settings .settings-nav-items button small { display: block; margin-top: 2px; color: var(--muted); font-size: 8px; overflow: hidden; text-overflow: ellipsis; }
+#view-settings .settings-navbar.collapsed { gap: 0; }
+#view-settings .settings-navbar.collapsed .settings-navbar-label { display: none; }
+#view-settings .settings-navbar.collapsed .settings-nav-items { flex: 0 1 0; gap: 0; }
+#view-settings .settings-navbar.collapsed .settings-nav-items button { flex: 0 0 0; max-width: 0; padding-left: 0; padding-right: 0; border-width: 0; opacity: 0; transform: translateX(-18px) scaleX(.7); pointer-events: none; }
+#view-settings .settings-content { display: block !important; min-width: 0; margin-top: 12px; }
+#view-settings .settings-content .settings-card { display: none !important; width: 100%; min-height: 390px; padding: 18px; }
+#view-settings .settings-content .settings-card.settings-card-active { display: block !important; }
+
+@media (max-width: 1100px) {
+  #view-converter .converter-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: auto minmax(220px, auto) auto auto auto;
+    min-height: 0;
+  }
+  #view-converter .drop-zone,
+  #view-converter .convert-controls,
+  #view-converter .recent-panel,
+  #view-converter .converter-side { grid-column: 1; }
+  #view-converter .drop-zone { grid-row: 2; }
+  #view-converter .convert-controls { grid-row: 3; }
+  #view-converter .recent-panel { grid-row: 4; }
+  #view-converter .converter-side {
+    grid-row: 5;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto;
+  }
+  #view-settings .settings-nav-items button { padding: 6px; font-size: 9px; }
+}
+@media (max-width: 760px) {
+  #view-converter .converter-tabs { grid-template-columns: repeat(6, minmax(105px, 1fr)); }
+  #view-converter .convert-controls { grid-template-columns: minmax(0, 1fr); }
+  #view-converter .convert-controls > .primary-button { grid-column: 1; justify-self: stretch; }
+  #view-converter .converter-side { grid-template-columns: 1fr; }
+  #view-settings .settings-navbar { align-items: flex-start; gap: 8px; }
+  #view-settings .settings-nav-header { align-items: flex-start; }
+  #view-settings .settings-navbar-label { display: none; }
+  #view-settings .settings-nav-items { overflow-x: auto; }
+  #view-settings .settings-nav-items button { flex: 0 0 140px; }
+  #view-settings .settings-content .settings-card { padding: 14px; }
+}
+
+/* Dark mode theme audit: crisp contrast, readable text & clear borders */
+body.theme-dark {
+  --bg: #11191d;
+  --panel: #182328;
+  --ink: #edf5f5;
+  --muted: #9eafb5;
+  --line: #304047;
+  --teal: #54b7a8;
+  --teal-dark: #63d4c3;
+  background: linear-gradient(135deg, #10171b, #172126 48%, #11191d);
+}
+body.theme-dark .panel, body.theme-dark .app-header, body.theme-dark .side-nav, body.theme-dark .sidebar-toggle {
+  background: #182328;
+  border-color: #304047;
+  color: #edf5f5;
+}
+body.theme-dark .table-head, body.theme-dark .file-head {
+  background: #202d32;
+  color: #c4d4d9;
+}
+body.theme-dark .table-row, body.theme-dark .file-row {
+  border-color: #26353d;
+  color: #edf5f5;
+}
+body.theme-dark .table-row b, body.theme-dark .file-row b {
+  color: #f0f7f8;
+}
+body.theme-dark .process-filter-tabs {
+  background: #11191d;
+  border-color: #304047;
+}
+body.theme-dark .process-filter-tabs button {
+  color: #9eafb5;
+}
+body.theme-dark .process-filter-tabs button.selected {
+  background: #202d32;
+  color: #63d4c3;
+}
+body.theme-dark .tabs button {
+  color: #9eafb5;
+}
+body.theme-dark .tabs button.selected {
+  color: #63d4c3;
+  border-bottom-color: #63d4c3;
+}
+body.theme-dark .settings-layout .settings-nav {
+  background: #182328;
+  border-color: #304047;
+}
+body.theme-dark .settings-layout .settings-nav button {
+  color: #edf5f5;
+}
+body.theme-dark .settings-layout .settings-nav button small {
+  color: #9eafb5;
+}
+body.theme-dark .settings-layout .settings-nav button.selected {
+  background: #202d32;
+  border-left-color: #63d4c3;
+}
+body.theme-dark .settings-card label {
+  color: #edf5f5;
+  border-color: #304047;
+}
+body.theme-dark .settings-card label small {
+  color: #9eafb5;
+}
+body.theme-dark input, body.theme-dark select {
+  background: #202d32 !important;
+  color: #edf5f5 !important;
+  border-color: #304047 !important;
+}
+body.theme-dark .health-item.problem {
+  border-color: #632d24;
+  background: #231715;
+}
+.fix-target{outline:2px solid var(--teal);outline-offset:-2px;}
+.health-item button[style*="hidden"]{pointer-events:none;}
+
+/* Storage usage: separate the four values into readable metric tiles. */
+#view-storage .storage-usage { padding: 16px !important; }
+#view-storage .storage-usage .panel-heading { gap: 12px; margin-bottom: 12px; }
+#view-storage .storage-usage .panel-heading b { text-align: right; }
+#view-storage .storage-usage .disk-line { gap: 12px; margin: 12px 0 9px; }
+#view-storage .storage-usage .storage-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+#view-storage .storage-usage .storage-stat-pill {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--bg);
+  font-size: 9px;
+}
+#view-storage .storage-usage .storage-stat-pill span { color: var(--muted); }
+#view-storage .storage-usage .storage-stat-pill b { text-align: right; white-space: nowrap; }
+
+/* Overview lists start after their markers and share a consistent text edge. */
+#view-overview .drainer-list > div { align-items: start !important; text-align: left !important; }
+#view-overview .drainer-list > div > span { justify-self: start !important; align-self: start !important; text-align: left !important; }
+#view-overview .drainer-list > div > i { justify-self: start !important; }
+#view-overview .drainer-list > div > b { justify-self: end !important; align-self: start !important; }
+#view-overview .activity-list > span { align-items: start !important; text-align: left !important; }
+#view-overview .activity-list > span > i { justify-self: start !important; }
+#view-overview .activity-list > span > b { justify-self: end !important; align-self: start !important; }
+#view-overview .predictive { text-align: left !important; }
+#view-overview .predictive > .panel-heading,
+#view-overview .predictive > p,
+#view-overview .predictive > a { text-align: left !important; }
+
+/* System Watcher cells must retain table layout; inline-block breaks column order. */
+#view-overview .watcher-table { width: 100% !important; table-layout: fixed !important; }
+#view-overview .watcher-table th,
+#view-overview .watcher-table td { display: table-cell !important; box-sizing: border-box !important; }
+#view-overview .watcher-table th:nth-child(1),
+#view-overview .watcher-table td:nth-child(1) { width: 10% !important; }
+#view-overview .watcher-table th:nth-child(2),
+#view-overview .watcher-table td:nth-child(2) { width: 23% !important; }
+#view-overview .watcher-table th:nth-child(3),
+#view-overview .watcher-table td:nth-child(3) { width: 34% !important; }
+#view-overview .watcher-table th:nth-child(4),
+#view-overview .watcher-table td:nth-child(4) { width: 13% !important; }
+#view-overview .watcher-table th:nth-child(5),
+#view-overview .watcher-table td:nth-child(5) { width: 10% !important; }
+#view-overview .watcher-table th:nth-child(6),
+#view-overview .watcher-table td:nth-child(6) { width: 10% !important; }
+#view-overview .watcher-table .watcher-status,
+#view-overview .watcher-table .watcher-risk {
+  display: table-cell !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+#view-overview .watcher-table .file-name,
+#view-overview .watcher-table .file-path { display: table-cell !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
+
+.device-image-credit {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  bottom: -2px;
+  display: block;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 6px;
+  line-height: 1.1;
+  text-align: center;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.device-image-credit:hover { color: var(--teal-dark); text-decoration: underline; }
+
+/* Dark theme colors tuned to the supplied PulseOS reference. */
+body.theme-dark {
+  --bg: #090a0f;
+  --panel: #12131a;
+  --ink: #babcc6;
+  --muted: #888a96;
+  --line: #242630;
+  --teal: #7773ad;
+  --teal-dark: #918bbd;
+  --good: #76a98d;
+  --coral: #b97968;
+  --soft: #181922;
+  --shadow: 0 2px 8px rgba(0, 0, 0, .3);
+  background: linear-gradient(135deg, #08090d 0%, #0e0f15 52%, #090a0f 100%);
+}
+body.theme-dark .app-header,
+body.theme-dark .side-nav { background: #0e0f15 !important; border-color: var(--line) !important; }
+body.theme-dark .brand small { color: var(--muted) !important; }
+body.theme-dark .panel,
+body.theme-dark .settings-navbar,
+body.theme-dark .settings-card,
+body.theme-dark .convert-controls,
+body.theme-dark .drop-zone,
+body.theme-dark .chart-card { background: var(--panel) !important; border-color: var(--line) !important; color: var(--ink); }
+body.theme-dark .storage-stat-pill,
+body.theme-dark .table-head,
+body.theme-dark .watcher-table th,
+body.theme-dark .settings-toggle,
+body.theme-dark .converter-tabs button,
+body.theme-dark .settings-nav-items button.selected,
+body.theme-dark .soft-button,
+body.theme-dark .secondary-button,
+body.theme-dark .quick-actions button,
+body.theme-dark .convert-controls button,
+body.theme-dark .segmented button { background: var(--soft) !important; border-color: var(--line) !important; color: var(--ink) !important; }
+body.theme-dark .side-nav .nav-item { background: transparent !important; color: var(--muted) !important; }
+body.theme-dark .side-nav .nav-item:hover,
+body.theme-dark .side-nav .nav-item.active { background: #20212d !important; color: var(--ink) !important; border-left-color: var(--teal-dark) !important; }
+body.theme-dark .button,
+body.theme-dark button:not(.primary-button):not(.action-btn) { color: var(--ink); }
+body.theme-dark .primary-button,
+body.theme-dark .action-btn { background: #75483f !important; border-color: #8b6057 !important; color: #cbc4c0 !important; }
+body.theme-dark .chip-button,
+body.theme-dark .primary-button { background: #75483f !important; border-color: #8b6057 !important; color: #cbc4c0 !important; }
+body.theme-dark .range-buttons button { background: var(--soft) !important; border-color: var(--line) !important; color: var(--ink) !important; }
+body.theme-dark .range-buttons button.selected { background: #22232d !important; border-color: #49465f !important; color: #c2bfd8 !important; }
+body.theme-dark .primary-button:hover,
+body.theme-dark .chip-button:hover,
+body.theme-dark .action-btn:hover { background: #825249 !important; }
+body.theme-dark .status-good,
+body.theme-dark .health-grade-chip,
+body.theme-dark .health-state.state-good { background: #19231f !important; border-color: #2a3831 !important; color: #82ad94 !important; }
+body.theme-dark .health-state { background: #19231f !important; border-color: #2a3831 !important; color: #82ad94 !important; }
+body.theme-dark .health-state.state-problem { background: #2a1e1c !important; border-color: #49302b !important; color: #bd8e7d !important; }
+body.theme-dark .live-pill,
+body.theme-dark .offline-pill,
+body.theme-dark .active-badge { background: #18211d !important; border-color: #29332e !important; color: #85a994 !important; }
+body.theme-dark .status-good-dot,
+body.theme-dark .status-dot { color: #78a78d !important; background-color: #648c74; }
+body.theme-dark .impact.low { background: #19231f !important; color: #82ad94 !important; }
+body.theme-dark .impact.medium { background: #29201e !important; color: #be8e7c !important; }
+body.theme-dark input[type="range"] { accent-color: #807b99; }
+body.theme-dark .chart,
+body.theme-dark .chart .chart-plot-background { background-color: #11131a; }
+body.theme-dark .chart.blue path { stroke: #718a9b; }
+body.theme-dark .chart.teal path { stroke: #6d9288; }
+body.theme-dark .chart.coral path { stroke: #aa7c75; }
+body.theme-dark .drop-zone { border-color: #494b5a !important; }
+body.theme-dark .drop-zone small,
+body.theme-dark .storage-usage .panel-heading b,
+body.theme-dark .settings-card label,
+body.theme-dark .watcher-table td { color: var(--ink); }
+body.theme-dark .usage-bar { background: #292b36; }
+body.theme-dark .watcher-table th,
+body.theme-dark .watcher-table td { border-color: var(--line) !important; }
+body.theme-dark .files-panel .file-head { background: var(--soft) !important; color: var(--muted) !important; }
+body.theme-dark .files-panel .file-row { border-color: var(--line) !important; }
+body.theme-dark .files-panel .file-row em { background: #38251f !important; color: #eda17f !important; }
+body.theme-dark .files-panel .file-row button { background: #75483f !important; border-color: #8b6057 !important; color: #cbc4c0 !important; }
+body.theme-dark .app-footer { color: var(--muted); }
+
+body.compact-mode .app-main { padding-top: 8px !important; padding-bottom: 8px !important; }
+body.compact-mode .panel { padding: 8px !important; }
+body.compact-mode #view-overview .overview-grid { row-gap: 6px !important; column-gap: 6px !important; }
+body.compact-mode #view-overview .overview-grid > .panel { padding: 8px !important; }
+body.compact-mode #view-overview .drainer-list > div { min-height: 32px !important; height: 32px !important; }
+body.compact-mode #view-overview .activity-list > span { min-height: 27px !important; padding-top: 4px !important; padding-bottom: 4px !important; }
+body.compact-mode #view-storage .storage-usage .storage-stat-pill { min-height: 34px; padding: 6px 8px; }
+body.compact-mode #view-settings .settings-content .settings-card { min-height: 0; padding: 12px !important; }
+
+/* Final Converter and Settings rules override legacy page styles above. */
+#view-converter .converter-layout {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.9fr) minmax(270px, .9fr) !important;
+  grid-template-rows: auto minmax(240px, 1fr) auto minmax(125px, auto) !important;
+  gap: 12px !important;
+  min-height: calc(100vh - 220px);
+}
+#view-converter .converter-layout > div:first-child { display: contents !important; }
+#view-converter .converter-tabs {
+  grid-column: 1 / -1 !important;
+  grid-row: 1 !important;
+  display: grid !important;
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  flex-direction: row !important;
+  gap: 8px;
+  margin: 0;
+  padding: 8px;
+  overflow-x: auto;
+}
+#view-converter .converter-tabs button { min-width: 105px; min-height: 42px; padding: 8px 12px; text-align: center; white-space: nowrap; font-size: 11px; }
+#view-converter .drop-zone { grid-column: 1 !important; grid-row: 2 !important; min-height: 240px; margin: 0; }
+#view-converter .drop-zone .primary-button { padding: 9px 16px; font-size: 11px; }
+#view-converter .convert-controls { grid-column: 1 !important; grid-row: 3 !important; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 0; gap: 12px; padding: 16px; }
+#view-converter .convert-controls > .primary-button { grid-column: 1 / -1; justify-self: end; min-width: 150px; }
+#view-converter .recent-panel { grid-column: 1 !important; grid-row: 4 !important; margin-top: 0; min-height: 125px; }
+#view-converter .converter-side { grid-column: 2 !important; grid-row: 2 / span 3 !important; grid-template-rows: minmax(130px, auto) minmax(0, 1fr); gap: 12px; }
+
+#view-settings .settings-layout { display: block !important; }
+#view-settings .settings-navbar {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 12px;
+  width: 100% !important;
+  min-height: 62px;
+  padding: 8px 10px;
+  overflow: hidden;
+}
+#view-settings .settings-navbar.collapsed { width: 100% !important; flex: 1 1 auto !important; gap: 0; }
+#view-settings .settings-nav-header { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; white-space: nowrap; }
+#view-settings .settings-toggle { display: grid; place-items: center; width: 38px; height: 38px; padding: 0; }
+#view-settings .settings-nav-items { display: flex !important; align-items: stretch; gap: 6px; flex: 1 1 auto; min-width: 0; overflow: hidden; }
+#view-settings .settings-nav-items button {
+  display: block;
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+  max-width: 180px;
+  min-height: 44px;
+  max-height: 56px;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  border-left-width: 1px;
+  text-align: left;
+  opacity: 1;
+  transform: translateX(0) scaleX(1);
+  transform-origin: left center;
+  transition: flex-basis .3s cubic-bezier(.2,.8,.2,1), max-width .3s cubic-bezier(.2,.8,.2,1), opacity .2s ease, transform .3s cubic-bezier(.2,.8,.2,1), padding .25s ease;
+  transition-delay: var(--settings-delay, 0ms);
+}
+#view-settings .settings-nav-items button small { display: block; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; }
+#view-settings .settings-navbar.collapsed .settings-navbar-label { display: none; }
+#view-settings .settings-navbar.collapsed .settings-nav-items { flex: 0 1 0; gap: 0; }
+#view-settings .settings-navbar.collapsed .settings-nav-items button {
+  display: block;
+  flex: 0 0 0;
+  max-width: 0;
+  padding-left: 0;
+  padding-right: 0;
+  border-width: 0;
+  opacity: 0;
+  transform: translateX(-18px) scaleX(.7);
+  pointer-events: none;
+}
+#view-settings .settings-content { display: block !important; min-width: 0; margin-top: 12px; }
+#view-settings .settings-content .settings-card { display: none !important; width: 100%; min-height: 390px; padding: 18px; }
+#view-settings .settings-content .settings-card.settings-card-active { display: block !important; }
+
+@media (max-width: 1100px) {
+  #view-converter .converter-layout { grid-template-columns: minmax(0, 1fr) !important; grid-template-rows: auto minmax(220px, auto) auto auto auto !important; min-height: 0; }
+  #view-converter .drop-zone { grid-row: 2 !important; }
+  #view-converter .convert-controls { grid-row: 3 !important; }
+  #view-converter .recent-panel { grid-row: 4 !important; }
+  #view-converter .converter-side { grid-column: 1 !important; grid-row: 5 !important; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: auto; }
+}
+@media (max-width: 760px) {
+  #view-converter .converter-tabs { grid-template-columns: repeat(6, minmax(105px, 1fr)) !important; }
+  #view-converter .convert-controls { grid-template-columns: minmax(0, 1fr); }
+  #view-converter .convert-controls > .primary-button { grid-column: 1; justify-self: stretch; }
+  #view-converter .converter-side { grid-template-columns: 1fr; }
+  #view-settings .settings-navbar { align-items: flex-start; gap: 8px; }
+  #view-settings .settings-navbar-label { display: none; }
+  #view-settings .settings-nav-items { overflow-x: auto; }
+  #view-settings .settings-nav-items button { flex: 0 0 140px; }
+  #view-settings .settings-content .settings-card { padding: 14px; }
+}
+

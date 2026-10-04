@@ -8,6 +8,7 @@ if (-not $env:JAVA_HOME) {
 
 $root = Split-Path -Parent $PSScriptRoot
 Set-Location (Join-Path $root "desktop")
+$appVersion = if ($env:PULSEOS_VERSION) { $env:PULSEOS_VERSION -replace '^v', '' } else { "1.0.8" }
 
 mvn clean package
 Remove-Item -Recurse -Force -ErrorAction SilentlyContinue target\jpackage-input
@@ -21,14 +22,17 @@ Remove-Item -Recurse -Force -ErrorAction SilentlyContinue target\installer
 jpackage `
   --type exe `
   --name PulseOS `
-  --app-version 1.0.0 `
+  --app-version $appVersion `
   --vendor PulseOS `
   --description "PulseOS device health and healing center" `
   --input target\jpackage-input `
   --main-jar pulseos-1.0-SNAPSHOT.jar `
   --main-class com.pulseos.Main `
-  --java-options "--module-path `$APPDIR/javafx --add-modules javafx.controls,javafx.fxml" `
+  --java-options "--module-path `$APPDIR/javafx --add-modules javafx.controls,javafx.fxml,javafx.web" `
   --dest target\installer `
-  --java-options "-Xmx1g"
+  --java-options "-Xmx1g" `
+  --win-shortcut `
+  --win-menu `
+  --win-menu-group "PulseOS"
 
 Write-Host "Created Windows installer(s) in desktop\target\installer"

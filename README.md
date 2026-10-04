@@ -4,7 +4,7 @@
 
 > **MONITOR → UNDERSTAND → PREDICT → HEAL**
 
-PulseOS is an intelligent desktop utility designed to monitor computer health, understand system problems, identify resource-heavy processes, analyse storage conditions, assist with file management, and provide safe maintenance actions through a unified interface.
+PulseOS is an intelligent device-health platform with a Windows/macOS/Linux desktop app and an Android-only mobile companion. The desktop app monitors computer health, explains system problems, analyzes processes and storage, and provides maintenance utilities. Android keeps the same six primary destinations while using only mobile-supported telemetry and permissions.
 
 Unlike traditional system monitoring utilities that primarily display raw metrics, PulseOS focuses on converting system telemetry into **understandable, actionable device intelligence**.
 
@@ -25,6 +25,21 @@ However, raw numbers alone do not answer the most important questions:
 - Did the system actually improve after the action?
 
 PulseOS is designed to address this gap.
+
+## Desktop and Android Apps
+
+Both apps use the same six primary destinations, adapted to each platform:
+
+| Destination | Desktop | Android |
+|---|---|---|
+| Overview | Live health score, telemetry, problems, trends, and activity | Health score from observed Android readings and supported-problem summary |
+| Hardware Health | Component status across CPU, memory, GPU, storage, battery, cooling, network, peripherals, startup, crashes, and security | Battery/charging, processor, RAM, display/touch, camera/flash, microphone/audio routes, sensors, GPS, NFC, Bluetooth, biometrics, USB, and vibration when reported by Android |
+| Smart Router | Live process ranking and resource-impact analysis | Current Wi-Fi/mobile connection plus optional app screen-time and visible process data |
+| Storage Healer | Scan common locations, identify artifacts, protect active projects, and quarantine selected cleanup | App-cache review and Android storage settings within platform permissions |
+| Converter | Offline image, document, archive, media, and ebook workflows, with external-tool requirements noted | Local conversions supported by the mobile build |
+| Settings | Desktop watcher, project-protection, and application preferences | Local-first and alert preferences plus shortcuts to Android data usage, app time, permissions, notifications, Wi-Fi/mobile network, Bluetooth, battery, display, sound, storage, location, and security settings |
+
+Desktop also includes the Downloads watcher/organizer and optional local Ollama assistance. Android is the only mobile target; there is no iOS client. The mobile interface contains phone-relevant components and actions only; Android permissions and device support determine which readings are present.
 
 ### Core Workflow
 
@@ -505,8 +520,9 @@ and opens PulseOS. macOS may otherwise show an “Apple could not verify” or
 downloaded from a source you trust. A future Apple Developer ID signed and
 notarized release will open normally without this command.
 
-Windows and Linux users should use the installer for their platform. Mobile
-users should use the mobile build and its platform-specific installation flow.
+Windows and Linux users should use the installer for their platform. Android
+users should use the Android APK; PulseOS does not currently provide an iOS
+mobile build.
 
 ## 1. Clone the Repository
 
@@ -550,17 +566,19 @@ must be built on Windows:
 ```
 
 The GitHub Actions workflow
-`.github/workflows/desktop-installers.yml` builds both installers on tagged
-releases or by selecting **Run workflow**. Upload the generated `.dmg` and
-`.exe` files to the website. Users then install and launch PulseOS without
-Maven, Java, or JavaFX installed.
+`.github/workflows/desktop-installers.yml` builds Windows, macOS, and Linux
+desktop installers plus the Android APK. Push a desktop version tag such as
+`v1.0.9` to build all four platforms and publish them as GitHub Release assets.
+The website download buttons point at the latest stable asset names. Actions
+stages the packages under `website/downloads` during publishing; the large
+binaries stay on GitHub Releases rather than in Git history, which has a
+100 MB per-file limit.
 
-The workflow produces separate macOS installers for Apple Silicon and Intel.
-It also produces a Linux `.deb` package for Debian- and Ubuntu-based systems.
-For a public release, sign/notarize the macOS app with an Apple Developer
-certificate and sign the Windows installer with a code-signing certificate;
-otherwise macOS Gatekeeper or Windows SmartScreen may show an unverified
-publisher warning.
+The Android application version is maintained separately in
+`mobile/pubspec.yaml`. For a public release, sign/notarize the macOS app with an
+Apple Developer certificate and sign the Windows installer with a code-signing
+certificate; otherwise macOS Gatekeeper or Windows SmartScreen may show an
+unverified publisher warning.
 
 ### macOS first launch
 
@@ -568,6 +586,19 @@ The locally generated DMG is valid but is not notarized without an Apple
 Developer certificate. If macOS says the app cannot be opened, drag it to
 Applications, then Control-click `PulseOS.app`, choose **Open**, and confirm.
 For a public release, sign and notarize the DMG so users can open it normally.
+
+## Android Mobile Build
+
+The mobile app is Android-only and lives in `mobile/`. It shares the six primary destinations with desktop but does not expose desktop-only process controls, full-disk maintenance, or sensors unavailable through Android APIs.
+
+```bash
+cd mobile
+flutter pub get
+flutter test
+flutter build apk --release
+```
+
+The release APK is created at `mobile/build/app/outputs/flutter-apk/app-release.apk`. Usage Access is optional and requested only for Smart Router app-usage details.
 
 ---
 

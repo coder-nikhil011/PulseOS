@@ -9,6 +9,8 @@ public class SystemMetrics {
     private final double usedMemoryGb;
     private final double totalMemoryGb;
     private final double clockSpeedGhz;
+    private final int[] fanSpeeds;
+    private final double cpuVoltage;
     private final int batteryPercent;
     private final boolean batteryCharging;
     private final int batteryHealthPercent;
@@ -25,13 +27,16 @@ public class SystemMetrics {
                          long activeThreadCount, double usedMemoryGb, double totalMemoryGb,
                          double clockSpeedGhz, int batteryPercent, boolean batteryCharging,
                          int batteryHealthPercent, int batteryCycleCount,
-                         int totalProcessCount, List<ProcessInfo> topByCpu, List<ProcessInfo> topByRam) {
+                         int totalProcessCount, List<ProcessInfo> topByCpu, List<ProcessInfo> topByRam,
+                         int[] fanSpeeds, double cpuVoltage) {
         this.cpuLoadPercentage = cpuLoadPercentage;
         this.coreTemperature = coreTemperature;
         this.activeThreadCount = activeThreadCount;
         this.usedMemoryGb = usedMemoryGb;
         this.totalMemoryGb = totalMemoryGb;
         this.clockSpeedGhz = clockSpeedGhz;
+        this.fanSpeeds = fanSpeeds == null ? new int[0] : fanSpeeds.clone();
+        this.cpuVoltage = cpuVoltage;
         this.batteryPercent = batteryPercent;
         this.batteryCharging = batteryCharging;
         this.batteryHealthPercent = batteryHealthPercent;
@@ -47,6 +52,8 @@ public class SystemMetrics {
     public double getUsedMemoryGb() { return usedMemoryGb; }
     public double getTotalMemoryGb() { return totalMemoryGb; }
     public double getClockSpeedGhz() { return clockSpeedGhz; }
+    public int[] getFanSpeeds() { return fanSpeeds.clone(); }
+    public double getCpuVoltage() { return cpuVoltage; }
     public int getBatteryPercent() { return batteryPercent; }
     public boolean isBatteryCharging() { return batteryCharging; }
     public int getBatteryHealthPercent() { return batteryHealthPercent; }

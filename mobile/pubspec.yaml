@@ -1,7 +1,7 @@
 name: pulseos_mobile
-description: PulseOS mobile companion with dashboard, router, storage healer and converter.
+description: Android-only PulseOS companion with six device-health and utility destinations.
 publish_to: "none"
-version: 0.2.0+1
+version: 0.2.1+2
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
@@ -9,7 +9,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  archive: ^4.0.7
+  battery_plus: ^6.2.3
   cupertino_icons: ^1.0.8
+  file_picker: ^10.3.3
+  image: ^4.5.4
+  path_provider: ^2.1.5
+  pdf: ^3.11.3
+  shared_preferences: ^2.5.3
+  video_player: ^2.9.5
 
 dev_dependencies:
   flutter_test:
@@ -18,3 +26,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - web/icons/Icon-maskable-512.png
+    - assets/PulseOS_animation.mp4

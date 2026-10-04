@@ -22,13 +22,14 @@
                     <Label text="DEVICE HEALTH &amp; HEALING CENTER" styleClass="app-title"/>
                     <HBox HBox.hgrow="ALWAYS"/>
                     <Label fx:id="liveStatusLabel" text="● LIVE" styleClass="active-badge"/>
-                    <Button text="—" styleClass="icon-btn"/>
+                    <Button text="↻ Refresh" onAction="#handleRefresh" styleClass="icon-btn"/>
                     <Button text="□" styleClass="icon-btn"/>
                     <Button text="✕" styleClass="icon-btn-close"/>
                 </HBox>
                 <HBox styleClass="nav-tab-bar" spacing="4">
                     <padding><Insets left="12" right="12"/></padding>
                     <Button fx:id="navHealthBtn" text="⌂ Overview" onAction="#showHealthView" styleClass="nav-tab-btn, nav-tab-active"/>
+                    <Button fx:id="navHardwareHealthBtn" text="◉ Hardware Health" onAction="#showHardwareHealthView" styleClass="nav-tab-btn"/>
                     <Button fx:id="navSmartRouterBtn" text="⚙ Smart Router" onAction="#showSmartRouterView" styleClass="nav-tab-btn"/>
                     <Button fx:id="navStorageHealerBtn" text="◈ Storage Healer" onAction="#showStorageHealerView" styleClass="nav-tab-btn"/>
                     <Button fx:id="navConverterBtn" text="⇄ Converter" onAction="#showConverterView" styleClass="nav-tab-btn"/>
@@ -69,6 +70,7 @@
                         <VBox fx:id="liveSnapshotCard" styleClass="card clickable-stat" spacing="7" maxWidth="Infinity">
                             <HBox alignment="CENTER_LEFT"><Label text="LIVE DEVICE SNAPSHOT" styleClass="section-kicker"/><HBox HBox.hgrow="ALWAYS"/><Label text="Current machine state" styleClass="live-caption"/></HBox>
                             <HBox spacing="10" maxWidth="Infinity">
+                                <VBox alignment="CENTER" spacing="4" styleClass="metric-tile device-identity-tile" minWidth="170" prefWidth="190"><Label text="DEVICE" styleClass="stat-caption"/><Label fx:id="deviceModelLabel" text="Detecting model…" styleClass="metric-value" wrapText="true"/><Label text="OSHI hardware identity" styleClass="metric-hint" wrapText="true"/></VBox>
                                 <VBox onMouseClicked="#openCpuDetail" alignment="CENTER_LEFT" styleClass="metric-tile clickable-stat" HBox.hgrow="ALWAYS" minWidth="0"><Label text="CPU" styleClass="stat-caption"/><Label fx:id="cpuLabel" text="—" styleClass="metric-value"/><Label fx:id="cpuBackendLabel" text="Top app: waiting…" styleClass="metric-hint" wrapText="true"/></VBox>
                                 <VBox onMouseClicked="#openRamDetail" alignment="CENTER_LEFT" styleClass="metric-tile clickable-stat" HBox.hgrow="ALWAYS" minWidth="0"><Label text="MEMORY" styleClass="stat-caption"/><Label fx:id="ramLabel" text="—" styleClass="metric-value"/><Label fx:id="ramBackendLabel" text="Top app: waiting…" styleClass="metric-hint" wrapText="true"/></VBox>
                                 <VBox onMouseClicked="#openTempDetail" alignment="CENTER_LEFT" styleClass="metric-tile clickable-stat" HBox.hgrow="ALWAYS" minWidth="0"><Label text="TEMPERATURE" styleClass="stat-caption"/><Label fx:id="tempLabel" text="—" styleClass="metric-value"/><Label fx:id="tempBackendLabel" text="Sensor: detecting…" styleClass="metric-hint" wrapText="true"/></VBox>
@@ -105,6 +107,7 @@
                                 <Label fx:id="issue2Label" text="✓ Analyzing" styleClass="issue-line"/>
                                 <Label fx:id="issue3Label" text="✓ Analyzing" styleClass="issue-line"/>
                                 <Label fx:id="problemSummaryLabel" text="Detection status: analyzing telemetry" styleClass="muted-note" wrapText="true"/>
+                                <Button text="Review &amp; Diagnose" onAction="#handleDiagnose" styleClass="action-btn"/>
                             </VBox>
                             <VBox fx:id="predictionCard" styleClass="card clickable-stat" spacing="7" HBox.hgrow="ALWAYS">
                                 <HBox><Label text="PREDICTIVE HEALTH" styleClass="section-kicker"/><HBox HBox.hgrow="ALWAYS"/><Label fx:id="predictionConfidenceLabel" text="Confidence: calculating…" styleClass="live-caption"/></HBox>
@@ -112,6 +115,21 @@
                                 <Label fx:id="predictionInputsLabel" text="Current: CPU — · RAM — · Temp — · Storage —" wrapText="true" styleClass="muted-note"/>
                                 <Label fx:id="predictionTrendLabel" text="Trend: CPU warming up · RAM warming up · Thermal warming up · Storage warming up" wrapText="true" styleClass="muted-note"/>
                                 <Label text="Rule-based local outlook · no cloud required" wrapText="true" styleClass="muted-note"/>
+                            </VBox>
+                        </HBox>
+
+                        <HBox spacing="4" maxWidth="Infinity">
+                            <VBox fx:id="networkCard" styleClass="card clickable-stat" spacing="7" HBox.hgrow="ALWAYS">
+                                <HBox><Label text="NETWORK HEALTH" styleClass="section-kicker"/><HBox HBox.hgrow="ALWAYS"/><Label fx:id="networkStatusLabel" text="CHECKING" styleClass="stat-sub-green"/></HBox>
+                                <Label fx:id="networkDetailLabel" text="Waiting for the first network probe…" styleClass="hw-text" wrapText="true"/>
+                                <Label fx:id="networkLatencyLabel" text="Latency: —" styleClass="metric-value"/>
+                                <Label fx:id="networkBackendLabel" text="DNS + internet reachability · checking every 15s" styleClass="muted-note" wrapText="true"/>
+                            </VBox>
+                            <VBox fx:id="platformCard" styleClass="card clickable-stat" spacing="7" HBox.hgrow="ALWAYS">
+                                <HBox><Label text="PLATFORM &amp; CAPABILITIES" styleClass="section-kicker"/><HBox HBox.hgrow="ALWAYS"/><Label text="Details →" styleClass="live-caption"/></HBox>
+                                <Label fx:id="platformOsLabel" text="Operating system: detecting…" styleClass="hw-text"/>
+                                <Label fx:id="platformSupportLabel" text="Available telemetry: detecting…" styleClass="hw-text" wrapText="true"/>
+                                <Label fx:id="platformBackendLabel" text="Capability limits are reported honestly" styleClass="muted-note" wrapText="true"/>
                             </VBox>
                         </HBox>
 

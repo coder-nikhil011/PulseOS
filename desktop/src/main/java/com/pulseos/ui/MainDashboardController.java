@@ -13,14 +13,19 @@ import java.util.Map;
 
 import com.pulseos.ai.AiFeaturesService;
 import com.pulseos.converter.DocumentConverterEngine;
+import com.pulseos.diagnostics.HardwareProblem;
+import com.pulseos.diagnostics.HardwareProblemDetector;
 import com.pulseos.healer.BuildArtifactScanner.ArtifactDetails;
 import com.pulseos.healer.StorageHealerService;
 import com.pulseos.healer.StorageCategoryScanner;
 import com.pulseos.telemetry.HardwareTelemetryService;
+import com.pulseos.telemetry.NetworkTelemetryService;
+import com.pulseos.telemetry.PlatformCapabilityService;
 import com.pulseos.telemetry.SystemMetrics;
 import com.pulseos.ui.components.TelemetryChartCard;
 import com.pulseos.ui.components.ToastNotification;
 import com.pulseos.ui.views.ConverterView;
+import com.pulseos.ui.views.HardwareHealthView;
 import com.pulseos.ui.views.SettingsView;
 import com.pulseos.ui.views.SmartRouterView;
 import com.pulseos.ui.views.StorageHealerView;
@@ -29,6 +34,7 @@ import com.pulseos.watcher.DownloadOrganizerService;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.geometry.Insets;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
@@ -37,17 +43,22 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
 
 public class MainDashboardController {
     @FXML private StackPane rootPane, contentArea;
-    @FXML private VBox healthView, healthHeroCard, liveSnapshotCard, problemsCard, predictionCard, batteryCard, storageCard, drainerCard, hardwareCard, watcherCard, aboutCard;
-    @FXML private Button navHealthBtn, navSmartRouterBtn, navStorageHealerBtn, navConverterBtn, navSettingsBtn;
+    @FXML private VBox healthView, healthHeroCard, liveSnapshotCard, problemsCard, predictionCard, batteryCard, storageCard, drainerCard, hardwareCard, watcherCard, networkCard, platformCard, aboutCard;
+    @FXML private Button navHealthBtn, navHardwareHealthBtn, navSmartRouterBtn, navStorageHealerBtn, navConverterBtn, navSettingsBtn;
 
     @FXML private Label cpuLabel, threadsLabel, ramLabel, clockSpeedLabel, tempLabel, freeStorageLabel;
+    @FXML private Label deviceModelLabel;
     @FXML private Label cpuBackendLabel, ramBackendLabel, tempBackendLabel, threadsBackendLabel, clockBackendLabel;
     @FXML private Label cpuChartInfoLabel, ramChartInfoLabel, tempChartInfoLabel;
     @FXML private Label healthDataSourceLabel, problemSummaryLabel, predictionInputsLabel, predictionConfidenceLabel;
@@ -68,9 +79,12 @@ public class MainDashboardController {
     @FXML private ProgressBar performanceHealthBar;
     @FXML private Label performanceHealthLabel, hardwareHealthLabel, storageHealthLabel, batteryHealthLabel;
     @FXML private Label issue1Label, issue2Label, issue3Label, predictionLabel, predictionTrendLabel, liveStatusLabel, problemBadgeLabel;
+    @FXML private Label networkStatusLabel, networkDetailLabel, networkLatencyLabel, networkBackendLabel, platformOsLabel, platformSupportLabel, platformBackendLabel;
     @FXML private ListView<String> activityLogView;
 
     private HardwareTelemetryService telemetryService;
+    private NetworkTelemetryService networkTelemetryService;
+    private final PlatformCapabilityService capabilityService = new PlatformCapabilityService();
     private DownloadInterceptorService watcherService;
     private DownloadOrganizerService organizerService;
     private StorageHealerService healerService;
@@ -79,15 +93,19 @@ public class MainDashboardController {
     private StorageHealerView storageHealerView;
     private ConverterView converterView;
     private SmartRouterView smartRouterView;
+    private HardwareHealthView hardwareHealthView;
+    private ScrollPane hardwareHealthScroll;
     private SettingsView settingsView;
     private final StorageCategoryScanner categoryScanner = new StorageCategoryScanner();
 
     private int tickCounter = 0;
     private int interceptedCount = 0;
+    private int networkFailures = 0;
     private boolean autoOrganizeEnabled = true;
     private boolean protectActiveProjects = true;
     private final Map<String, Integer> organizedByCategory = new LinkedHashMap<>();
     private SystemMetrics latestMetrics;
+    private NetworkTelemetryService.NetworkMetrics latestNetworkMetrics;
     private StorageCategoryScanner.CategoryResult latestStorageResult;
     private final Deque<Double> cpuHistory = new ArrayDeque<>();
     private final Deque<Double> ramHistory = new ArrayDeque<>();
@@ -109,6 +127,7 @@ public class MainDashboardController {
         initializeDashboardDataState();
         updateStorageInfo();
         wireDashboardInteractions();
+        rebuildOverviewLayout();
         // Keep FXML loading and the first paint cheap. OSHI initialization,
         // process enumeration and storage traversal are deliberately started
         // after the stage has been shown.
@@ -119,6 +138,114 @@ public class MainDashboardController {
             startWatcher();
             runInitialStorageHealthScan();
         });
+    }
+
+    private void rebuildOverviewLayout() {
+        if (healthView == null || healthView.getChildren().size() < 10) return;
+
+        Node charts = healthView.getChildren().get(2);
+        Node problems = healthView.getChildren().get(3);
+        Node network = healthView.getChildren().get(4);
+        Node battery = healthView.getChildren().get(5);
+        Node drainers = healthView.getChildren().get(6);
+        Node hardware = healthView.getChildren().get(7);
+        Node about = healthView.getChildren().get(9);
+
+        VBox quickStatus = overviewCard("QUICK HEALTH STATUS",
+                statusLine("●", "CPU", "Normal", false), statusLine("●", "Memory", "Normal", false),
+                statusLine("●", "Storage", "Normal", false), statusLine("●", "Battery", "Normal", false),
+                statusLine("●", "Network", "Problem", true));
+        VBox assistant = overviewCard("✦ ASSISTANT   BETA",
+                label("Ask PulseOS anything about your device\nor system health.", "muted-note"),
+                label("Type your question...                                      ➤", "assistant-input"));
+
+        GridPane grid = new GridPane();
+        grid.getStyleClass().add("overview-grid");
+        grid.setMinWidth(0);
+        grid.setMaxWidth(Double.MAX_VALUE);
+        grid.setHgap(4);
+        grid.setVgap(4);
+        grid.setPadding(new Insets(4));
+        for (int i = 0; i < 3; i++) {
+            ColumnConstraints column = new ColumnConstraints();
+            column.setMinWidth(0);
+            column.setPercentWidth(i == 1 ? 42 : i == 2 ? 24 : 34);
+            column.setHgrow(Priority.ALWAYS);
+            column.setFillWidth(true);
+            grid.getColumnConstraints().add(column);
+        }
+        double[] rowHeights = {110, 110, 96, 110, 94, 72};
+        for (double height : rowHeights) {
+            javafx.scene.layout.RowConstraints row = new javafx.scene.layout.RowConstraints(height, height, height);
+            row.setVgrow(Priority.NEVER);
+            grid.getRowConstraints().add(row);
+        }
+        place(grid, healthHeroCard, 0, 0, 1, 1);
+        place(grid, liveSnapshotCard, 1, 0, 1, 1);
+        place(grid, quickStatus, 2, 0, 1, 1);
+        place(grid, drainers, 0, 1, 1, 2);
+        place(grid, charts, 1, 1, 1, 1);
+        place(grid, assistant, 2, 1, 1, 1);
+        place(grid, problems, 1, 2, 1, 1);
+        place(grid, predictionCard, 2, 2, 1, 1);
+        place(grid, hardware, 0, 3, 2, 1);
+        place(grid, network, 2, 3, 1, 1);
+        place(grid, battery, 0, 4, 2, 1);
+        place(grid, storageCard, 2, 4, 1, 1);
+        place(grid, about, 0, 5, 2, 1);
+        place(grid, watcherCard, 2, 5, 1, 1);
+        healthView.getChildren().setAll(grid);
+    }
+
+    private void place(GridPane grid, Node node, int column, int row, int span, int rowSpan) {
+        grid.add(node, column, row);
+        GridPane.setColumnSpan(node, span);
+        GridPane.setRowSpan(node, rowSpan);
+        GridPane.setHgrow(node, Priority.ALWAYS);
+        GridPane.setVgrow(node, Priority.ALWAYS);
+        GridPane.setFillWidth(node, true);
+        if (node instanceof javafx.scene.layout.Region region) {
+            region.setMinWidth(0);
+            region.setMaxWidth(Double.MAX_VALUE);
+        }
+    }
+
+    private VBox overviewCard(String title, Node... content) {
+        VBox card = new VBox(5);
+        card.setMinWidth(0);
+        card.setMaxWidth(Double.MAX_VALUE);
+        card.getStyleClass().add("card");
+        Label heading = label(title, "section-kicker");
+        heading.setWrapText(false);
+        card.getChildren().add(heading);
+        card.getChildren().addAll(content);
+        return card;
+    }
+
+    private HBox statusLine(String icon, String name, String state, boolean problem) {
+        Label dot = label(icon, problem ? "status-problem-dot" : "status-good-dot");
+        Label item = label(name, "status-line-name");
+        Label value = label(state, problem ? "status-problem-text" : "status-good-text");
+        Label arrow = label("›", "status-arrow");
+        dot.setWrapText(false);
+        item.setWrapText(false);
+        value.setWrapText(false);
+        arrow.setWrapText(false);
+        HBox line = new HBox(7, dot, item, value, arrow);
+        line.setMinWidth(0);
+        line.setMaxWidth(Double.MAX_VALUE);
+        line.getStyleClass().add("status-line");
+        HBox.setHgrow(item, Priority.ALWAYS);
+        return line;
+    }
+
+    private Label label(String text, String style) {
+        Label value = new Label(text);
+        value.getStyleClass().add(style);
+        value.setWrapText(false);
+        value.setMinWidth(0);
+        value.setMaxWidth(Double.MAX_VALUE);
+        return value;
     }
 
 
@@ -139,6 +266,13 @@ public class MainDashboardController {
         predictionConfidenceLabel.setText("Confidence: calculating baseline…");
         predictionTrendLabel.setText("Trend: CPU warming up · RAM warming up · Thermal warming up · Storage warming up");
         problemBadgeLabel.setText("0 active");
+        networkStatusLabel.setText("CHECKING");
+        networkDetailLabel.setText("Waiting for the first network probe…");
+        networkLatencyLabel.setText("Latency: —");
+        networkBackendLabel.setText("DNS + internet reachability · checking every 15s");
+        platformOsLabel.setText(System.getProperty("os.name", "Unknown OS") + " · " + System.getProperty("os.arch", "unknown"));
+        platformSupportLabel.setText("Available telemetry: CPU, RAM, battery, storage");
+        platformBackendLabel.setText("GPU, SMART, startup and crash data depend on OS permissions and vendor APIs");
         batteryHealthInfoLabel.setText("Health: detecting… · Cycles: detecting…");
         batteryBackendLabel.setText("Charging + health + cycles · live update");
         batteryIconLabel.setText("▮▮▮▮");
@@ -163,6 +297,8 @@ public class MainDashboardController {
         drainerCard.setOnMouseClicked(e -> openDrainerBackend());
         hardwareCard.setOnMouseClicked(e -> { e.consume(); openHardwareBackend(); });
         watcherCard.setOnMouseClicked(e -> openWatcherBackend());
+        networkCard.setOnMouseClicked(e -> { e.consume(); openNetworkBackend(); });
+        platformCard.setOnMouseClicked(e -> { e.consume(); openPlatformBackend(); });
         aboutCard.setOnMouseClicked(e -> openArchitectureBackend());
         fixIssuesBtn.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> e.consume());
         cleanNowBtn.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> e.consume());
@@ -211,6 +347,121 @@ public class MainDashboardController {
     private void openProblemsBackend() {
         if (latestMetrics == null) return;
         BackendInfoDialogs.showProblems(owner(), latestMetrics, storageProgressBar.getProgress());
+    }
+
+    @FXML private void handleDiagnose() {
+        if (latestMetrics == null) return;
+        double ramPct = latestMetrics.getTotalMemoryGb() <= 0 ? 0
+                : latestMetrics.getUsedMemoryGb() / latestMetrics.getTotalMemoryGb() * 100.0;
+        var problems = HardwareProblemDetector.detect(latestMetrics, storageProgressBar.getProgress(),
+                tempHistory, networkFailures, java.time.Instant.now());
+        var lines = new ArrayList<String>();
+        if (problems.isEmpty()) {
+            lines.add("No repeated hardware or system signal currently meets the diagnosis threshold.");
+            lines.add(String.format("Current readings: CPU %.1f%% · RAM %.1f%% · Temperature %.1f°C",
+                    latestMetrics.getCpuLoadPercentage(), ramPct, latestMetrics.getCoreTemperature()));
+            lines.add("Continue monitoring; one isolated reading is not treated as a hardware failure.");
+        } else {
+            for (HardwareProblem problem : problems) {
+                lines.add(problem.component() + " · " + problem.title());
+                lines.add("State: " + problem.state() + " · Severity: " + problem.severity()
+                        + " · Confidence: " + problem.confidence() + "%");
+                lines.add("Evidence: " + String.join(" | ", problem.evidence()));
+                lines.add("Limitation: " + problem.capability());
+                lines.add("Next safe action: observe again or open the relevant detail card; guided tests are coming later.");
+            }
+        }
+        BackendInfoDialogs.showData(owner(), "Hardware Diagnosis — Evidence Review",
+                "PulseOS diagnoses signals and confidence, not physical damage from a single reading.", lines);
+    }
+
+    private void openHardwareComponentDiagnosis(String component) {
+        if (latestMetrics == null) return;
+        double ramPct = latestMetrics.getTotalMemoryGb() <= 0 ? 0
+                : latestMetrics.getUsedMemoryGb() / latestMetrics.getTotalMemoryGb() * 100.0;
+        var problems = HardwareProblemDetector.detect(latestMetrics, storageProgressBar.getProgress(),
+                tempHistory, networkFailures, java.time.Instant.now());
+        var lines = new ArrayList<String>();
+        lines.add("Component: " + component);
+        lines.add(String.format("Current readings: CPU %.1f%% · RAM %.1f%% · Temperature %.1f°C",
+                latestMetrics.getCpuLoadPercentage(), ramPct, latestMetrics.getCoreTemperature()));
+        if (component.startsWith("CPU") && latestMetrics.getCpuLoadPercentage() > 80) {
+            lines.add("State: PROBLEM · sustained CPU pressure requires process review");
+            lines.add(String.format("Evidence: CPU load %.1f%% · top process data available in Smart Router", latestMetrics.getCpuLoadPercentage()));
+        } else if (component.startsWith("RAM") && ramPct > 85) {
+            lines.add("State: PROBLEM · sustained memory pressure requires process review");
+            lines.add(String.format("Evidence: RAM usage %.1f%% · top memory processes available in this view", ramPct));
+            } else if (component.startsWith("Fan")) {
+                lines.add("Fan telemetry: " + (latestMetrics.getFanSpeeds().length == 0
+                    ? "LIMITED — RPM not exposed by this device"
+                    : java.util.Arrays.toString(latestMetrics.getFanSpeeds()) + " RPM"));
+                lines.add("A fan problem is suspected only when elevated temperature and low fan response occur together.");
+        }
+        problems.stream().filter(problem -> problem.component().contains(component.split(" /")[0]))
+                .forEach(problem -> {
+                    lines.add("State: " + problem.state() + " · Confidence: " + problem.confidence() + "%");
+                    lines.add("Evidence: " + String.join(" | ", problem.evidence()));
+                    lines.add("Limitation: " + problem.capability());
+                });
+        if (component.startsWith("GPU") || component.startsWith("Wi-Fi") || component.startsWith("Display")
+            || component.startsWith("Audio") || component.startsWith("USB") || component.startsWith("Motherboard")
+            || component.startsWith("Startup") || component.startsWith("OS") || component.startsWith("Security")) {
+            lines.add("State: LIMITED");
+            lines.add("Diagnosis is unavailable until the platform-specific adapter is connected.");
+        } else if (lines.size() == 2) {
+            lines.add("State: GOOD");
+            lines.add("No repeated abnormal signal currently meets the diagnosis threshold.");
+        }
+        lines.add("Next safe action: continue monitoring; guided tests will be user-initiated and permission-aware.");
+        BackendInfoDialogs.showData(owner(), component + " — Diagnosis", "Evidence review, not a claim of physical damage.", lines);
+    }
+
+    private void openHardwareComponentStatus(String component) {
+        if (latestMetrics == null) return;
+        double ramPct = latestMetrics.getTotalMemoryGb() <= 0 ? 0
+                : latestMetrics.getUsedMemoryGb() / latestMetrics.getTotalMemoryGb() * 100.0;
+        var lines = new ArrayList<String>();
+        lines.add("Status: GOOD or LIMITED — no active problem is being reported for this component.");
+        switch (component) {
+            case "CPU / Processor" -> lines.add(String.format("Load: %.1f%% · Clock: %.2f GHz · Threads: %,d",
+                    latestMetrics.getCpuLoadPercentage(), latestMetrics.getClockSpeedGhz(), latestMetrics.getActiveThreadCount()));
+            case "RAM / Memory" -> lines.add(String.format("Used: %.1f%% · %.2f / %.2f GB",
+                    ramPct, latestMetrics.getUsedMemoryGb(), latestMetrics.getTotalMemoryGb()));
+            case "Battery / Power" -> lines.add(String.format("Charge: %s · Health: %s · Cycles: %s",
+                    latestMetrics.getBatteryPercent() < 0 ? "unavailable" : latestMetrics.getBatteryPercent() + "%",
+                    latestMetrics.getBatteryHealthPercent() > 0 ? latestMetrics.getBatteryHealthPercent() + "%" : "unavailable",
+                    latestMetrics.getBatteryCycleCount() >= 0 ? String.valueOf(latestMetrics.getBatteryCycleCount()) : "unavailable"));
+            case "Fan / Cooling" -> lines.add("Fan RPM: " + (latestMetrics.getFanSpeeds().length == 0
+                    ? "unavailable" : java.util.Arrays.toString(latestMetrics.getFanSpeeds())));
+            case "Thermal Sensors" -> lines.add(String.format("CPU temperature: %.1f°C · Voltage: %.3f V",
+                    latestMetrics.getCoreTemperature(), latestMetrics.getCpuVoltage()));
+            default -> lines.add("This component is currently limited because the operating system adapter does not expose every diagnostic signal.");
+        }
+        lines.add("Source: local OSHI telemetry · captured live · no physical fault inferred.");
+        BackendInfoDialogs.showData(owner(), component + " — Full Status", "Current readings and platform capability status.", lines);
+    }
+
+    private void fixHardwareComponent(String component) {
+        if (latestMetrics == null) return;
+        if (component.startsWith("Storage")) {
+            showStorageHealerView();
+            logActivity("Opened Storage Healer for " + component);
+        } else if (component.startsWith("CPU") || component.startsWith("RAM")
+                || component.startsWith("Thermal") || component.startsWith("Fan")) {
+            showSmartRouterView();
+            logActivity("Opened Smart Router for safe " + component + " review");
+        }
+    }
+
+    private void navigateFromHardwareHealth(String target) {
+        switch (target) {
+            case "overview" -> showHealthView();
+            case "router" -> showSmartRouterView();
+            case "storage" -> showStorageHealerView();
+            case "converter" -> showConverterView();
+            case "settings" -> showSettingsView();
+            default -> logActivity("Unknown Hardware Health navigation target: " + target);
+        }
     }
 
     private void openPredictionBackend() {
@@ -275,6 +526,34 @@ public class MainDashboardController {
                         "PDF AI rename: optional local Ollama pipeline."));
     }
 
+                    private void openNetworkBackend() {
+                    NetworkTelemetryService.NetworkMetrics network = latestNetworkMetrics;
+                    if (network == null) {
+                        BackendInfoDialogs.showData(owner(), "Network Health", "The first network probe is still running.",
+                            java.util.List.of("Probe: DNS resolution + 1.1.1.1 reachability", "Interval: 15 seconds", "No user traffic is captured."));
+                        return;
+                    }
+                    BackendInfoDialogs.showData(owner(), "Network Health — Live Data", "A lightweight local probe checks reachability and DNS.",
+                        java.util.List.of(
+                            "DNS: " + (network.dnsAvailable() ? "Available" : "Unavailable"),
+                            "Internet reachability: " + (network.internetReachable() ? "Reachable" : "Unreachable"),
+                            "Latency: " + (network.latencyMs() >= 0 ? network.latencyMs() + " ms" : "Not measured"),
+                            "Resolved address: " + network.resolvedAddress(),
+                            "Captured: " + network.capturedAt(),
+                            "Limitation: this is not a Wi-Fi signal, packet-loss or per-process bandwidth monitor."));
+                    }
+
+                    private void openPlatformBackend() {
+                    BackendInfoDialogs.showData(owner(), "Platform & Capabilities", "PulseOS reports only signals exposed by this operating system.",
+                        java.util.List.of(
+                            "Operating system: " + System.getProperty("os.name", "Unknown OS"),
+                            "Architecture: " + System.getProperty("os.arch", "unknown"),
+                            "Available now: OSHI CPU, RAM, temperature, battery, process and storage telemetry",
+                            "Limited: GPU temperature/utilization, SMART health, startup impact and crash history",
+                            "Future adapter surface: Windows Event Viewer/WMI and macOS pmset/ioreg/unified logs",
+                            "Physical damage is never inferred from a single software signal."));
+                    }
+
     private void openArchitectureBackend() {
         BackendInfoDialogs.showData(owner(), "PulseOS — Backend Architecture",
                 "How the dashboard data is produced",
@@ -291,6 +570,9 @@ public class MainDashboardController {
     }
 
     @FXML private void showHealthView() { swapContent(healthView, navHealthBtn); }
+    @FXML private void showHardwareHealthView() {
+        if (hardwareHealthScroll != null) swapContent(hardwareHealthScroll, navHardwareHealthBtn);
+    }
     @FXML private void showSmartRouterView() {
         if (smartRouterView != null) swapContent(smartRouterView, navSmartRouterBtn);
     }
@@ -309,7 +591,7 @@ public class MainDashboardController {
 
     private void swapContent(Node view, Button activeBtn) {
         contentArea.getChildren().setAll(view);
-        for (Button b : new Button[]{navHealthBtn, navSmartRouterBtn, navStorageHealerBtn, navConverterBtn, navSettingsBtn}) {
+        for (Button b : new Button[]{navHealthBtn, navHardwareHealthBtn, navSmartRouterBtn, navStorageHealerBtn, navConverterBtn, navSettingsBtn}) {
             b.getStyleClass().remove("nav-tab-active");
         }
         activeBtn.getStyleClass().add("nav-tab-active");
@@ -319,10 +601,21 @@ public class MainDashboardController {
         storageHealerView = new StorageHealerView(healerService, aiService, this::logActivity);
         converterView = new ConverterView(aiService, this::logActivity);
         smartRouterView = new SmartRouterView();
+            hardwareHealthView = new HardwareHealthView(this::openHardwareComponentStatus, this::openHardwareComponentDiagnosis, this::fixHardwareComponent, this::navigateFromHardwareHealth);
+            capabilityService.scanAsync().thenAccept(capabilities -> Platform.runLater(() -> {
+                hardwareHealthView.setCapabilities(capabilities);
+                if (latestMetrics != null) {
+                    hardwareHealthView.update(latestMetrics, storageProgressBar.getProgress(), latestNetworkMetrics, networkFailures);
+                }
+            }));
+        hardwareHealthScroll = new ScrollPane(hardwareHealthView);
+        hardwareHealthScroll.setFitToWidth(true);
+        hardwareHealthScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        hardwareHealthScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        hardwareHealthScroll.getStyleClass().add("dashboard-scroll");
         settingsView = new SettingsView(autoOrganizeEnabled, enabled -> autoOrganizeEnabled = enabled,
                 protectActiveProjects, enabled -> protectActiveProjects = enabled);
     }
-
     private void logActivity(String message) {
         Platform.runLater(() -> {
             activityLogView.getItems().add(0, LocalTime.now().format(TIME_FMT) + "  " + message);
@@ -334,6 +627,25 @@ public class MainDashboardController {
         telemetryService = new HardwareTelemetryService();
         telemetryService.setProcessListener(processes -> Platform.runLater(() -> smartRouterView.updateProcesses(processes, latestMetrics == null ? processes.size() : latestMetrics.getTotalProcessCount())));
         telemetryService.startMonitoring(metrics -> Platform.runLater(() -> updateTelemetryUI(metrics)), 1000);
+        networkTelemetryService = new NetworkTelemetryService();
+        networkTelemetryService.start(metrics -> Platform.runLater(() -> updateNetworkUI(metrics)), 15);
+    }
+
+    private void updateNetworkUI(NetworkTelemetryService.NetworkMetrics metrics) {
+        latestNetworkMetrics = metrics;
+        boolean healthy = metrics.dnsAvailable() && metrics.internetReachable();
+        networkFailures = healthy ? 0 : networkFailures + 1;
+        networkStatusLabel.setText(healthy ? "HEALTHY" : networkFailures >= 3 ? "WARNING" : "OBSERVED");
+        networkStatusLabel.getStyleClass().removeAll("stat-sub-green", "stat-sub-warning");
+        networkStatusLabel.getStyleClass().add(healthy ? "stat-sub-green" : "stat-sub-warning");
+        networkDetailLabel.setText(healthy ? "Internet reachable · DNS resolved" : "DNS or internet reachability failed");
+        networkLatencyLabel.setText("Latency: " + (metrics.latencyMs() >= 0 ? metrics.latencyMs() + " ms" : "not measured"));
+        String captured = metrics.capturedAt().toString().replace('T', ' ');
+        networkBackendLabel.setText("Last probe: " + captured.substring(0, Math.min(19, captured.length())) + " · no traffic captured");
+        if (hardwareHealthView != null && latestMetrics != null) {
+            hardwareHealthView.update(latestMetrics, storageProgressBar.getProgress(), metrics, networkFailures);
+        }
+        if (networkFailures == 3) logActivity("Network warning: repeated reachability failures");
     }
 
     private void updateTelemetryUI(SystemMetrics metrics) {
@@ -416,6 +728,9 @@ public class MainDashboardController {
         footerRamLabel.setText(String.format("RAM: %.1f / %.1f GB", metrics.getUsedMemoryGb(), metrics.getTotalMemoryGb()));
         footerTempLabel.setText(temp > 0 ? String.format("CPU Temp: %.0f°C", temp) : "CPU Temp: N/A");
         smartRouterView.update(metrics);
+        if (hardwareHealthView != null) {
+            hardwareHealthView.update(metrics, storageProgressBar.getProgress(), latestNetworkMetrics, networkFailures);
+        }
         updateDrainerCard(metrics);
         evaluateResourceAlert(metrics);
         updateHealthIntelligence(metrics, ramPct, temp);
@@ -466,9 +781,11 @@ public class MainDashboardController {
             boolean highRam = ramPct > 85;
             boolean highTemp = temp > 0 && temp > 78;
             boolean storagePressure = usedRatio > .88;
-            int issueCount = (highCpu ? 1 : 0) + (highRam ? 1 : 0) + (highTemp ? 1 : 0) + (storagePressure ? 1 : 0);
+                boolean networkProblem = networkFailures >= 3;
+                int issueCount = (highCpu ? 1 : 0) + (highRam ? 1 : 0) + (highTemp ? 1 : 0)
+                    + (storagePressure ? 1 : 0) + (networkProblem ? 1 : 0);
 
-            updateActiveProblems(m, ramPct, temp, usedRatio, highCpu, highRam, highTemp, storagePressure);
+                updateActiveProblems(m, ramPct, temp, usedRatio, highCpu, highRam, highTemp, storagePressure, networkProblem);
 
             if (issueCount == 0) {
                 healthReasonLabel.setText("Your device is operating within the configured healthy range. PulseOS will lower this score only when pressure persists or a health signal deteriorates.");
@@ -504,7 +821,8 @@ public class MainDashboardController {
     }
 
     private void updateActiveProblems(SystemMetrics m, double ramPct, double temp, double usedRatio,
-                                      boolean highCpu, boolean highRam, boolean highTemp, boolean storagePressure) {
+                                      boolean highCpu, boolean highRam, boolean highTemp, boolean storagePressure,
+                                      boolean networkProblem) {
         var labels = new Label[]{issue1Label, issue2Label, issue3Label};
         for (Label l : labels) { l.setVisible(false); l.setManaged(false); l.setText(""); }
         var messages = new ArrayList<String>();
@@ -515,6 +833,7 @@ public class MainDashboardController {
         if (highRam) messages.add("⚠ High memory pressure · " + String.format("%.0f%% RAM used", ramPct));
         if (highTemp) messages.add("⚠ High temperature · " + String.format("%.0f°C", temp));
         if (storagePressure) messages.add("⚠ Storage nearly full · safe cleanup available");
+        if (networkProblem) messages.add("⚠ Network unstable · repeated reachability failures");
 
         problemBadgeLabel.setText(messages.isEmpty() ? "0 active" : messages.size() + " active");
         if (messages.isEmpty()) {
@@ -581,6 +900,11 @@ public class MainDashboardController {
     private void populateStaticHardwareInfo() {
         try {
             oshi.SystemInfo si = new oshi.SystemInfo();
+            var computer = si.getHardware().getComputerSystem();
+            String manufacturer = cleanIdentity(computer.getManufacturer());
+            String model = cleanIdentity(computer.getModel());
+            String identity = (manufacturer + " " + model).trim();
+            deviceModelLabel.setText(identity.isBlank() ? "Device model unavailable" : identity);
             var processor = si.getHardware().getProcessor();
             var id = processor.getProcessorIdentifier();
             processorNameLabel.setText("Processor: " + id.getName());
@@ -590,6 +914,7 @@ public class MainDashboardController {
             baseSpeedLabel.setText(String.format("Base / vendor: %.2f GHz", id.getVendorFreq() / 1_000_000_000.0));
             maxSpeedLabel.setText(String.format("Max: %.2f GHz · Architecture: %s", processor.getMaxFreq() / 1_000_000_000.0, System.getProperty("os.arch", "unknown")));
         } catch (Exception e) {
+            deviceModelLabel.setText("Device model unavailable");
             processorNameLabel.setText("Processor: information unavailable");
             processorVendorLabel.setText("Vendor: unavailable");
             physicalProcessorLabel.setText("Physical processors: unavailable");
@@ -597,6 +922,12 @@ public class MainDashboardController {
             baseSpeedLabel.setText("Base / vendor: unavailable");
             maxSpeedLabel.setText("Max: unavailable");
         }
+    }
+
+    private String cleanIdentity(String value) {
+        if (value == null) return "";
+        String cleaned = value.trim().replaceAll("\\s+", " ");
+        return cleaned.equalsIgnoreCase("unknown") ? "" : cleaned;
     }
 
     private void evaluateResourceAlert(SystemMetrics metrics) {
@@ -790,6 +1121,17 @@ public class MainDashboardController {
         } catch (Exception ignored) { }
     }
 
+    @FXML private void handleRefresh() {
+        updateStorageInfo();
+        if (latestMetrics != null) updateTelemetryUI(latestMetrics);
+        runInitialStorageHealthScan();
+        if (networkTelemetryService != null) {
+            networkTelemetryService.stop();
+            networkTelemetryService.start(metrics -> Platform.runLater(() -> updateNetworkUI(metrics)), 15);
+        }
+        logActivity("Manual dashboard refresh requested");
+    }
+
     @FXML private void handleRunScan() { showStorageHealerView(); }
     private Window owner() { return rootPane.getScene() != null ? rootPane.getScene().getWindow() : null; }
     @FXML private void openCpuDetail(MouseEvent e) { e.consume(); openCpuDetailInternal(); }
@@ -827,6 +1169,7 @@ public class MainDashboardController {
 
     public void stopServices() {
         if (telemetryService != null) telemetryService.stopMonitoring();
+        if (networkTelemetryService != null) networkTelemetryService.stop();
         if (watcherService != null) watcherService.stopIntercepting();
         if (converterView != null) converterView.shutdown();
         if (healerService != null) { healerService.purgeQuarantine(7); healerService.shutdown(); }

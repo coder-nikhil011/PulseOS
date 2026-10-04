@@ -36,6 +36,7 @@ public class HardwareTelemetryService {
     private volatile int cachedProcessCount = 0;
     private volatile List<SystemMetrics.ProcessInfo> cachedTopByCpu = List.of();
     private volatile List<SystemMetrics.ProcessInfo> cachedTopByRam = List.of();
+    private volatile List<SystemMetrics.ProcessInfo> cachedAllProcesses = List.of();
     private volatile Consumer<List<SystemMetrics.ProcessInfo>> processListener = ignored -> {};
     private volatile Consumer<SystemMetrics> metricsListener = ignored -> {};
 
@@ -88,6 +89,10 @@ public class HardwareTelemetryService {
 
         double cpuTemp = 0;
         try { cpuTemp = sensors.getCpuTemperature(); } catch (Exception ignored) { }
+        int[] fanSpeeds = new int[0];
+        try { fanSpeeds = sensors.getFanSpeeds(); } catch (Exception ignored) { }
+        double cpuVoltage = 0;
+        try { cpuVoltage = sensors.getCpuVoltage(); } catch (Exception ignored) { }
         long threadCount = 0;
         try { threadCount = os.getThreadCount(); } catch (Exception ignored) { }
 
@@ -163,7 +168,7 @@ public class HardwareTelemetryService {
 
         return new SystemMetrics(cpuLoad, cpuTemp, threadCount, usedMemoryGb, totalMemoryGb,
                 clockSpeedGhz, batteryPercent, charging, batteryHealthPercent, batteryCycleCount,
-                cachedProcessCount, cachedTopByCpu, cachedTopByRam);
+            cachedProcessCount, cachedTopByCpu, cachedTopByRam, fanSpeeds, cpuVoltage);
     }
 
     private static final class BatteryFallback {
@@ -217,6 +222,12 @@ public class HardwareTelemetryService {
         if (!running) return;
         try {
             List<OSProcess> current = os.getProcesses();
+            // macOS privacy/adaptor failures can occasionally return an empty OSHI list.
+            // Fall back to Java's own process API so the UI never reports a false 0.
+            if (current == null || current.isEmpty()) {
+                refreshProcessSnapshotFromProcessHandle();
+                return;
+            }
             cachedProcessCount = current.size();
 
             // OSHI's cumulative CPU value is not a current CPU percentage. Compare
@@ -237,6 +248,7 @@ public class HardwareTelemetryService {
                         p.getName(), cpu, p.getPrivateResidentMemory(), p.getProcessID(), p.getThreadCount()));
             }
 
+            cachedAllProcesses = List.copyOf(infos);
             cachedTopByCpu = infos.stream()
                     .sorted(Comparator.comparingDouble(SystemMetrics.ProcessInfo::cpuPercent).reversed())
                     .limit(8).collect(Collectors.toList());
@@ -251,7 +263,35 @@ public class HardwareTelemetryService {
         }
     }
 
+
+    private void refreshProcessSnapshotFromProcessHandle() {
+        try {
+            List<SystemMetrics.ProcessInfo> infos = java.lang.ProcessHandle.allProcesses()
+                    .map(h -> {
+                        try {
+                            var info = h.info();
+                            String name = info.command().map(path -> java.nio.file.Paths.get(path).getFileName()).map(Object::toString)
+                                    .orElse(info.commandLine().orElse("process"));
+                            return new SystemMetrics.ProcessInfo(name, 0.0, 0L, h.pid(), 0);
+                        } catch (Exception e) { return null; }
+                    })
+                    .filter(java.util.Objects::nonNull)
+                    .limit(500)
+                    .toList();
+            cachedAllProcesses = List.copyOf(infos);
+            cachedProcessCount = infos.size();
+            cachedTopByCpu = infos.stream().limit(8).toList();
+            cachedTopByRam = infos.stream().limit(8).toList();
+            processListener.accept(cachedTopByCpu);
+        } catch (Exception e) {
+            System.err.println("PulseOS ProcessHandle fallback unavailable: " + e.getMessage());
+        }
+    }
     private Map<Integer, OSProcess> processSnapshot = new HashMap<>();
+
+    public List<SystemMetrics.ProcessInfo> getAllProcesses() { return cachedAllProcesses; }
+
+    public void requestProcessScan() { if (running) processExecutor.execute(this::refreshProcessSnapshotSafely); }
 
     public void setProcessListener(Consumer<List<SystemMetrics.ProcessInfo>> listener) {
         processListener = listener == null ? ignored -> {} : listener;
