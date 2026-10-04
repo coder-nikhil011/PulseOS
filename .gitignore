@@ -1,0 +1,29 @@
+# Build artifacts
+target/
+build/
+dist/
+bin/
+obj/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+
+# Dependencies
+node_modules/
+venv/
+.env
+
+# Mobile/Android
+*.apk
+*.aab
+.gradle/
+local.properties
+
+# Website downloads (Binaries)
+website/downloads/
