@@ -18,6 +18,8 @@ dependencies:
   pdf: ^3.11.3
   shared_preferences: ^2.5.3
   video_player: ^2.9.5
+  sqflite: ^2.3.3+1
+  path: ^1.9.0
 
 dev_dependencies:
   flutter_test:

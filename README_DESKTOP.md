@@ -1,0 +1,1136 @@
+# PulseOS Desktop
+
+# Intelligent Device Health, Predictive Maintenance & Self-Healing Platform
+
+> **MONITOR → UNDERSTAND → PREDICT → HEAL → VERIFY**
+
+This README is the dedicated specification for the **Windows/macOS/Linux
+desktop application** of PulseOS. It contains the desktop product scope,
+features, architecture, telemetry, storage healing, converter, local AI,
+setup, technology stack, safety model, roadmap, and project vision.
+
+# PulseOS
+
+# Intelligent Device Health, Predictive Maintenance & Self-Healing Platform
+
+> **MONITOR → UNDERSTAND → PREDICT → HEAL**
+
+PulseOS is an intelligent device-health platform with a
+Windows/macOS/Linux desktop app and an Android-only mobile companion.
+The desktop app monitors computer health, explains system problems,
+analyzes processes and storage, and provides maintenance utilities.
+Android keeps the same six primary destinations while using only
+mobile-supported telemetry and permissions.
+
+Unlike traditional system monitoring utilities that primarily display
+raw metrics, PulseOS focuses on converting system telemetry into
+**understandable, actionable device intelligence**.
+
+------------------------------------------------------------------------
+
+## 📌 Project Overview
+
+Modern computers continuously generate large amounts of system
+information such as CPU usage, memory consumption, temperature, battery
+status, storage usage and running processes.
+
+However, raw numbers alone do not answer the most important questions:
+
+-   What is causing the problem?
+-   Is the current behaviour normal?
+-   Which process is responsible?
+-   What is the possible impact?
+-   What could happen if the issue continues?
+-   What action can be safely taken?
+-   Did the system actually improve after the action?
+
+PulseOS is designed to address this gap.
+
+## Desktop and Android Apps
+
+Both apps use the same six primary destinations, adapted to each
+platform:
+
+  -----------------------------------------------------------------------
+  Destination             Desktop                 Android
+  ----------------------- ----------------------- -----------------------
+  Overview                Live health score,      Health score from
+                          telemetry, problems,    observed Android
+                          trends, and activity    readings and
+                                                  supported-problem
+                                                  summary
+
+  Hardware Health         Component status across Battery/charging,
+                          CPU, memory, GPU,       processor, RAM,
+                          storage, battery,       display/touch,
+                          cooling, network,       camera/flash,
+                          peripherals, startup,   microphone/audio
+                          crashes, and security   routes, sensors, GPS,
+                                                  NFC, Bluetooth,
+                                                  biometrics, USB, and
+                                                  vibration when reported
+                                                  by Android
+
+  Smart Router            Live process ranking    Current Wi-Fi/mobile
+                          and resource-impact     connection plus
+                          analysis                optional app
+                                                  screen-time and visible
+                                                  process data
+
+  Storage Healer          Scan common locations,  App-cache review and
+                          identify artifacts,     Android storage
+                          protect active          settings within
+                          projects, and           platform permissions
+                          quarantine selected     
+                          cleanup                 
+
+  Converter               Offline image,          Local conversions
+                          document, archive,      supported by the mobile
+                          media, and ebook        build
+                          workflows, with         
+                          external-tool           
+                          requirements noted      
+
+  Settings                Desktop watcher,        Local-first and alert
+                          project-protection, and preferences plus
+                          application preferences shortcuts to Android
+                                                  data usage, app time,
+                                                  permissions,
+                                                  notifications,
+                                                  Wi-Fi/mobile network,
+                                                  Bluetooth, battery,
+                                                  display, sound,
+                                                  storage, location, and
+                                                  security settings
+  -----------------------------------------------------------------------
+
+Desktop also includes the Downloads watcher/organizer and optional local
+Ollama assistance. Android is the only mobile target; there is no iOS
+client. The mobile interface contains phone-relevant components and
+actions only; Android permissions and device support determine which
+readings are present.
+
+### Core Workflow
+
+``` text
+MONITOR
+   ↓
+UNDERSTAND
+   ↓
+PREDICT
+   ↓
+HEAL
+   ↓
+VERIFY
+```
+
+------------------------------------------------------------------------
+
+# 🎯 Problem Statement
+
+Traditional computer maintenance is fragmented across multiple
+utilities.
+
+A user may need:
+
+-   Task Manager / Activity Monitor for processes
+-   Separate utilities for temperature
+-   Separate tools for storage analysis
+-   Separate applications for file organization
+-   Separate tools for file conversion
+-   Separate solutions for AI assistance
+
+Most tools provide information but leave the interpretation and
+maintenance process to the user.
+
+### PulseOS Approach
+
+PulseOS brings multiple device-maintenance capabilities into a single
+desktop platform.
+
+Instead of only displaying:
+
+``` text
+CPU Usage: 82%
+```
+
+PulseOS aims to provide:
+
+``` text
+CPU Usage: 82%
+        ↓
+Identify resource-heavy process
+        ↓
+Understand system condition
+        ↓
+Evaluate possible impact
+        ↓
+Recommend safe action
+        ↓
+Verify improvement
+```
+
+------------------------------------------------------------------------
+
+# 🚀 Key Features
+
+## 1. Device Health Dashboard
+
+The PulseOS dashboard provides a centralized overview of computer
+health.
+
+### Features
+
+-   Overall Device Health Score
+-   CPU utilization
+-   RAM utilization
+-   CPU temperature
+-   Process/thread information
+-   CPU clock speed
+-   Battery percentage
+-   Battery health
+-   Battery cycle count
+-   Storage utilization
+-   Live performance charts
+-   Active problem detection
+-   Predictive health indicators
+
+The dashboard is designed to convert complex system information into an
+easy-to-understand health overview.
+
+------------------------------------------------------------------------
+
+# 2. Smart Router
+
+Smart Router focuses on live process and resource analysis.
+
+### Features
+
+-   Live process monitoring
+-   Process ID (PID)
+-   CPU usage
+-   RAM usage
+-   Top CPU-consuming processes
+-   Top RAM-consuming processes
+-   Total process count
+-   Resource-drainer identification
+-   Performance-impact analysis
+
+### Example
+
+``` text
+Application
+     ↓
+CPU / RAM Consumption
+     ↓
+Resource Analysis
+     ↓
+Identify Top Drainer
+     ↓
+User Action
+```
+
+The process monitoring system is separated from the core hardware
+telemetry so that process enumeration does not block the main dashboard
+telemetry.
+
+------------------------------------------------------------------------
+
+# 3. Storage Intelligence
+
+PulseOS analyses common storage locations to understand where disk space
+is being consumed.
+
+### Scanned Locations
+
+-   Downloads
+-   Desktop
+-   Documents
+-   Pictures
+-   Projects
+-   Developer directories
+
+### Capabilities
+
+-   Storage usage analysis
+-   Storage categorization
+-   Large file/folder identification
+-   Build-artifact detection
+-   Storage pressure identification
+-   Cleanup recommendations
+
+The goal is to help users understand **why storage is being consumed**,
+instead of simply showing available disk space.
+
+------------------------------------------------------------------------
+
+# 4. Storage Healer
+
+Storage Healer provides a safer workflow for removing unnecessary files.
+
+### Features
+
+-   Safe cleanup
+-   Build-artifact cleanup
+-   File selection
+-   Quarantine-based remediation
+-   Cleanup result feedback
+-   Storage improvement verification
+
+### Safety Principle
+
+``` text
+Identify
+   ↓
+Analyse
+   ↓
+Recommend
+   ↓
+Quarantine / Safe Action
+   ↓
+Verify
+```
+
+PulseOS avoids treating every detected file as automatically deletable.
+
+------------------------------------------------------------------------
+
+# 5. System Watcher
+
+System Watcher provides automated file monitoring and organization.
+
+### Features
+
+-   Downloads folder monitoring
+-   Automatic file organization
+-   Activity feed
+-   File-event tracking
+-   Optional AI-assisted file naming
+
+### Workflow
+
+``` text
+New File
+   ↓
+Watcher Detects Event
+   ↓
+Analyse File
+   ↓
+Organize / Rename
+   ↓
+Activity Recorded
+```
+
+------------------------------------------------------------------------
+
+# 6. Offline Converter
+
+PulseOS includes a local conversion module for common file workflows.
+
+### Supported Workflows
+
+-   Document conversion
+-   Image conversion
+-   Archive conversion
+-   Media workflows
+-   Ebook workflows
+
+The converter is designed to reduce dependency on multiple separate
+applications for common file-conversion tasks.
+
+------------------------------------------------------------------------
+
+# 7. Local AI Companion
+
+PulseOS can integrate with **Ollama** for local AI functionality.
+
+### AI Use Cases
+
+-   Natural-language assistance
+-   System explanations
+-   Contextual recommendations
+-   AI-assisted file naming
+-   File-related workflows
+-   Local intelligent assistance
+
+### Local AI Architecture
+
+``` text
+User Request
+     ↓
+PulseOS
+     ↓
+Local Ollama
+     ↓
+Local AI Model
+     ↓
+Response
+```
+
+The local approach supports the project's privacy-focused design.
+
+------------------------------------------------------------------------
+
+# 🧠 PulseOS Intelligence Model
+
+PulseOS is based on four primary stages.
+
+## MONITOR
+
+Collect device information continuously.
+
+``` text
+CPU
+RAM
+Temperature
+Battery
+Storage
+Processes
+Clock Speed
+```
+
+↓
+
+## UNDERSTAND
+
+Analyse collected telemetry.
+
+``` text
+Thresholds
+Resource Usage
+Hardware Condition
+Storage Condition
+Process Behaviour
+```
+
+↓
+
+## PREDICT
+
+Use available health signals to identify potential risks and future
+problems.
+
+``` text
+Performance Pressure
+Thermal Pressure
+Storage Pressure
+Battery Condition
+Resource Trends
+```
+
+↓
+
+## HEAL
+
+Provide safe and actionable maintenance workflows.
+
+``` text
+Cleanup
+Quarantine
+File Organization
+Process Management
+Recommendations
+```
+
+↓
+
+## VERIFY
+
+Check whether the system condition improved after an action.
+
+``` text
+Before
+  ↓
+Action
+  ↓
+After
+  ↓
+Compare Improvement
+```
+
+------------------------------------------------------------------------
+
+# 🏗️ System Architecture
+
+``` text
+                    ┌────────────────────────┐
+                    │      Hardware / OS     │
+                    │                        │
+                    │ CPU                    │
+                    │ RAM                    │
+                    │ Temperature            │
+                    │ Battery                │
+                    │ Storage                │
+                    │ Processes              │
+                    └────────────┬───────────┘
+                                 │
+                                 ↓
+                    ┌────────────────────────┐
+                    │    OSHI Telemetry      │
+                    │        Engine          │
+                    └────────────┬───────────┘
+                                 │
+                                 ↓
+                    ┌────────────────────────┐
+                    │  PulseOS Intelligence  │
+                    │                        │
+                    │ Health Score            │
+                    │ Threshold Analysis     │
+                    │ Resource Diagnosis     │
+                    │ Predictive Inputs      │
+                    └────────────┬───────────┘
+                                 │
+                                 ↓
+                    ┌────────────────────────┐
+                    │    Action / Healing    │
+                    │                        │
+                    │ Cleanup                │
+                    │ Quarantine             │
+                    │ Process Management     │
+                    │ File Organization      │
+                    └────────────┬───────────┘
+                                 │
+                                 ↓
+                    ┌────────────────────────┐
+                    │       JavaFX UI        │
+                    │                        │
+                    │ Dashboard              │
+                    │ Smart Router           │
+                    │ Storage Healer         │
+                    │ Converter              │
+                    │ Settings               │
+                    └────────────────────────┘
+```
+
+------------------------------------------------------------------------
+
+# 🛠️ Technology Stack
+
+  Technology         Purpose
+  ------------------ -----------------------------------------
+  Java 21            Core application development
+  JavaFX 21          Desktop user interface
+  Maven              Build and dependency management
+  OSHI               Hardware and operating-system telemetry
+  Ollama             Local AI integration
+  Apache POI         Office/document processing
+  Apache PDFBox      PDF processing
+  Thumbnailator      Image processing
+  TwelveMonkeys      Image format support
+  Commons Compress   Archive processing
+
+------------------------------------------------------------------------
+
+# 📁 Project Structure
+
+``` text
+PulseOS/
+│
+├── desktop/
+│   │
+│   ├── pom.xml
+│   │
+│   ├── src/
+│   │   └── main/
+│   │       │
+│   │       ├── java/
+│   │       │   └── com/
+│   │       │       └── pulseos/
+│   │       │           │
+│   │       │           ├── Main.java
+│   │       │           │
+│   │       │           ├── ai/
+│   │       │           │
+│   │       │           ├── converter/
+│   │       │           │
+│   │       │           ├── healer/
+│   │       │           │
+│   │       │           ├── telemetry/
+│   │       │           │
+│   │       │           └── ui/
+│   │       │
+│   │       └── resources/
+│   │           │
+│   │           ├── fxml/
+│   │           │
+│   │           └── styles/
+│   │
+│   └── scripts/
+│
+├── README.md
+│
+└── LICENSE
+```
+
+------------------------------------------------------------------------
+
+# ⚙️ Requirements
+
+## Software Requirements
+
+-   Java 21 or later
+-   Maven
+-   JavaFX 21
+-   Supported desktop operating system
+
+## Optional
+
+-   Ollama
+-   Compatible local AI model
+
+------------------------------------------------------------------------
+
+# ▶️ Installation & Setup
+
+## Downloaded macOS App
+
+For Mac users who downloaded the DMG from the PulseOS website:
+
+1.  Open `PulseOS-1.0.0.dmg`.
+2.  Drag `PulseOS.app` into the `Applications` folder.
+3.  Open Terminal and run this command once:
+
+``` bash
+xattr -dr com.apple.quarantine /Applications/PulseOS.app && open /Applications/PulseOS.app
+```
+
+This removes the quarantine flag from this locally generated, unsigned
+build and opens PulseOS. macOS may otherwise show an "Apple could not
+verify" or "app cannot be opened" message. Only run this command for a
+PulseOS DMG downloaded from a source you trust. A future Apple Developer
+ID signed and notarized release will open normally without this command.
+
+Windows and Linux users should use the installer for their platform.
+Android users should use the Android APK; PulseOS does not currently
+provide an iOS mobile build.
+
+## 1. Clone the Repository
+
+``` bash
+git clone https://github.com/coder-nikhil011/PulseOS.git
+```
+
+## 2. Enter the Desktop Project
+
+``` bash
+cd PulseOS/desktop
+```
+
+## 3. Build the Project
+
+``` bash
+mvn clean package
+```
+
+## 4. Run the Application
+
+``` bash
+../scripts/run_mac.command
+```
+
+## 5. Distribute the Desktop App
+
+Do not distribute the Maven project or ask users to install Java. Build
+a platform installer that bundles Java 21 and JavaFX:
+
+``` bash
+# macOS (run on macOS)
+../scripts/package_mac.sh
+```
+
+The generated `.dmg` is in `desktop/target/installer/`. Windows
+installers must be built on Windows:
+
+``` powershell
+.\scripts\package_windows.ps1
+```
+
+The GitHub Actions workflow `.github/workflows/desktop-installers.yml`
+builds Windows, macOS, and Linux desktop installers plus the Android
+APK. Push a desktop version tag such as `v1.0.9` to build all four
+platforms and publish them as GitHub Release assets. The website
+download buttons point at the latest stable asset names. Actions stages
+the packages under `website/downloads` during publishing; the large
+binaries stay on GitHub Releases rather than in Git history, which has a
+100 MB per-file limit.
+
+The Android application version is maintained separately in
+`mobile/pubspec.yaml`. For a public release, sign/notarize the macOS app
+with an Apple Developer certificate and sign the Windows installer with
+a code-signing certificate; otherwise macOS Gatekeeper or Windows
+SmartScreen may show an unverified publisher warning.
+
+### macOS first launch
+
+The locally generated DMG is valid but is not notarized without an Apple
+Developer certificate. If macOS says the app cannot be opened, drag it
+to Applications, then Control-click `PulseOS.app`, choose **Open**, and
+confirm. For a public release, sign and notarize the DMG so users can
+open it normally.
+
+## Android Mobile Build
+
+The mobile app is Android-only and lives in `mobile/`. It shares the six
+primary destinations with desktop but does not expose desktop-only
+process controls, full-disk maintenance, or sensors unavailable through
+Android APIs.
+
+``` bash
+cd mobile
+flutter pub get
+flutter test
+flutter build apk --release
+```
+
+The release APK is created at
+`mobile/build/app/outputs/flutter-apk/app-release.apk`. Usage Access is
+optional and requested only for Smart Router app-usage details.
+
+------------------------------------------------------------------------
+
+# 🤖 Local AI Setup
+
+PulseOS can use Ollama for local AI functionality.
+
+Install Ollama on the target system and configure a locally available
+model.
+
+Example workflow:
+
+``` text
+PulseOS
+   ↓
+Ollama
+   ↓
+Local AI Model
+   ↓
+AI Response
+```
+
+AI functionality is optional and does not represent the entire PulseOS
+system.
+
+------------------------------------------------------------------------
+
+# 🔐 Privacy & Local-First Design
+
+Privacy is an important part of the PulseOS architecture.
+
+### Design Principles
+
+-   Local-first processing
+-   Minimal external dependency
+-   Local hardware telemetry
+-   Optional local AI
+-   No requirement for cloud AI for core monitoring
+-   Safe file-maintenance workflows
+
+System telemetry is collected from the local machine through OS-level
+information and OSHI.
+
+When Ollama is used, AI processing can remain local to the user's
+machine.
+
+------------------------------------------------------------------------
+
+# 📊 Device Health Score
+
+PulseOS provides a simplified **Device Health Score /100**.
+
+The current scoring model considers multiple areas including:
+
+-   Performance
+-   Hardware / thermal condition
+-   Storage condition
+-   Battery condition
+
+The purpose is to provide a simple health representation instead of
+requiring users to interpret many independent technical values.
+
+### Example
+
+``` text
+Device Health
+      78 / 100
+      GOOD
+
+Performance     █████████░
+Hardware        ████████░░
+Storage         ███████░░░
+Battery         █████████░
+```
+
+The score is intended as a product-level health indicator rather than a
+replacement for detailed hardware diagnostics.
+
+------------------------------------------------------------------------
+
+# 🔄 Real-Time Telemetry
+
+PulseOS separates core hardware telemetry from process enumeration.
+
+### Core Telemetry
+
+Updated continuously for information such as:
+
+-   CPU
+-   Memory
+-   Temperature
+-   Battery
+-   Clock
+-   Storage
+
+### Process Telemetry
+
+Process snapshots are handled independently so that expensive process
+enumeration does not block the main telemetry pipeline.
+
+### Concept
+
+``` text
+Core Telemetry
+      │
+      ├── CPU
+      ├── RAM
+      ├── Temperature
+      ├── Battery
+      └── Clock
+
+Process Telemetry
+      │
+      ├── Process List
+      ├── CPU Drainers
+      ├── RAM Drainers
+      └── Process Count
+```
+
+This architecture improves responsiveness and keeps the dashboard usable
+while system information is being collected.
+
+------------------------------------------------------------------------
+
+# 🧹 Safe Healing Philosophy
+
+PulseOS does not treat every detected file or process as a problem.
+
+The intended maintenance workflow is:
+
+``` text
+Detect
+  ↓
+Analyse
+  ↓
+Determine Risk
+  ↓
+Recommend
+  ↓
+User Decision / Safe Action
+  ↓
+Verify
+```
+
+For storage cleanup, quarantine-based workflows provide an additional
+safety layer before permanent deletion.
+
+------------------------------------------------------------------------
+
+# 📈 Predictive Health
+
+PulseOS includes a predictive-health layer based on available system
+signals.
+
+Potential inputs include:
+
+-   CPU pressure
+-   Memory pressure
+-   Temperature
+-   Storage utilization
+-   Battery condition
+-   Resource-heavy processes
+
+The current implementation provides predictive health indicators and
+establishes the foundation for future machine-learning-based anomaly
+detection.
+
+------------------------------------------------------------------------
+
+# 🆚 PulseOS vs Traditional System Tools
+
+  -----------------------------------------------------------------------
+  Capability        Built-in System Typical Monitoring            PulseOS
+                              Tools               Apps 
+  -------------- ------------------ ------------------ ------------------
+  CPU Monitoring                  ✓                  ✓                  ✓
+
+  RAM Monitoring                  ✓                  ✓                  ✓
+
+  Process                         ✓                  ✓                  ✓
+  Monitoring                                           
+
+  Hardware                  Limited                  ✓                  ✓
+  Context                                              
+
+  Storage                   Limited                  ✓                  ✓
+  Analysis                                             
+
+  Device Health                   ✗            Limited                  ✓
+  Score                                                
+
+  Problem                   Limited            Limited                  ✓
+  Diagnosis                                            
+
+  Predictive                      ✗            Limited                  ✓
+  Health                                               
+
+  Safe Healing             Separate             Varies                  ✓
+  Workflow                                             
+
+  Quarantine                      ✗             Varies                  ✓
+  Workflow                                             
+
+  File                     Separate           Separate                  ✓
+  Organization                                         
+
+  Offline                         ✗           Separate                  ✓
+  Converter                                            
+
+  Local AI                        ✗               Rare                  ✓
+  Assistance                                           
+
+  Before/After                    ✗               Rare                  ✓
+  Verification                                         
+  -----------------------------------------------------------------------
+
+### Key Differentiation
+
+> **Traditional tools primarily show system data. PulseOS aims to turn
+> system data into understandable decisions and safe actions.**
+
+------------------------------------------------------------------------
+
+# 🎯 Target Users
+
+## Students
+
+-   Understand system performance
+-   Learn about resource usage
+-   Maintain development environments
+
+## Developers
+
+-   Identify resource-heavy applications
+-   Detect development/build artifacts
+-   Monitor system performance during development
+
+## General Users
+
+-   Understand device health
+-   Find storage problems
+-   Monitor battery and hardware condition
+-   Perform safer maintenance
+
+## IT / Support Teams
+
+-   Faster initial diagnosis
+-   Centralized system information
+-   Repeatable maintenance workflow
+
+------------------------------------------------------------------------
+
+# 🌍 Expected Impact
+
+PulseOS aims to reduce the complexity of computer maintenance.
+
+### Traditional Workflow
+
+``` text
+Problem
+  ↓
+Search for cause
+  ↓
+Find a tool
+  ↓
+Analyse manually
+  ↓
+Find another tool
+  ↓
+Perform maintenance
+```
+
+### PulseOS Workflow
+
+``` text
+Problem
+  ↓
+PulseOS Monitoring
+  ↓
+Diagnosis
+  ↓
+Prediction
+  ↓
+Safe Action
+  ↓
+Verification
+```
+
+### Expected Benefits
+
+-   Faster problem identification
+-   Easier system understanding
+-   Safer storage maintenance
+-   Better resource awareness
+-   Reduced tool fragmentation
+-   Privacy-focused local processing
+
+------------------------------------------------------------------------
+
+# 🔬 Research & Technical References
+
+PulseOS is built using established technologies and system-monitoring
+concepts.
+
+### System Monitoring
+
+-   OSHI --- Operating System and Hardware Information
+-   Windows Task Manager concepts
+-   macOS Activity Monitor concepts
+
+### Application Development
+
+-   Java
+-   JavaFX
+-   Maven
+
+### AI
+
+-   Ollama
+-   Local Large Language Models
+
+### Document & File Processing
+
+-   Apache POI
+-   Apache PDFBox
+-   Thumbnailator
+-   TwelveMonkeys
+-   Commons Compress
+
+------------------------------------------------------------------------
+
+# 🧪 Current Prototype Status
+
+PulseOS currently contains working implementations for the core desktop
+prototype, including:
+
+-   Device Health Dashboard
+-   Live system telemetry
+-   Health Score
+-   Smart Router
+-   Storage Intelligence
+-   Storage Healer
+-   System Watcher
+-   Offline Converter
+-   Local AI integration
+-   Settings
+-   Backend information dialogs
+-   Live telemetry charts
+
+The project is currently focused on strengthening reliability,
+cross-platform behaviour, UI synchronization and future predictive
+capabilities.
+
+------------------------------------------------------------------------
+
+# 🔮 Future Scope
+
+## Advanced Intelligence
+
+-   Machine-learning-based anomaly detection
+-   Personalized device baselines
+-   Improved predictive maintenance
+-   Long-term health trends
+-   More contextual diagnosis
+
+## Automated Healing
+
+-   More intelligent remediation
+-   Advanced cleanup policies
+-   Automated recovery workflows
+-   Post-action verification
+
+## Platform Expansion
+
+-   Android companion application
+-   iOS companion application
+-   Enterprise / IT dashboard
+-   Centralized device fleet monitoring
+
+## Hardware Expansion
+
+-   Additional sensor support
+-   More detailed thermal analysis
+-   Advanced battery analytics
+-   Hardware-specific health models
+
+------------------------------------------------------------------------
+
+# 🗺️ Development Roadmap
+
+``` text
+Phase 1
+Core Monitoring
+       ↓
+Phase 2
+Health Intelligence
+       ↓
+Phase 3
+Safe Healing
+       ↓
+Phase 4
+Predictive Maintenance
+       ↓
+Phase 5
+Cross-Platform Expansion
+       ↓
+Phase 6
+Mobile & Enterprise Ecosystem
+```
+
+------------------------------------------------------------------------
+
+# 🏆 Project Vision
+
+PulseOS aims to move computer maintenance from a **reactive process** to
+an **intelligent and proactive workflow**.
+
+### Traditional Approach
+
+> **See a problem → Search for a solution → Fix manually**
+
+### PulseOS Approach
+
+> **Monitor → Understand → Predict → Safely Act → Verify**
+
+------------------------------------------------------------------------
+
+# 📌 Core USP
+
+> **PulseOS doesn't just tell users what their computer is doing --- it
+> aims to help them understand why it is happening, what may happen
+> next, and what can be safely done about it.**
+
+------------------------------------------------------------------------
+
+# 📄 License
+
+This project is currently under development.
+
+Choose and add the appropriate license before publishing the final
+repository.
+
+Example:
+
+``` text
+MIT License
+```
+
+------------------------------------------------------------------------
