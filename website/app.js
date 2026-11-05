@@ -1,298 +1,672 @@
-(function(){
-  const ua=navigator.userAgent.toLowerCase();
-  let platform='your device';
-  let cardId='';
-  if(ua.includes('windows')){platform='Windows';cardId='windows';}
-  else if(ua.includes('android')){platform='Android';cardId='mobile-client';}
-  else if(ua.includes('iphone')||ua.includes('ipad')){platform='iOS (no mobile app)';}
-  else if(ua.includes('mac')){platform='macOS';cardId='macos';}
-  else if(ua.includes('linux')){platform='Linux';cardId='linux';}
+/**
+ * PulseOS Website Interactive Tour & Controller
+ * Features autonomous desktop and mobile guided tours with virtual pointers,
+ * feature spotlights, and interactive user controls.
+ */
+(() => {
+  'use strict';
 
-  document.getElementById('platformText').textContent='Detected platform: '+platform;
-  const intro=document.getElementById('downloadIntro');
-  if(cardId==='mobile-client'){
-    intro.textContent='Detected Android. The Android-only mobile APK is highlighted below; desktop installers are available for Windows, macOS, and Linux.';
-  }else if(platform.startsWith('iOS')){
-    intro.textContent='PulseOS mobile is currently Android-only. Desktop installers are available for Windows, macOS, and Linux.';
-  }else{
-    intro.textContent='Detected '+platform+'. The recommended desktop installer is highlighted below. Downloaded desktop installers include Java and JavaFX, so no developer setup is required.';
+  // 1. Platform Detection
+  const ua = navigator.userAgent.toLowerCase();
+  let platform = 'your device';
+  let cardId = '';
+  if (ua.includes('windows')) { platform = 'Windows'; cardId = 'windows'; }
+  else if (ua.includes('android')) { platform = 'Android'; cardId = 'mobile-client'; }
+  else if (ua.includes('iphone') || ua.includes('ipad')) { platform = 'iOS'; }
+  else if (ua.includes('mac')) { platform = 'macOS'; cardId = 'macos'; }
+  else if (ua.includes('linux')) { platform = 'Linux'; cardId = 'linux'; }
+
+  const platformEl = document.getElementById('platformText');
+  if (platformEl) platformEl.textContent = 'Detected platform: ' + platform;
+
+  const introEl = document.getElementById('downloadIntro');
+  if (introEl) {
+    if (cardId === 'mobile-client') {
+      introEl.textContent = 'Detected Android. The Android mobile APK is highlighted below; desktop installers are available for Windows, macOS, and Linux.';
+    } else if (platform === 'iOS') {
+      introEl.textContent = 'PulseOS mobile is currently Android-only. Desktop installers are available for Windows, macOS, and Linux.';
+    } else {
+      introEl.textContent = `Detected ${platform}. The recommended desktop package is highlighted below. Bundled with Java runtime, no developer tools required.`;
+    }
   }
-  if(cardId){
-    const card=document.getElementById(cardId);
-    card.classList.add('recommended');
-    card.insertAdjacentHTML('afterbegin','<span class="recommended-label">Recommended for your device</span>');
+
+  if (cardId) {
+    const card = document.getElementById(cardId);
+    if (card) {
+      card.classList.add('recommended');
+      card.insertAdjacentHTML('afterbegin', '<span class="recommended-label">★ Recommended for your device</span>');
+    }
+  }
+
+  // =========================================================
+  // 2. Desktop Showcase Controller
+  // =========================================================
+  const desktopPages = ['overview', 'hardware', 'router', 'storage', 'converter', 'settings'];
+  let currentDesktopIndex = 0;
+  let isDesktopTourPaused = false;
+  const desktopIframe = document.getElementById('desktopIframe');
+  const desktopTabs = document.querySelectorAll('#desktopPageTabs .page-pill');
+  const desktopCaption = document.getElementById('desktopTourCaption');
+  const desktopIndicator = document.getElementById('desktopPageIndicator');
+  const btnPrevPage = document.getElementById('btnPrevPage');
+  const btnNextPage = document.getElementById('btnNextPage');
+  const btnToggleTour = document.getElementById('btnToggleTour');
+  const tourToggleIcon = document.getElementById('tourToggleIcon');
+  const tourToggleText = document.getElementById('tourToggleText');
+
+  function updateDesktopPageUI(pageName) {
+    const idx = desktopPages.indexOf(pageName);
+    if (idx !== -1) currentDesktopIndex = idx;
+
+    desktopTabs.forEach(tab => {
+      tab.classList.toggle('active', tab.dataset.page === pageName);
+    });
+
+    if (desktopIndicator) {
+      desktopIndicator.textContent = `SCREEN ${currentDesktopIndex + 1} OF 6: ${pageName.toUpperCase()}`;
+    }
+  }
+
+  function commandDesktopPage(pageName) {
+    updateDesktopPageUI(pageName);
+    if (desktopIframe && desktopIframe.contentWindow) {
+      try {
+        desktopIframe.contentWindow.postMessage({ type: 'GOTO_PAGE', page: pageName }, '*');
+      } catch (_) {}
+    }
+  }
+
+  // Handle click on desktop page tabs
+  desktopTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      commandDesktopPage(tab.dataset.page);
+    });
+  });
+
+  // Prev / Next Page controls
+  if (btnPrevPage) {
+    btnPrevPage.addEventListener('click', () => {
+      currentDesktopIndex = (currentDesktopIndex - 1 + desktopPages.length) % desktopPages.length;
+      commandDesktopPage(desktopPages[currentDesktopIndex]);
+    });
+  }
+
+  if (btnNextPage) {
+    btnNextPage.addEventListener('click', () => {
+      currentDesktopIndex = (currentDesktopIndex + 1) % desktopPages.length;
+      commandDesktopPage(desktopPages[currentDesktopIndex]);
+    });
+  }
+
+  // Pause / Resume Tour
+  if (btnToggleTour) {
+    btnToggleTour.addEventListener('click', () => {
+      isDesktopTourPaused = !isDesktopTourPaused;
+      if (tourToggleIcon) tourToggleIcon.textContent = isDesktopTourPaused ? '▶' : '⏸';
+      if (tourToggleText) tourToggleText.textContent = isDesktopTourPaused ? 'Resume Tour' : 'Pause Tour';
+      const modeIndicator = document.getElementById('tourModeIndicator');
+      if (modeIndicator) modeIndicator.textContent = isDesktopTourPaused ? 'TOUR PAUSED' : 'VIRTUAL MOUSE ACTIVE';
+
+      if (desktopIframe && desktopIframe.contentWindow) {
+        desktopIframe.contentWindow.postMessage({ type: 'TOGGLE_PAUSE', paused: isDesktopTourPaused }, '*');
+      }
+    });
+  }
+
+  // Listen for progress messages from desktop tour inside iframe
+  window.addEventListener('message', (event) => {
+    if (!event.data || event.data.type !== 'PULSEOS_TOUR_UPDATE') return;
+    const { page, title, desc } = event.data;
+    if (page) updateDesktopPageUI(page);
+    if (desktopCaption && title && desc) {
+      desktopCaption.innerHTML = `<strong style="color:var(--accent)">${title}:</strong> ${desc}`;
+    }
+  });
+
+  // =========================================================
+  // 3. Mobile Autonomous Touch Tour Engine
+  // =========================================================
+  const mobilePages = ['overview', 'hardware', 'router', 'storage', 'converter', 'settings'];
+  let currentMobileIndex = 0;
+  let mobileTimer = null;
+  let isMobileTourPaused = false;
+
+  const phoneScreen = document.getElementById('phoneScreen');
+  const mobileTabs = document.querySelectorAll('#mobilePageTabs .m-pill');
+  const phoneNavBtns = document.querySelectorAll('#phoneBottomNav button');
+  const phoneCaption = document.getElementById('phoneTourCaption');
+  const touchPointer = document.getElementById('phoneTouchPointer');
+  const mSpotlight = document.getElementById('phoneSpotlight');
+  const mSpotlightTitle = document.getElementById('mSpotlightTitle');
+  const mSpotlightDesc = document.getElementById('mSpotlightDesc');
+  const btnMobilePrev = document.getElementById('btnMobilePrev');
+  const btnMobileNext = document.getElementById('btnMobileNext');
+
+  // Full HTML for all 6 mobile screens
+  const MOBILE_SCREENS = {
+    overview: `
+      <div class="m-card">
+        <div class="m-card-title">
+          <span>PHONE HEALTH SCORE</span>
+          <span style="color:#4ade80">● EXCELLENT</span>
+        </div>
+        <div class="m-score-circle" id="mHealthCircle">
+          <strong>94</strong>
+          <small>/100</small>
+        </div>
+        <button class="m-btn-primary" id="mBtnDiagnose" type="button">RUN DIAGNOSTIC CHECK</button>
+      </div>
+
+      <div class="m-grid-2">
+        <div class="m-stat-box" id="mBatteryBox">
+          <small>BATTERY</small>
+          <b>91% Charging</b>
+          <span style="font-size:8px;color:#4ade80">32°C · Good</span>
+        </div>
+        <div class="m-stat-box" id="mStorageBox">
+          <small>STORAGE</small>
+          <b>87 / 128 GB</b>
+          <span style="font-size:8px;color:#94a3b8">41 GB Free</span>
+        </div>
+      </div>
+
+      <div class="m-card">
+        <div class="m-bar-wrap" id="mCpuBarWrap">
+          <div class="m-bar-label">
+            <span>Processor (8 Cores)</span>
+            <b id="mCpuVal">38%</b>
+          </div>
+          <div class="m-bar-track"><div class="m-bar-fill" style="width:38%"></div></div>
+        </div>
+        <div class="m-bar-wrap" id="mRamBarWrap">
+          <div class="m-bar-label">
+            <span>Memory Pressure (16 GB)</span>
+            <b>62%</b>
+          </div>
+          <div class="m-bar-track"><div class="m-bar-fill" style="width:62%;background:#38bdf8"></div></div>
+        </div>
+      </div>
+    `,
+
+    hardware: `
+      <div class="m-card">
+        <div class="m-card-title">
+          <span>SUBSYSTEM AUDIT</span>
+          <span id="mHardwareStatus" style="color:#4ade80">● ALL PASS</span>
+        </div>
+        <button class="m-btn-primary" id="mBtnAudit" type="button">RUN SENSOR DIAGNOSTICS →</button>
+      </div>
+
+      <div class="m-card" id="mTouchCard" style="display:flex;align-items:center;justify-content:space-between;padding:10px;">
+        <div>
+          <b style="font-size:11px;color:#fff;display:block">Multi-Touch &amp; Display</b>
+          <small style="font-size:8px;color:#7d8b96">120 Hz AMOLED · Zero touch ghosting</small>
+        </div>
+        <span style="color:#4ade80;font-size:11px">● PASS</span>
+      </div>
+
+      <div class="m-card" id="mThermalCard" style="display:flex;align-items:center;justify-content:space-between;padding:10px;">
+        <div>
+          <b style="font-size:11px;color:#fff;display:block">Thermals &amp; Battery Cells</b>
+          <small style="font-size:8px;color:#7d8b96">32°C Normal · 320 Cycles (96% Health)</small>
+        </div>
+        <span style="color:#4ade80;font-size:11px">● COOL</span>
+      </div>
+
+      <div class="m-card" style="display:flex;align-items:center;justify-content:space-between;padding:10px;">
+        <div>
+          <b style="font-size:11px;color:#fff;display:block">Cameras, Audio &amp; Sensors</b>
+          <small style="font-size:8px;color:#7d8b96">Accelerometer, Gyro, Biometrics verified</small>
+        </div>
+        <span style="color:#4ade80;font-size:11px">● OK</span>
+      </div>
+    `,
+
+    router: `
+      <div class="m-card">
+        <div class="m-card-title">
+          <span>CONNECTION HEALTH</span>
+          <span style="color:#4ade80">● STABLE</span>
+        </div>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;margin:4px 0 10px;">
+          <div>
+            <b style="font-size:16px;color:#fff">14 ms</b>
+            <small style="display:block;font-size:8px;color:#7d8b96">LATENCY (WI-FI 6)</small>
+          </div>
+          <div>
+            <b style="font-size:16px;color:#38bdf8">0%</b>
+            <small style="display:block;font-size:8px;color:#7d8b96">PACKET LOSS</small>
+          </div>
+        </div>
+        <button class="m-btn-primary" id="mBtnOptimizeNet" type="button">OPTIMIZE CONNECTION</button>
+      </div>
+
+      <div class="m-card" id="mScreenTimeCard">
+        <div class="m-card-title">
+          <span>APP ACTIVITY &amp; SCREEN TIME</span>
+          <small style="color:#94a3b8">3h 24m Today</small>
+        </div>
+        <div class="m-bar-wrap">
+          <div class="m-bar-label"><span>Streaming Video</span><b>1h 42m</b></div>
+          <div class="m-bar-track"><div class="m-bar-fill" style="width:76%;background:#f87171"></div></div>
+        </div>
+        <div class="m-bar-wrap">
+          <div class="m-bar-label"><span>Browser</span><b>58m</b></div>
+          <div class="m-bar-track"><div class="m-bar-fill" style="width:48%;background:#fbbf24"></div></div>
+        </div>
+        <div class="m-bar-wrap">
+          <div class="m-bar-label"><span>Messaging</span><b>31m</b></div>
+          <div class="m-bar-track"><div class="m-bar-fill" style="width:24%;background:#4ade80"></div></div>
+        </div>
+      </div>
+    `,
+
+    storage: `
+      <div class="m-card">
+        <div class="m-card-title">
+          <span>DEVICE STORAGE</span>
+          <span style="color:#00e5ff">68% USED</span>
+        </div>
+        <div style="font-size:22px;font-weight:800;color:#fff;margin:4px 0">
+          87 GB <small style="font-size:11px;color:#7d8b96">of 128 GB</small>
+        </div>
+        <div class="m-bar-track" style="height:8px;margin:8px 0">
+          <div class="m-bar-fill" style="width:68%;background:#00e5ff"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:#94a3b8">
+          <span>Apps: 48 GB</span>
+          <span>Media: 32 GB</span>
+          <span>Cache: 7 GB</span>
+        </div>
+      </div>
+
+      <div class="m-card" id="mCacheCleanCard">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div>
+            <b style="font-size:11px;color:#fff;display:block">PulseOS Safe Cache</b>
+            <small style="font-size:8px;color:#7d8b96">Safe developer &amp; app artifacts</small>
+          </div>
+          <span style="font-size:11px;font-weight:700;color:#00e5ff">42 MB</span>
+        </div>
+        <button class="m-btn-primary" id="mBtnCleanCache" type="button">REVIEW &amp; CLEAN SAFE CACHE</button>
+      </div>
+    `,
+
+    converter: `
+      <div class="m-card" id="mFilePickCard" style="border:1px dashed #00e5ff;text-align:center;padding:16px 10px;cursor:pointer">
+        <span style="font-size:20px;color:#00e5ff;display:block">＋</span>
+        <b id="mPickedFileName" style="font-size:11px;color:#fff;display:block;margin:4px 0">receipt-document.png</b>
+        <small style="font-size:8px;color:#7d8b96">100% Local Processing · Zero Cloud Upload</small>
+      </div>
+
+      <div class="m-card">
+        <div class="m-card-title">
+          <span>CONVERT TO FORMAT</span>
+          <span style="color:#00e5ff">PDF</span>
+        </div>
+        <button class="m-btn-primary" id="mBtnConvert" type="button">PREVIEW ON-DEVICE CONVERSION</button>
+      </div>
+    `,
+
+    settings: `
+      <div class="m-card">
+        <div class="m-card-title">
+          <span>SECURITY &amp; PRIVACY</span>
+        </div>
+        <div id="mLocalToggleRow" style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid #1e2632">
+          <div>
+            <b style="font-size:11px;color:#fff;display:block">Local-First Processing</b>
+            <small style="font-size:8px;color:#7d8b96">Keep telemetry 100% on device</small>
+          </div>
+          <input type="checkbox" id="mLocalFirstSwitch" checked style="accent-color:#00e5ff">
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;">
+          <div>
+            <b style="font-size:11px;color:#fff;display:block">Hardware Health Alerts</b>
+            <small style="font-size:8px;color:#7d8b96">Notify on high thermal pressure</small>
+          </div>
+          <input type="checkbox" checked style="accent-color:#00e5ff">
+        </div>
+      </div>
+
+      <div class="m-card">
+        <b style="font-size:10.5px;color:#94a3b8;display:block;margin-bottom:6px">PULSEOS ANDROID CLIENT</b>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:#cbd5e1">
+          <span>Version</span><b>v2.0.4 (ARM64)</b>
+        </div>
+      </div>
+    `
+  };
+
+  // Move Mobile Touch Pointer
+  function moveTouchPointer(targetEl, callback) {
+    if (!touchPointer || !targetEl || !phoneScreen) {
+      if (callback) callback();
+      return;
+    }
+
+    const phoneRect = phoneScreen.getBoundingClientRect();
+    const targetRect = targetEl.getBoundingClientRect();
+
+    const x = Math.round(targetRect.left - phoneRect.left + (targetRect.width / 2));
+    const y = Math.round(targetRect.top - phoneRect.top + (targetRect.height / 2));
+
+    touchPointer.style.left = `${Math.max(16, Math.min(x, phoneRect.width - 16))}px`;
+    touchPointer.style.top = `${Math.max(16, Math.min(y, phoneRect.height - 16))}px`;
+
+    setTimeout(() => {
+      if (callback) callback();
+    }, 1300);
+  }
+
+  // Simulate mobile tap animation
+  function performTouchTap(targetEl, callback) {
+    if (!touchPointer) return;
+    touchPointer.classList.add('tapping');
+
+    setTimeout(() => {
+      if (targetEl) {
+        try { targetEl.click(); } catch (_) {}
+      }
+      touchPointer.classList.remove('tapping');
+      if (callback) callback();
+    }, 320);
+  }
+
+  // Update mobile spotlight pill
+  function setMobileSpotlight(title, desc) {
+    if (mSpotlightTitle) mSpotlightTitle.textContent = title;
+    if (mSpotlightDesc) mSpotlightDesc.textContent = desc;
+    if (phoneCaption) phoneCaption.innerHTML = `<b style="color:var(--accent)">${title}:</b> ${desc}`;
+    if (mSpotlight) {
+      mSpotlight.classList.remove('visible');
+      void mSpotlight.offsetWidth;
+      mSpotlight.classList.add('visible');
+    }
+  }
+
+  // Mobile Tour Step Scripts
+  const MOBILE_TOUR_SCRIPTS = {
+    overview: [
+      {
+        title: 'Device Health Score',
+        desc: 'Android telemetry evaluates hardware, battery and storage health.',
+        getTarget: () => document.getElementById('mBtnDiagnose') || document.getElementById('mHealthCircle'),
+        action: (target, next) => {
+          performTouchTap(target, () => {
+            const circle = document.getElementById('mHealthCircle');
+            if (circle) circle.style.borderColor = '#4ade80';
+            setTimeout(next, 3800);
+          });
+        }
+      },
+      {
+        title: 'Thermal & Battery Telemetry',
+        desc: 'Live cell temperature and charging health readings directly from Android hardware.',
+        getTarget: () => document.getElementById('mBatteryBox'),
+        action: (target, next) => {
+          performTouchTap(target, () => setTimeout(next, 3800));
+        }
+      },
+      {
+        title: 'Processor & Memory Load',
+        desc: 'Monitors real-time 8-core CPU load and LPDDR memory pressure.',
+        getTarget: () => document.getElementById('mCpuBarWrap'),
+        action: (target, next) => {
+          performTouchTap(target, () => setTimeout(next, 3800));
+        }
+      },
+      {
+        title: 'Advancing to Hardware Health',
+        desc: 'Switching to Android component sensor diagnostics.',
+        getTarget: () => document.querySelector('#phoneBottomNav button[data-phone-page="hardware"]'),
+        action: (target, next) => {
+          performTouchTap(target, () => switchMobileScreen('hardware'));
+        }
+      }
+    ],
+
+    hardware: [
+      {
+        title: 'Sensor Diagnostics Sweep',
+        desc: 'Checks multi-touch display, thermals, cameras, audio and biometrics.',
+        getTarget: () => document.getElementById('mBtnAudit'),
+        action: (target, next) => {
+          performTouchTap(target, () => {
+            const stat = document.getElementById('mHardwareStatus');
+            if (stat) stat.textContent = '● AUDIT PASS';
+            setTimeout(next, 4000);
+          });
+        }
+      },
+      {
+        title: 'Multi-Touch & AMOLED Test',
+        desc: 'Verifies 120Hz display refresh rate and multi-finger touch responsiveness.',
+        getTarget: () => document.getElementById('mTouchCard'),
+        action: (target, next) => {
+          performTouchTap(target, () => setTimeout(next, 3800));
+        }
+      },
+      {
+        title: 'Advancing to Smart Router',
+        desc: 'Switching to network latency and app screen time tracking.',
+        getTarget: () => document.querySelector('#phoneBottomNav button[data-phone-page="router"]'),
+        action: (target, next) => {
+          performTouchTap(target, () => switchMobileScreen('router'));
+        }
+      }
+    ],
+
+    router: [
+      {
+        title: 'Network Optimization',
+        desc: 'Measures Wi-Fi ping latency and flushes Android network cache for smooth gaming.',
+        getTarget: () => document.getElementById('mBtnOptimizeNet'),
+        action: (target, next) => {
+          performTouchTap(target, () => setTimeout(next, 4000));
+        }
+      },
+      {
+        title: 'App Screen Time Breakdown',
+        desc: 'Tracks background screen time and battery consumption per app.',
+        getTarget: () => document.getElementById('mScreenTimeCard'),
+        action: (target, next) => {
+          performTouchTap(target, () => setTimeout(next, 4000));
+        }
+      },
+      {
+        title: 'Advancing to Storage Healer',
+        desc: 'Switching to Android cache analysis and space reclamation.',
+        getTarget: () => document.querySelector('#phoneBottomNav button[data-phone-page="storage"]'),
+        action: (target, next) => {
+          performTouchTap(target, () => switchMobileScreen('storage'));
+        }
+      }
+    ],
+
+    storage: [
+      {
+        title: 'Safe App Cache Cleanup',
+        desc: 'Cleans safely identified temporary app cache without touching personal photos or files.',
+        getTarget: () => document.getElementById('mBtnCleanCache'),
+        action: (target, next) => {
+          performTouchTap(target, () => {
+            target.textContent = '✓ 42 MB RECLAIMED';
+            target.style.background = '#4ade80';
+            setTimeout(next, 4200);
+          });
+        }
+      },
+      {
+        title: 'Advancing to Offline Converter',
+        desc: 'Switching to on-device mobile converter studio.',
+        getTarget: () => document.querySelector('#phoneBottomNav button[data-phone-page="converter"]'),
+        action: (target, next) => {
+          performTouchTap(target, () => switchMobileScreen('converter'));
+        }
+      }
+    ],
+
+    converter: [
+      {
+        title: 'On-Device File Conversion',
+        desc: 'Converts images and documents to PDF/PNG completely offline without uploading.',
+        getTarget: () => document.getElementById('mBtnConvert'),
+        action: (target, next) => {
+          performTouchTap(target, () => {
+            target.textContent = '✓ PDF Created (Offline)';
+            target.style.background = '#4ade80';
+            setTimeout(next, 4200);
+          });
+        }
+      },
+      {
+        title: 'Advancing to Settings',
+        desc: 'Switching to Android client privacy and health preferences.',
+        getTarget: () => document.querySelector('#phoneBottomNav button[data-phone-page="settings"]'),
+        action: (target, next) => {
+          performTouchTap(target, () => switchMobileScreen('settings'));
+        }
+      }
+    ],
+
+    settings: [
+      {
+        title: 'Local-First Privacy Governance',
+        desc: 'Enforces on-device telemetry analysis with zero cloud transmission.',
+        getTarget: () => document.getElementById('mLocalToggleRow'),
+        action: (target, next) => {
+          performTouchTap(target, () => {
+            const sw = document.getElementById('mLocalFirstSwitch');
+            if (sw) sw.checked = !sw.checked;
+            setTimeout(next, 4000);
+          });
+        }
+      },
+      {
+        title: 'Restarting Mobile Tour · Overview',
+        desc: 'Returning to Mobile Overview screen.',
+        getTarget: () => document.querySelector('#phoneBottomNav button[data-phone-page="overview"]'),
+        action: (target, next) => {
+          performTouchTap(target, () => switchMobileScreen('overview'));
+        }
+      }
+    ]
+  };
+
+  let mobileStepIndex = 0;
+
+  function runMobileTourStep() {
+    if (isMobileTourPaused) return;
+
+    const pageKey = mobilePages[currentMobileIndex];
+    const steps = MOBILE_TOUR_SCRIPTS[pageKey];
+    if (!steps || steps.length === 0) return;
+
+    if (mobileStepIndex >= steps.length) {
+      mobileStepIndex = 0;
+    }
+
+    const step = steps[mobileStepIndex];
+    setMobileSpotlight(step.title, step.desc);
+
+    const target = step.getTarget ? step.getTarget() : null;
+
+    moveTouchPointer(target, () => {
+      if (isMobileTourPaused) return;
+      if (step.action) {
+        step.action(target, () => {
+          if (isMobileTourPaused) return;
+          mobileStepIndex++;
+          mobileTimer = setTimeout(runMobileTourStep, 350);
+        });
+      } else {
+        mobileTimer = setTimeout(() => {
+          if (isMobileTourPaused) return;
+          mobileStepIndex++;
+          runMobileTourStep();
+        }, 2200);
+      }
+    });
+  }
+
+  function switchMobileScreen(pageName, manual = false) {
+    if (mobileTimer) clearTimeout(mobileTimer);
+
+    const idx = mobilePages.indexOf(pageName);
+    if (idx !== -1) {
+      currentMobileIndex = idx;
+      mobileStepIndex = 0;
+    }
+
+    // Update screen content
+    if (phoneScreen && MOBILE_SCREENS[pageName]) {
+      phoneScreen.innerHTML = MOBILE_SCREENS[pageName];
+      phoneScreen.scrollTop = 0;
+    }
+
+    // Update mobile pills
+    mobileTabs.forEach(pill => {
+      pill.classList.toggle('active', pill.dataset.phonePage === pageName);
+    });
+
+    // Update bottom nav
+    phoneNavBtns.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.phonePage === pageName);
+    });
+
+    // Reset touch pointer position to top center
+    if (touchPointer) {
+      touchPointer.style.left = '50%';
+      touchPointer.style.top = '70px';
+    }
+
+    const steps = MOBILE_TOUR_SCRIPTS[pageName];
+    if (steps && steps[0]) {
+      setMobileSpotlight(steps[0].title, steps[0].desc);
+    }
+
+    mobileTimer = setTimeout(runMobileTourStep, 700);
+  }
+
+  // Handle click on mobile page pills
+  mobileTabs.forEach(pill => {
+    pill.addEventListener('click', () => {
+      switchMobileScreen(pill.dataset.phonePage, true);
+    });
+  });
+
+  // Handle click on phone bottom nav buttons
+  phoneNavBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      switchMobileScreen(btn.dataset.phonePage, true);
+    });
+  });
+
+  // Mobile Prev / Next
+  if (btnMobilePrev) {
+    btnMobilePrev.addEventListener('click', () => {
+      currentMobileIndex = (currentMobileIndex - 1 + mobilePages.length) % mobilePages.length;
+      switchMobileScreen(mobilePages[currentMobileIndex], true);
+    });
+  }
+
+  if (btnMobileNext) {
+    btnMobileNext.addEventListener('click', () => {
+      currentMobileIndex = (currentMobileIndex + 1) % mobilePages.length;
+      switchMobileScreen(mobilePages[currentMobileIndex], true);
+    });
+  }
+
+  // Initialize both tours on load
+  function initAll() {
+    // Start mobile tour
+    switchMobileScreen('overview');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll);
+  } else {
+    initAll();
   }
 })();
-
-document.querySelectorAll('.dash-click').forEach((el)=>{
-  el.addEventListener('click',()=>el.classList.toggle('is-selected'));
-});
-
-const desktopContent=document.querySelector('.dash-content');
-const desktopFrame=document.querySelector('.dash-window');
-const desktopOverview=desktopContent?.innerHTML || '';
-const desktopPages=['overview','hardware','router','storage','converter','settings'];
-const phoneScreen=document.getElementById('phoneScreen');
-const phoneFrame=document.getElementById('phoneDemo');
-const mobilePages=['overview','hardware','router','storage','converter','settings'];
-let desktopIndex=0;
-let mobileIndex=0;
-
-// Tour Configuration
-const TOUR_INTERVAL = 5000; 
-const tourSequence = [
-  { dPage: 'overview', mPage: 'overview', dAction: null, text: 'Overview · health score, live metrics, trends and recent activity.' },
-  { dPage: 'overview', mPage: 'overview', dAction: 'diagnosis', text: 'Running system diagnosis...' },
-  { dPage: 'hardware', mPage: 'hardware', dAction: null, text: 'Hardware · detailed component health and sensor readings.' },
-  { dPage: 'router', mPage: 'router', dAction: 'router-refresh', text: 'Router · monitoring resource-draining processes.' },
-  { dPage: 'storage', mPage: 'storage', dAction: 'storage-scan', text: 'Storage · identifying safe cleanup candidates.' },
-  { dPage: 'converter', mPage: 'converter', dAction: null, text: 'Converter · local-first file conversion workflows.' },
-  { dPage: 'settings', mPage: 'settings', dAction: null, text: 'Settings · professional device health preferences.' },
-];
-
-let currentTourStep = 0;
-let tourTimer = null;
-
-function startTour() {
-  if (tourTimer) clearTimeout(tourTimer);
-  
-  const step = tourSequence[currentTourStep % tourSequence.length];
-  
-  showDesktopPage(step.dPage, false);
-  showPhonePage(step.mPage, false);
-  
-  const dCaption = document.getElementById('desktopTourCaption');
-  if (dCaption) dCaption.textContent = step.text;
-  const mCaption = document.getElementById('phoneTourCaption');
-  if (mCaption) mCaption.textContent = step.text;
-
-  if (step.dAction) {
-    const btn = document.querySelector(`[data-demo-action="${step.dAction}"]`);
-    if (btn) btn.click();
-  }
-
-  currentTourStep++;
-  tourTimer = setTimeout(startTour, TOUR_INTERVAL);
-}
-
-function stopTour() {
-  if (tourTimer) {
-    clearTimeout(tourTimer);
-    tourTimer = null;
-  }
-}
-
-function showDesktopPage(page, manual=false){
-  if(!desktopContent || !desktopPages.includes(page)) return;
-  if (manual) stopTour(); 
-  
-  desktopIndex=desktopPages.indexOf(page);
-  desktopContent.innerHTML=page==='overview' ? desktopOverview : desktopPanels[page];
-  desktopContent.classList.remove('demo-page-enter');
-  void desktopContent.offsetWidth;
-  desktopContent.classList.add('demo-page-enter');
-  document.querySelectorAll('[data-demo-page]').forEach((tab)=>{
-    const active=tab.dataset.demoPage===page;
-    tab.classList.toggle('active',active);
-    tab.setAttribute('aria-pressed',String(active));
-  });
-  const position=document.querySelector('.demo-auto-status');
-  if(position) position.textContent=`AUTO TOUR · ${desktopIndex+1} / 6`;
-  const heading=desktopContent.querySelector('.dash-pagehead h3');
-  if(heading && page==='overview') heading.textContent='Device Health & Healing Center';
-}
-
-function showPhonePage(page,manual=false){
-  if(!phoneScreen || !mobilePages.includes(page)) return;
-  if (manual) stopTour(); 
-  
-  mobileIndex=mobilePages.indexOf(page);
-  phoneScreen.innerHTML=phonePanels[page];
-  phoneScreen.classList.remove('phone-page-enter');
-  void phoneScreen.offsetWidth;
-  phoneScreen.classList.add('phone-page-enter');
-  document.querySelectorAll('[data-phone-page]').forEach((tab)=>{
-    const active=tab.dataset.phonePage===page;
-    tab.classList.toggle('active',active);
-    tab.setAttribute('aria-current',active ? 'page' : 'false');
-  });
-}
-
-function notifyDemo(message){
-  let toast=document.getElementById('previewToast');
-  if(!toast){
-    toast=document.createElement('div');
-    toast.id='previewToast';
-    toast.className='preview-toast';
-    toast.setAttribute('role','status');
-    document.body.appendChild(toast);
-  }
-  toast.textContent=message;
-  toast.classList.add('visible');
-  window.clearTimeout(toast.timer);
-  toast.timer=window.setTimeout(()=>toast.classList.remove('visible'),2400);
-}
-
-document.addEventListener('click',(event)=>{
-  const desktopTab=event.target.closest('[data-demo-page]');
-  if(desktopTab){
-    showDesktopPage(desktopTab.dataset.demoPage,true);
-    return;
-  }
-  const phoneTab=event.target.closest('[data-phone-page]');
-  if(phoneTab){
-    showPhonePage(phoneTab.dataset.phonePage,true);
-    return;
-  }
-  const detail=event.target.closest('[data-inspect],[data-phone-detail]');
-  if(detail){
-    notifyDemo(detail.dataset.inspect || detail.dataset.phoneDetail);
-    return;
-  }
-  const action=event.target.closest('[data-demo-action]');
-  if(action){
-    const type=action.dataset.demoAction;
-    if(type==='storage-clean'){
-      const selected=[...desktopContent.querySelectorAll('.demo-file-list input:checked')].map((input)=>input.value);
-      const message=document.getElementById('desktopMessage');
-      if(message) message.textContent=selected.length ? `Preview only: ${selected.join(', ')} would be reviewed before cleanup.` : 'Select one or more sample rows to review.';
-    }else if(type==='convert'){
-      const file=document.getElementById('desktopFile');
-      const message=document.getElementById('desktopMessage');
-      const format=document.getElementById('desktopFormat')?.value || 'PDF';
-      if(message) message.textContent=file?.files?.length ? `Preview complete: ${file.files[0].name} → ${format}. No file was changed.` : `Choose a file to preview conversion to ${format}.`;
-    }else if(type==='router-refresh'){
-      const message=document.getElementById('desktopMessage');
-      if(message) message.textContent='Sample refreshed just now · connection stable · 126 processes.';
-    }else if(type==='storage-scan'){
-      const message=document.getElementById('desktopMessage');
-      if(message) message.textContent='Sample scan complete · 2 review candidates · active work remains protected.';
-    }else if(type==='refresh'){
-      notifyDemo('Sample telemetry refreshed just now.');
-    }else if(type==='diagnosis'){
-      notifyDemo('Sample check complete · no critical issues in this demo.');
-    }
-    return;
-  }
-  const phoneAction=event.target.closest('[data-phone-action]');
-  if(phoneAction){
-    const message=document.getElementById('phoneMessage');
-    const type=phoneAction.dataset.phoneAction;
-    if(type==='convert'){
-      const file=document.getElementById('phoneFile');
-      const format=document.getElementById('phoneFormat')?.value || 'PDF';
-      if(message) message.textContent=file?.files?.length ? `Preview complete: ${file.files[0].name} → ${format}. No upload.` : `Choose a file to preview ${format} conversion.`;
-    }else if(type==='cleanup'){
-      if(message) message.textContent='Preview only · 42 MB of app cache selected for review. Nothing was deleted.';
-    }else if(type==='data'){
-      if(message) message.textContent='In the Android app, this opens your phone’s Data usage settings.';
-    }else if(type==='usage'){
-      if(message) message.textContent='In the Android app, grant optional Usage Access to view app screen time.';
-    }else if(type==='refresh'){
-      if(message) message.textContent='Phone sample readings refreshed just now.';
-    }
-  }
-});
-
-document.addEventListener('change',(event)=>{
-  if(event.target.id==='desktopFile'){
-    const label=document.getElementById('desktopFileName');
-    if(label) label.textContent=event.target.files?.[0]?.name || 'Choose a sample file';
-  }
-  if(event.target.id==='phoneFile'){
-    const label=document.getElementById('phoneFileName');
-    if(label) label.textContent=event.target.files?.[0]?.name || 'Choose a file';
-  }
-  if(event.target.matches('[data-demo-setting]')){
-    const state=event.target.checked ? 'on' : 'off';
-    const message=document.getElementById('desktopMessage');
-    if(message) message.textContent=`Preview preference changed: ${event.target.dataset.demoSetting} is ${state}.`;
-  }
-});
-
-desktopContent?.addEventListener('click',(event)=>{
-  const timeFilter=event.target.closest('.time-filters button');
-  if(timeFilter){
-    desktopContent.querySelectorAll('.time-filters button').forEach((button)=>button.classList.toggle('active',button===timeFilter));
-    notifyDemo(`Showing illustrative ${timeFilter.textContent} trend.`);
-  }
-});
-
-phoneScreen?.addEventListener('click',(event)=>{
-  const refresh=event.target.closest('[data-phone-action="refresh"]');
-  if(refresh){
-    const message=document.getElementById('phoneMessage');
-    if(message) message.textContent='Phone sample readings refreshed just now.';
-  }
-});
-
-const desktopPanels={
-  hardware:`<div class="demo-page-enter"><div class="demo-pagehead"><div><span>COMPONENT HEALTH</span><h3>Hardware Health</h3><p>Illustrative device readings · captured just now</p></div><button class="demo-action" data-demo-action="diagnosis">Run sample check</button></div><div class="demo-component-grid"><button class="demo-component" data-inspect="Processor"><span>CPU · PROCESSOR</span><strong>38%</strong><small>8 cores · 3.1 GHz · Normal</small></button><button class="demo-component" data-inspect="Memory"><span>RAM · MEMORY</span><strong>62%</strong><small>9.9 / 16 GB · Stable</small></button><button class="demo-component" data-inspect="Battery"><span>BATTERY &amp; POWER</span><strong>91%</strong><small>Charging · 32 °C · Good</small></button><button class="demo-component" data-inspect="Thermals"><span>THERMALS</span><strong>54 °C</strong><small>Fans responding normally</small></button><button class="demo-component" data-inspect="Graphics"><span>GPU · GRAPHICS</span><strong>12%</strong><small>Integrated · Sensors limited</small></button><button class="demo-component" data-inspect="Storage health"><span>SSD · STORAGE</span><strong>28%</strong><small>Used · Capacity available</small></button><button class="demo-component" data-inspect="Network adapter"><span>NETWORK</span><strong>Online</strong><small>Latency 18 ms · Stable</small></button><button class="demo-component" data-inspect="Peripherals"><span>PERIPHERALS</span><strong>4 devices</strong><small>Display, audio, USB</small></button></div><p class="demo-footnote">Sample readings are for product preview only; real sensor access depends on your device.</p></div>`,
-  router:`<div class="demo-page-enter"><div class="demo-pagehead"><div><span>PROCESS &amp; NETWORK</span><h3>Smart Router</h3><p>See what is using resources and review connection health.</p></div><button class="demo-action" data-demo-action="router-refresh">↻ Refresh sample</button></div><div class="demo-stat-strip"><div><small>CONNECTION</small><b>Online · Wi-Fi</b></div><div><small>LATENCY</small><b>18 ms</b></div><div><small>ACTIVE PROCESSES</small><b>126</b></div><div><small>TOP CPU</small><b>Browser · 14%</b></div></div><div class="demo-table-wrap"><table class="demo-table"><thead><tr><th>Application</th><th>CPU</th><th>Memory</th><th>Impact</th><th></th></tr></thead><tbody><tr><td>Browser</td><td>14%</td><td>2.4 GB</td><td><span class="demo-tag amber">Moderate</span></td><td><button data-inspect="Browser process">Details</button></td></tr><tr><td>Code Editor</td><td>8%</td><td>1.8 GB</td><td><span class="demo-tag green">Low</span></td><td><button data-inspect="Code Editor process">Details</button></td></tr><tr><td>Cloud Sync</td><td>3%</td><td>420 MB</td><td><span class="demo-tag green">Low</span></td><td><button data-inspect="Cloud Sync process">Details</button></td></tr></tbody></table></div><p class="demo-message" id="desktopMessage">Sample process list. No process controls are executed in this preview.</p></div>`,
-  storage:`<div class="demo-page-enter"><div class="demo-pagehead"><div><span>SPACE &amp; CLEANUP</span><h3>Storage Healer</h3><p>Review candidates first; nothing is removed without confirmation.</p></div><button class="demo-action" data-demo-action="storage-scan">Scan sample</button></div><div class="demo-storage-meter"><div><strong>68%</strong><span>used · 156 GB free of 512 GB</span></div><div class="demo-meter"><i style="width:68%"></i></div></div><div class="demo-file-list"><label><input type="checkbox" value="Build cache"> <span><b>Build cache</b><small>Developer artifacts · 2.8 GB · Not recently used</small></span><em>Review</em></label><label><input type="checkbox" value="App temporary files"> <span><b>App temporary files</b><small>Temporary data · 640 MB · Safe candidate</small></span><em>Review</em></label><label><input type="checkbox" value="Downloads"> <span><b>Downloads</b><small>Personal files · 4.1 GB · User review required</small></span><em>Protected</em></label></div><div class="demo-action-row"><button class="demo-action" data-demo-action="storage-clean">Review selected</button><span class="demo-message" id="desktopMessage">Demo only · your files are never accessed.</span></div></div>`,
-  converter:`<div class="demo-page-enter"><div class="demo-pagehead"><div><span>LOCAL FILE WORKFLOWS</span><h3>Offline Converter</h3><p>Choose a file and preview a conversion flow. This website demo never uploads it.</p></div><span class="demo-tag green">ON DEVICE</span></div><label class="demo-drop"><input id="desktopFile" type="file"><span class="demo-drop-icon">＋</span><b id="desktopFileName">Choose a sample file</b><small>Images · documents · archives · media</small></label><div class="demo-form-row"><label>Convert to<select id="desktopFormat"><option>PDF</option><option>PNG</option><option>JPG</option><option>ZIP</option><option>MP4</option></select></label><button class="demo-action" data-demo-action="convert">Preview conversion</button></div><p class="demo-message" id="desktopMessage">Select any local file to see a simulated conversion result.</p></div>`,
-  settings:`<div class="demo-page-enter"><div class="demo-pagehead"><div><span>PREFERENCES</span><h3>Settings</h3><p>Sample controls show how device preferences are organized.</p></div><span class="demo-tag green">LOCAL-FIRST</span></div><div class="demo-setting-list"><label><span><b>Local processing</b><small>Keep device analysis on this computer</small></span><input type="checkbox" checked data-demo-setting="Local processing"></label><label><span><b>Health alerts</b><small>Notify when a supported issue is observed</small></span><input type="checkbox" checked data-demo-setting="Health alerts"></label><label><span><b>Protect active projects</b><small>Exclude work in progress from cleanup suggestions</small></span><input type="checkbox" checked data-demo-setting="Protect active projects"></label><label><span><b>Downloads organizer</b><small>Preview file organization rules</small></span><input type="checkbox" data-demo-setting="Downloads organizer"></label></div><p class="demo-message" id="desktopMessage">Settings are illustrative and only affect this preview.</p></div>`
-};
-
-const phonePanels={
-  overview:`<div class="phone-page-enter"><div class="phone-greeting"><span>YOUR DEVICE</span><b>Looking healthy <i>●</i></b></div><div class="phone-health"><div class="phone-ring"><strong>87</strong><small>HEALTH</small></div><div><b>Good condition</b><small>Updated just now</small><button data-phone-page="hardware">View components →</button></div></div><div class="phone-metrics"><button data-phone-page="hardware"><small>PROCESSOR</small><b>38%</b><span>Normal</span></button><button data-phone-page="hardware"><small>MEMORY</small><b>62%</b><span>9.9 / 16 GB</span></button><button data-phone-page="hardware"><small>BATTERY</small><b>91%</b><span>Charging</span></button><button data-phone-page="storage"><small>STORAGE</small><b>68%</b><span>156 GB free</span></button></div><div class="phone-alert"><span>✓</span><div><b>No active warnings</b><small>Phone checks are based on available signals.</small></div></div></div>`,
-  hardware:`<div class="phone-page-enter"><div class="phone-page-title"><small>PHONE COMPONENTS</small><b>Hardware</b></div><div class="phone-list"><button data-phone-detail="Battery · 91% · Charging · 32 °C"><span>▰</span><div><b>Battery</b><small>91% · Charging · 32 °C</small></div><em>›</em></button><button data-phone-detail="Display · 120 Hz · Multi-touch available"><span>▣</span><div><b>Display &amp; touch</b><small>120 Hz · Multi-touch available</small></div><em>›</em></button><button data-phone-detail="Processor · 8 cores · 38% sample usage"><span>⌁</span><div><b>Processor</b><small>8 cores · 38% sample usage</small></div><em>›</em></button><button data-phone-detail="Cameras · front, rear, flash"><span>◎</span><div><b>Camera</b><small>Front · rear · flash</small></div><em>›</em></button><button data-phone-detail="Audio · microphone and 2 outputs"><span>♫</span><div><b>Microphone &amp; speaker</b><small>Mic · earpiece · speaker</small></div><em>›</em></button><button data-phone-detail="Sensors · accelerometer, gyro, proximity"><span>✣</span><div><b>Sensors</b><small>Accelerometer · gyro · proximity</small></div><em>›</em></button><button data-phone-detail="GPS · NFC · Bluetooth · biometrics"><span>⌖</span><div><b>Connections &amp; security</b><small>GPS · NFC · Bluetooth · fingerprint</small></div><em>›</em></button></div></div>`,
-  router:`<div class="phone-page-enter"><div class="phone-page-title"><small>CONNECTION &amp; APP ACTIVITY</small><b>Router</b></div><div class="phone-network"><span>●</span><div><b>Wi-Fi connected</b><small>Home network · Internet available</small></div><em>Stable</em></div><div class="phone-mini-stats"><div><small>LATENCY</small><b>18 ms</b></div><div><small>SCREEN TIME</small><b>3h 24m</b></div></div><div class="phone-app-usage"><div><b>App activity</b><button data-phone-action="usage">Details</button></div><p><span>Video</span><i><b style="width:76%"></b></i><em>1h 42m</em></p><p><span>Browser</span><i><b style="width:52%"></b></i><em>58m</em></p><p><span>Messages</span><i><b style="width:28%"></b></i><em>31m</em></p></div><p class="phone-note" id="phoneMessage">Screen-time sample · Usage Access is optional in the real app.</p></div>`,
-  storage:`<div class="phone-page-enter"><div class="phone-page-title"><small>SPACE &amp; APP CACHE</small><b>Storage</b></div><div class="phone-storage"><div><strong>68%</strong><span>used</span></div><b>87 GB <small>of 128 GB</small></b><i><b style="width:68%"></b></i><small>41 GB available</small></div><div class="phone-list compact"><div><span>▦</span><div><b>PulseOS cache</b><small>Safe to review · 42 MB</small></div><em>42 MB</em></div><div><span>▣</span><div><b>Other apps</b><small>Open Android storage settings</small></div><em>›</em></div></div><button class="phone-primary" data-phone-action="cleanup">Review safe cache</button><p class="phone-note" id="phoneMessage">Only sample data is shown. Personal files are never touched.</p></div>`,
-  converter:`<div class="phone-page-enter"><div class="phone-page-title"><small>ON-DEVICE WORKFLOW</small><b>Convert</b></div><label class="phone-pick"><input id="phoneFile" type="file"><span>＋</span><b id="phoneFileName">Choose a file</b><small>Selected files stay on this device</small></label><label class="phone-select">Convert to<select id="phoneFormat"><option>PDF</option><option>PNG</option><option>JPG</option><option>ZIP</option></select></label><button class="phone-primary" data-phone-action="convert">Preview conversion</button><p class="phone-note" id="phoneMessage">Sample workflow · no file is uploaded by this website.</p></div>`,
-  settings:`<div class="phone-page-enter"><div class="phone-page-title"><small>PHONE PREFERENCES</small><b>Settings</b></div><div class="phone-settings"><label><span><b>Local-first</b><small>Keep analysis on device</small></span><input type="checkbox" checked></label><label><span><b>Health alerts</b><small>Supported device signals</small></span><input type="checkbox" checked></label></div><div class="phone-list compact"><button data-phone-action="data"><span>⇵</span><div><b>Data usage</b><small>Mobile and Wi-Fi usage</small></div><em>›</em></button><button data-phone-action="usage"><span>◷</span><div><b>App screen time</b><small>Usage Access setting</small></div><em>›</em></button><button data-phone-detail="Battery, display, sound, storage, location and permissions open your Android settings in the real app."><span>⚙</span><div><b>Phone settings</b><small>Battery · display · sound · more</small></div><em>›</em></button></div><p class="phone-note" id="phoneMessage">Interactive sample only · no Android settings are opened.</p></div>`
-};
-
-showDesktopPage('overview');
-showPhonePage('overview');
-startTour();
-
-function formatDownloadBytes(bytes){
-  if(bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-  return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-}
-
-document.querySelectorAll('a.download-button[download]').forEach((link)=>{
-  const status=document.createElement('small');
-  status.className='download-status';
-  status.setAttribute('aria-live','polite');
-  link.insertAdjacentElement('afterend', status);
-  link.addEventListener('click', async (event)=>{
-    if(!window.ReadableStream) return;
-    event.preventDefault();
-    link.setAttribute('aria-busy','true');
-    status.textContent='Preparing download…';
-    try{
-      const response=await fetch(link.href);
-      if(!response.ok || !response.body) throw new Error('Download unavailable');
-      const total=Number(response.headers.get('content-length')) || 0;
-      const reader=response.body.getReader();
-      const chunks=[];
-      let received=0;
-      while(true){
-        const result=await reader.read();
-        if(result.done) break;
-        chunks.push(result.value);
-        received+=result.value.length;
-        status.textContent=total
-          ? `Downloaded ${formatDownloadBytes(received)} / ${formatDownloadBytes(total)} · Remaining ${formatDownloadBytes(total-received)}`
-          : `Downloaded ${formatDownloadBytes(received)}`;
-      }
-      const blob=new Blob(chunks, {type: response.headers.get('content-type') || 'application/octet-stream'});
-      const url=URL.createObjectURL(blob);
-      const trigger=document.createElement('a');
-      trigger.href=url;
-      trigger.download=link.href.split('/').pop() || 'PulseOS-download';
-      trigger.click();
-      URL.revokeObjectURL(url);
-      status.textContent=total
-        ? `Complete · ${formatDownloadBytes(received)}`
-        : `Complete · ${formatDownloadBytes(received)}`;
-    }catch(error){
-      status.textContent='Download started by browser';
-      window.location.href=link.href;
-    }finally{
-      link.removeAttribute('aria-busy');
-    }
-  });
-});

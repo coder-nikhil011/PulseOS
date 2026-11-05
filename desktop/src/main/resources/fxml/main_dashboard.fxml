@@ -154,7 +154,7 @@
                             <VBox fx:id="storageCard" styleClass="card clickable-stat" spacing="7" HBox.hgrow="ALWAYS">
                                 <HBox><Label text="STORAGE INTELLIGENCE" styleClass="section-kicker"/><HBox HBox.hgrow="ALWAYS"/><Label text="Live breakdown" styleClass="live-caption"/></HBox>
                                 <HBox spacing="8" alignment="CENTER_LEFT"><Label text="Used" styleClass="stat-caption"/><ProgressBar fx:id="storageProgressBar" progress="0.4" HBox.hgrow="ALWAYS"/><Label fx:id="freeStorageLabel" text="— free" styleClass="stat-caption-bold"/></HBox>
-                                <HBox spacing="14" alignment="CENTER_LEFT" maxWidth="Infinity">
+                                <HBox spacing="20" alignment="CENTER_LEFT" maxWidth="Infinity">
                                     <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
                                         <PieChart fx:id="storagePieChart" prefWidth="350" prefHeight="190" minWidth="300" minHeight="175" legendVisible="true" legendSide="RIGHT" labelsVisible="false" startAngle="90" clockwise="false"/>
                                         <Label fx:id="storageArrowLabel" text="→ Free: calculating · → Used: calculating" styleClass="chart-backend" wrapText="true"/>
@@ -207,7 +207,7 @@
                             <Button text="Open Smart Router" onAction="#showSmartRouterView" styleClass="alert-btn-secondary"/>
                         </HBox>
 
-                        <VBox fx:id="aboutCard" styleClass="about-card clickable-stat" spacing="6">
+                        <VBox fx:id="aboutCard" styleClass="about-card clickable-stat" spacing="10" alignment="CENTER_LEFT">
                             <Label text="WHAT IS PULSEOS?" styleClass="section-kicker"/>
                             <Label text="PulseOS is a cross-platform desktop system health and maintenance application. It continuously reads available device telemetry, explains resource usage, detects storage and background-activity problems, organizes downloads, converts files offline, and provides guided healing actions." wrapText="true" styleClass="about-title"/>
                             <Label text="It is not an operating system and it is not just Task Manager. Task Manager shows raw activity; PulseOS adds health scoring, diagnosis, trends, prediction, automation and safe remediation around that activity." wrapText="true" styleClass="about-text"/>
@@ -225,7 +225,7 @@
                 <Label fx:id="footerRamLabel" text="RAM: — / — GB" styleClass="footer-text"/>
                 <Label fx:id="footerTempLabel" text="CPU Temp: —" styleClass="footer-text"/>
                 <HBox HBox.hgrow="ALWAYS"/>
-                <Label text="Local-first • Java 21 • Live telemetry" styleClass="footer-text-blue"/>
+                <Label text="Local-first • Java 25 • Live telemetry" styleClass="footer-text-blue"/>
             </HBox>
         </bottom>
     </BorderPane>

@@ -1,6 +1,6 @@
 #!/bin/bash
 set -euo pipefail
-JAVA_HOME=$(/usr/libexec/java_home -v 21)
+JAVA_HOME=$(/usr/libexec/java_home -v 25)
 export JAVA_HOME
 export PATH="$JAVA_HOME/bin:$PATH"
 cd "$(dirname "$0")/../desktop"

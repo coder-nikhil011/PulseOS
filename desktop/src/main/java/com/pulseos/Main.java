@@ -32,7 +32,14 @@ public class Main extends Application {
             });
             engine.load(getClass().getResource("/web/index.html").toExternalForm());
 
-            primaryStage.setTitle("PulseOS — Device Health & Healing Center");
+            String osName = System.getProperty("os.name", "").toLowerCase(java.util.Locale.ROOT);
+            if (osName.contains("mac")) {
+                primaryStage.setTitle("PulseOS — macOS Device Health & Hardware Diagnostics");
+            } else if (osName.contains("win")) {
+                primaryStage.setTitle("PulseOS — Windows Device Health & Hardware Diagnostics");
+            } else {
+                primaryStage.setTitle("PulseOS — Intelligent Hardware Health & Diagnostics");
+            }
             primaryStage.setMinWidth(1000);
             primaryStage.setMinHeight(650);
             primaryStage.setResizable(true);

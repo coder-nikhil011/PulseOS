@@ -1,8 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-if [ -z "${JAVA_HOME:-}" ] || ! "$JAVA_HOME/bin/java" -version 2>&1 | grep -q '"21\.'; then
-  JAVA_HOME="$(/usr/libexec/java_home -v 21)"
+if [ -z "${JAVA_HOME:-}" ] || ! "$JAVA_HOME/bin/java" -version 2>&1 | grep -q '"25\.'; then
+  JAVA_HOME="$(/usr/libexec/java_home -v 25)"
 fi
 export JAVA_HOME
 export PATH="$JAVA_HOME/bin:$PATH"

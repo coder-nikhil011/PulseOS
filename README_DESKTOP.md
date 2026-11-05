@@ -110,6 +110,27 @@ client. The mobile interface contains phone-relevant components and
 actions only; Android permissions and device support determine which
 readings are present.
 
+### Current Desktop Telemetry Scope
+
+Desktop charts use locally stored samples, collected every five seconds
+and retained for up to 30 days. The available chart ranges are 1 minute,
+5 minutes, 15 minutes, 1 hour, 24 hours, 7 days, and 30 days. Hardware
+sensors are platform-dependent; an unavailable reading is shown as
+unavailable and is excluded from the heuristic score rather than treated
+as a normal value. The score is based on up to five available signals
+(CPU, memory, CPU temperature, filesystem capacity, and battery health)
+and is not a hardware self-test or a validated forecast.
+
+Component diagnosis compares readings with configured thresholds. It
+does not test hardware, identify root causes, or verify that a repair
+succeeded. Network diagnosis reports DNS resolution and an internet
+reachability probe; it does not manage network settings. In this build,
+host firewall and permission status, installed/default application
+management, startup registration, system-tray integration, automatic
+updates, update checks, crash uploads, and telemetry uploads are not
+implemented or queried. Their settings are disabled or reported as
+unavailable rather than displaying assumed status.
+
 ### Core Workflow
 
 ``` text
@@ -508,7 +529,7 @@ Compare Improvement
 
   Technology         Purpose
   ------------------ -----------------------------------------
-  Java 21            Core application development
+  Java 25            Core application development
   JavaFX 21          Desktop user interface
   Maven              Build and dependency management
   OSHI               Hardware and operating-system telemetry
@@ -568,7 +589,7 @@ PulseOS/
 
 ## Software Requirements
 
--   Java 21 or later
+-   Java 25 or later
 -   Maven
 -   JavaFX 21
 -   Supported desktop operating system
@@ -631,7 +652,7 @@ mvn clean package
 ## 5. Distribute the Desktop App
 
 Do not distribute the Maven project or ask users to install Java. Build
-a platform installer that bundles Java 21 and JavaFX:
+a platform installer that bundles Java 25 and JavaFX:
 
 ``` bash
 # macOS (run on macOS)

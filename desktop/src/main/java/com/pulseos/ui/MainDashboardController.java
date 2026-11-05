@@ -51,6 +51,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
+import javafx.animation.FadeTransition;
+import javafx.util.Duration;
 
 public class MainDashboardController {
     @FXML private StackPane rootPane, contentArea;
@@ -590,7 +592,14 @@ public class MainDashboardController {
     }
 
     private void swapContent(Node view, Button activeBtn) {
+        view.setOpacity(0);
         contentArea.getChildren().setAll(view);
+        
+        FadeTransition ft = new FadeTransition(Duration.millis(300), view);
+        ft.setFromValue(0);
+        ft.setToValue(1);
+        ft.play();
+
         for (Button b : new Button[]{navHealthBtn, navHardwareHealthBtn, navSmartRouterBtn, navStorageHealerBtn, navConverterBtn, navSettingsBtn}) {
             b.getStyleClass().remove("nav-tab-active");
         }

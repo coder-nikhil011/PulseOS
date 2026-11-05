@@ -40,6 +40,10 @@ public class HardwareTelemetryService {
     private volatile Consumer<List<SystemMetrics.ProcessInfo>> processListener = ignored -> {};
     private volatile Consumer<SystemMetrics> metricsListener = ignored -> {};
 
+    private volatile long lastMacBatteryFallbackTime = 0;
+    private volatile BatteryFallback cachedMacBatteryFallback = new BatteryFallback(-1, false, -1, -1);
+    private volatile boolean macBatteryProbeRunning = false;
+
     private ScheduledExecutorService coreExecutor;
     private ScheduledExecutorService processExecutor;
     private long[] previousTicks;
@@ -65,7 +69,7 @@ public class HardwareTelemetryService {
         processExecutor = Executors.newSingleThreadScheduledExecutor(
                 Thread.ofVirtual().name("pulseos-process-snapshot").factory());
 
-        // Hardware/UI values start immediately and continue every second.
+        // Hardware/UI values start immediately and continue every intervalMs.
         coreExecutor.scheduleAtFixedRate(() -> {
             if (!running) return;
             try {
@@ -73,14 +77,13 @@ public class HardwareTelemetryService {
             } catch (Exception e) {
                 System.err.println("PulseOS core telemetry error: " + e.getMessage());
             }
-        }, 0, Math.max(500, intervalMs), TimeUnit.MILLISECONDS);
+        }, 0, Math.max(1000, intervalMs), TimeUnit.MILLISECONDS);
 
-        // Process enumeration is intentionally independent. A first macOS snapshot
-        // can be slow, but it can no longer block the rest of the dashboard.
-        // Populate the router immediately, then refresh independently every 3 seconds.
+        // Process enumeration is intentionally independent.
+        // Refresh in background every 25 seconds (saves massive CPU)
         processExecutor.execute(this::refreshProcessSnapshotSafely);
         processExecutor.scheduleAtFixedRate(this::refreshProcessSnapshotSafely,
-                3, 3, TimeUnit.SECONDS);
+                5, 25, TimeUnit.SECONDS);
     }
 
     private SystemMetrics collectCoreMetrics() {
@@ -112,12 +115,12 @@ public class HardwareTelemetryService {
 
         int batteryPercent = -1;
         boolean charging = false;
-        int batteryHealthPercent = 0;
+        int batteryHealthPercent = -1;
         int batteryCycleCount = -1;
 
         // Primary source: OSHI. Some macOS versions/hardware combinations can
         // expose a PowerSource object but report an unusable remaining-capacity
-        // value. In that case, fall back to macOS's own `pmset -g batt` output.
+        // value. In that case, fall back to macOS's own `pmset -g batt` / `ioreg` output.
         try {
             List<PowerSource> sources = hardware.getPowerSources();
             double bestCharge = -1.0;
@@ -142,13 +145,13 @@ public class HardwareTelemetryService {
                 long maxCapacity = best.getMaxCapacity();
 
                 // Only trust the OSHI capacity ratio when it is internally sane.
-                // Some macOS/Apple Silicon combinations can expose tiny/odd raw
-                // capacity values; treating that as 1% health would be misleading.
                 if (designCapacity > 0 && maxCapacity > 0) {
                     double ratio = 100.0 * maxCapacity / designCapacity;
                     if (Double.isFinite(ratio) && ratio >= 20.0 && ratio <= 110.0) {
                         batteryHealthPercent = (int) Math.round(Math.min(100.0, ratio));
                     }
+                } else if (maxCapacity > 0 && maxCapacity <= 100) {
+                    batteryHealthPercent = (int) maxCapacity;
                 }
                 batteryCycleCount = best.getCycleCount();
             }
@@ -157,12 +160,30 @@ public class HardwareTelemetryService {
         }
 
         if (System.getProperty("os.name", "").toLowerCase(java.util.Locale.ROOT).contains("mac")) {
-            BatteryFallback fallback = readMacBatteryFallback();
-            if (fallback.percent >= 0) {
-                // Prefer macOS's own power-management percentage when available.
-                // This fixes Macs where the OSHI PowerSource percentage can be 0.
-                batteryPercent = fallback.percent;
-                charging = fallback.charging;
+            long now = System.currentTimeMillis();
+            // Only probe ioreg/pmset if OSHI battery reading is missing or periodically (every 30s).
+            // Spawning sub-processes every second causes massive CPU spikes.
+            if ((batteryPercent < 0 || now - lastMacBatteryFallbackTime > 30000) && !macBatteryProbeRunning) {
+                lastMacBatteryFallbackTime = now;
+                macBatteryProbeRunning = true;
+                Thread.ofVirtual().name("pulseos-mac-battery").start(() -> {
+                    try {
+                        cachedMacBatteryFallback = readMacBatteryFallback();
+                    } catch (Exception ignored) {
+                    } finally {
+                        macBatteryProbeRunning = false;
+                    }
+                });
+            }
+            if (cachedMacBatteryFallback.percent >= 0) {
+                batteryPercent = cachedMacBatteryFallback.percent;
+                charging = cachedMacBatteryFallback.charging;
+            }
+            if (cachedMacBatteryFallback.healthPercent > 0) {
+                batteryHealthPercent = cachedMacBatteryFallback.healthPercent;
+            }
+            if (cachedMacBatteryFallback.cycleCount >= 0) {
+                batteryCycleCount = cachedMacBatteryFallback.cycleCount;
             }
         }
 
@@ -174,27 +195,69 @@ public class HardwareTelemetryService {
     private static final class BatteryFallback {
         final int percent;
         final boolean charging;
-        BatteryFallback(int percent, boolean charging) {
+        final int healthPercent;
+        final int cycleCount;
+        BatteryFallback(int percent, boolean charging, int healthPercent, int cycleCount) {
             this.percent = percent;
             this.charging = charging;
+            this.healthPercent = healthPercent;
+            this.cycleCount = cycleCount;
         }
     }
 
     /**
-     * macOS fallback for battery charge state. `pmset -g batt` is backed by
-     * macOS's own power-management framework and is useful on Macs where OSHI
-     * exposes a PowerSource object but its remaining-capacity field is stale or 0.
+     * macOS fallback for battery charge, health and cycle telemetry.
+     * Uses ioreg for AppleSmartBattery directly, with pmset as backup.
      */
     private BatteryFallback readMacBatteryFallback() {
+        try {
+            Process proc = new ProcessBuilder("/usr/sbin/ioreg", "-rn", "AppleSmartBattery")
+                    .redirectErrorStream(true)
+                    .start();
+
+            boolean finished = proc.waitFor(1500, TimeUnit.MILLISECONDS);
+            if (!finished) {
+                proc.destroyForcibly();
+            } else {
+                String out = new String(proc.getInputStream().readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+                if (out.contains("AppleSmartBattery")) {
+                    var mMax = java.util.regex.Pattern.compile("\"MaxCapacity\"\\s*=\\s*(\\d+)").matcher(out);
+                    var mDesign = java.util.regex.Pattern.compile("\"DesignCapacity\"\\s*=\\s*(\\d+)").matcher(out);
+                    var mNominal = java.util.regex.Pattern.compile("\"NominalChargeCapacity\"\\s*=\\s*(\\d+)").matcher(out);
+                    var mCycles = java.util.regex.Pattern.compile("\"CycleCount\"\\s*=\\s*(\\d+)").matcher(out);
+                    var mCurrent = java.util.regex.Pattern.compile("\"CurrentCapacity\"\\s*=\\s*(\\d+)").matcher(out);
+                    var mCharging = java.util.regex.Pattern.compile("\"IsCharging\"\\s*=\\s*(Yes|No|true|false)", java.util.regex.Pattern.CASE_INSENSITIVE).matcher(out);
+
+                    int max = mMax.find() ? Integer.parseInt(mMax.group(1)) : -1;
+                    int design = mDesign.find() ? Integer.parseInt(mDesign.group(1)) : -1;
+                    int nominal = mNominal.find() ? Integer.parseInt(mNominal.group(1)) : -1;
+                    int cycles = mCycles.find() ? Integer.parseInt(mCycles.group(1)) : -1;
+                    int current = mCurrent.find() ? Integer.parseInt(mCurrent.group(1)) : -1;
+                    boolean charging = mCharging.find() && (mCharging.group(1).equalsIgnoreCase("yes") || mCharging.group(1).equalsIgnoreCase("true"));
+
+                    int health = -1;
+                    if (design > 0 && nominal > 0) {
+                        health = (int) Math.round(Math.min(100.0, 100.0 * nominal / design));
+                    } else if (max > 0 && max <= 100) {
+                        health = max;
+                    }
+
+                    if (current >= 0) {
+                        return new BatteryFallback(current, charging, health, cycles);
+                    }
+                }
+            }
+        } catch (Exception ignored) { }
+
         try {
             Process proc = new ProcessBuilder("/usr/bin/pmset", "-g", "batt")
                     .redirectErrorStream(true)
                     .start();
 
-            boolean finished = proc.waitFor(2, TimeUnit.SECONDS);
+            boolean finished = proc.waitFor(1200, TimeUnit.MILLISECONDS);
             if (!finished) {
                 proc.destroyForcibly();
-                return new BatteryFallback(-1, false);
+                return new BatteryFallback(-1, false, -1, -1);
             }
             String output = new String(proc.getInputStream().readAllBytes(),
                     java.nio.charset.StandardCharsets.UTF_8);
@@ -211,10 +274,10 @@ public class HardwareTelemetryService {
                     || lower.contains("charged;")
                     || lower.contains("ac attached;");
 
-            return new BatteryFallback(percent, charging);
+            return new BatteryFallback(percent, charging, -1, -1);
         } catch (Exception e) {
             System.err.println("PulseOS macOS battery fallback unavailable: " + e.getMessage());
-            return new BatteryFallback(-1, false);
+            return new BatteryFallback(-1, false, -1, -1);
         }
     }
 
@@ -248,11 +311,21 @@ public class HardwareTelemetryService {
                         p.getName(), cpu, p.getPrivateResidentMemory(), p.getProcessID(), p.getThreadCount()));
             }
 
-            cachedAllProcesses = List.copyOf(infos);
-            cachedTopByCpu = infos.stream()
+            // Sort and cap to top 100 drainers to eliminate memory bloat
+            infos.sort((a, b) -> {
+                int c = Double.compare(b.cpuPercent(), a.cpuPercent());
+                if (c != 0) return c;
+                return Double.compare(b.getRamMb(), a.getRamMb());
+            });
+            List<SystemMetrics.ProcessInfo> cappedInfos = infos.size() > 100
+                    ? new ArrayList<>(infos.subList(0, 100))
+                    : infos;
+
+            cachedAllProcesses = List.copyOf(cappedInfos);
+            cachedTopByCpu = cappedInfos.stream()
                     .sorted(Comparator.comparingDouble(SystemMetrics.ProcessInfo::cpuPercent).reversed())
                     .limit(8).collect(Collectors.toList());
-            cachedTopByRam = infos.stream()
+            cachedTopByRam = cappedInfos.stream()
                     .sorted(Comparator.comparingDouble(SystemMetrics.ProcessInfo::getRamMb).reversed())
                     .limit(8).collect(Collectors.toList());
             processSnapshot = now;

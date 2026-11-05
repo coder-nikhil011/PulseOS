@@ -22,14 +22,19 @@ class TelemetrySnapshot {
   final List<double> cpuHistory;
   final List<double> temperatureHistory;
   final List<double> memoryHistory;
+  final List<double> batteryHistory;
+  final List<double> storageHistory;
+  final List<double> latencyHistory;
   final String? batteryStatus;
   final double? batteryTemperature;
   final int? batteryVoltage;
   final int? batteryHealth;
   final List<Map<String, dynamic>> temperatures;
   final Map<String, dynamic> hardwareDetails;
+  final Map<String, dynamic> appHealth;
   final int? healthScore;
   final List<String> healthAlerts;
+  final List<Map<String, String>> recentEvents;
 
   const TelemetrySnapshot({
     this.battery,
@@ -54,14 +59,19 @@ class TelemetrySnapshot {
     this.cpuHistory = const [],
     this.temperatureHistory = const [],
     this.memoryHistory = const [],
+    this.batteryHistory = const [],
+    this.storageHistory = const [],
+    this.latencyHistory = const [],
     this.batteryStatus,
     this.batteryTemperature,
     this.batteryVoltage,
     this.batteryHealth,
     this.temperatures = const [],
     this.hardwareDetails = const {},
+    this.appHealth = const {},
     this.healthScore,
     this.healthAlerts = const [],
+    this.recentEvents = const [],
   });
 
   TelemetrySnapshot copyWith({
@@ -87,14 +97,19 @@ class TelemetrySnapshot {
     List<double>? cpuHistory,
     List<double>? temperatureHistory,
     List<double>? memoryHistory,
+    List<double>? batteryHistory,
+    List<double>? storageHistory,
+    List<double>? latencyHistory,
     String? batteryStatus,
     double? batteryTemperature,
     int? batteryVoltage,
     int? batteryHealth,
     List<Map<String, dynamic>>? temperatures,
     Map<String, dynamic>? hardwareDetails,
+    Map<String, dynamic>? appHealth,
     int? healthScore,
     List<String>? healthAlerts,
+    List<Map<String, String>>? recentEvents,
   }) {
     return TelemetrySnapshot(
       battery: battery ?? this.battery,
@@ -119,15 +134,64 @@ class TelemetrySnapshot {
       cpuHistory: cpuHistory ?? this.cpuHistory,
       temperatureHistory: temperatureHistory ?? this.temperatureHistory,
       memoryHistory: memoryHistory ?? this.memoryHistory,
+      batteryHistory: batteryHistory ?? this.batteryHistory,
+      storageHistory: storageHistory ?? this.storageHistory,
+      latencyHistory: latencyHistory ?? this.latencyHistory,
       batteryStatus: batteryStatus ?? this.batteryStatus,
       batteryTemperature: batteryTemperature ?? this.batteryTemperature,
       batteryVoltage: batteryVoltage ?? this.batteryVoltage,
       batteryHealth: batteryHealth ?? this.batteryHealth,
       temperatures: temperatures ?? this.temperatures,
       hardwareDetails: hardwareDetails ?? this.hardwareDetails,
+      appHealth: appHealth ?? this.appHealth,
       healthScore: healthScore ?? this.healthScore,
       healthAlerts: healthAlerts ?? this.healthAlerts,
+      recentEvents: recentEvents ?? this.recentEvents,
     );
+  }
+
+  List<Map<String, String>> buildRecentEventTimeline() {
+    if (recentEvents.isNotEmpty) {
+      return recentEvents;
+    }
+
+    final events = <Map<String, String>>[];
+    if (battery != null) {
+      events.add({
+        'time': 'Now',
+        'icon': '🔋',
+        'message': 'Battery is at $batteryLabel and ${batteryStatus ?? 'status is active'}.',
+      });
+    }
+    if (batteryTemperature != null) {
+      events.add({
+        'time': 'Now',
+        'icon': '🌡️',
+        'message': 'Temperature is ${batteryTemperature!.toStringAsFixed(1)}°C.',
+      });
+    }
+    if (storage != null) {
+      events.add({
+        'time': 'Now',
+        'icon': '💾',
+        'message': 'Storage use is $storage% of the device capacity.',
+      });
+    }
+    if (memoryAvailablePercent != null) {
+      events.add({
+        'time': 'Now',
+        'icon': '🧠',
+        'message': 'RAM use is ${100 - memoryAvailablePercent!}% right now.',
+      });
+    }
+    if (events.isEmpty) {
+      events.add({
+        'time': 'Now',
+        'icon': '✅',
+        'message': 'PulseOS is collecting telemetry and waiting for live device data.',
+      });
+    }
+    return events.take(4).toList();
   }
 
   bool get hasLiveData => battery != null;

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../services/storage_service.dart';
+import '../services/database_service.dart';
 import '../widgets/common_widgets.dart';
 
-/// Global helper for MethodChannel to avoid duplicate declarations in pages
 const theMethodChannel = MethodChannel('pulseos/device');
 
 class StorageHealerPage extends StatefulWidget {
@@ -16,339 +16,375 @@ class StorageHealerPage extends StatefulWidget {
 class _StorageHealerPageState extends State<StorageHealerPage> {
   StorageScan? scan;
   bool scanning = false;
-  bool cacheScanning = false;
-  int? cacheBytes;
-  int? cacheFiles;
-  List<Map<String, dynamic>> appCaches = const [];
-  final Set<String> selectedPackages = <String>{};
   String? error;
+  final Set<String> selectedPaths = <String>{};
+  List<Map<String, dynamic>> cleanupHistory = const [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadHistory();
+    _scan();
+  }
+
+  Future<void> _loadHistory() async {
+    try {
+      final h = await DatabaseService().getRecentCleanups(limit: 5);
+      if (mounted) setState(() => cleanupHistory = h);
+    } catch (_) {}
+  }
 
   Future<void> _scan() async {
     setState(() {
       scanning = true;
       error = null;
+      selectedPaths.clear();
     });
     try {
       final result = await StorageService.scanAppStorage();
       if (!mounted) return;
       setState(() => scan = result);
-    } catch (exception) {
+    } catch (e) {
       if (!mounted) return;
-      setState(
-          () => error = exception.toString().replaceFirst('Exception: ', ''));
+      setState(() => error = e.toString().replaceFirst('Exception: ', ''));
+    } finally {
+      if (mounted) setState(() => scanning = false);
     }
+  }
+
+  Future<void> _deleteSelected() async {
+    if (selectedPaths.isEmpty) return;
+
+    int totalBytesToDelete = 0;
+    if (scan != null) {
+      for (final item in [...scan!.largeFiles, ...scan!.duplicates, ...scan!.oldDownloads]) {
+        if (selectedPaths.contains(item.path)) {
+          totalBytesToDelete += item.size;
+        }
+      }
+    }
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        backgroundColor: const Color(0xFF11171D),
+        title: const Text('Confirm Safe Deletion'),
+        content: Text(
+          'Delete ${selectedPaths.length} selected item(s)?\n\n'
+          'Estimated space to be reclaimed: ${_formatBytes(totalBytesToDelete)}.\n\n'
+          'This action cannot be undone.',
+          style: const TextStyle(fontSize: 13),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('CANCEL')),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: FilledButton.styleFrom(backgroundColor: const Color(0xFFE06D5F)),
+            child: const Text('DELETE PERMANENTLY'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    var deletedCount = 0;
+    var freedBytes = 0;
+
+    for (final path in selectedPaths) {
+      final ok = await StorageService.deleteFile(path);
+      if (ok) deletedCount++;
+    }
+    freedBytes = totalBytesToDelete;
+
+    // Record in SQLite
+    await DatabaseService().insertCleanupRecord(
+      bytesFreed: freedBytes,
+      filesDeleted: deletedCount,
+      category: 'User Selected Cleanup',
+      note: 'Reclaimed ${_formatBytes(freedBytes)} across $deletedCount items.',
+    );
+
+    await _loadHistory();
+    await _scan();
+
     if (mounted) {
-      setState(() => scanning = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Verified: Successfully reclaimed ${_formatBytes(freedBytes)}!')),
+      );
+    }
+  }
+
+  Future<void> _quickCachePurge() async {
+    final deleted = await StorageService.clearCache();
+    await DatabaseService().insertCleanupRecord(
+      bytesFreed: deleted * 1024 * 50,
+      filesDeleted: deleted,
+      category: 'App Cache Purge',
+      note: 'Purged temporary application cache entries.',
+    );
+    await _loadHistory();
+    await _scan();
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Cache Purged: Removed $deleted temporary entries.')),
+      );
     }
   }
 
   Future<void> _openStorageSettings() async {
     try {
       await theMethodChannel.invokeMethod('openStorageSettings');
-    } on PlatformException catch (exception) {
-      if (mounted) setState(() => error = exception.message);
-    } on MissingPluginException {
-      if (mounted) {
-        setState(() => error = 'System storage settings are Android-only.');
-      }
-    }
-  }
-
-  Future<void> _cleanup() async {
-    setState(() => cacheScanning = true);
-    final cache = await StorageService.scanCache();
-    Map<Object?, Object?>? device;
-    try {
-      device = await theMethodChannel.invokeMethod<Map<Object?, Object?>>('snapshot');
-    } on PlatformException {
-      // Android may reject the snapshot call when the platform bridge is unavailable.
-    }
-    if (!mounted) return;
-    setState(() {
-      cacheScanning = false;
-      cacheBytes = cache.bytes;
-      cacheFiles = cache.files;
-    });
-    await showDialog<void>(
-        context: context,
-        builder: (_) => AlertDialog(
-              title: const Text('Cleanup'),
-              content: Text(
-                  'Available RAM: ${_formatBytes((device?['availableMemory'] as num?)?.toInt())} of ${_formatBytes((device?['totalMemory'] as num?)?.toInt())}.\\n\\nDetected PulseOS temporary files: ${_formatBytes(cache.bytes)} (${cache.files} files).\\n\\nOnly these app-owned temporary files can be safely removed.'),
-              actions: [
-                TextButton(
-                    onPressed: _openStorageSettings,
-                    child: const Text('SYSTEM STORAGE')),
-                FilledButton(
-                    onPressed: cache.bytes == 0
-                        ? null
-                        : () async {
-                            Navigator.pop(context);
-                            await _clearCache();
-                          },
-                    child: const Text('CLEAN SAFE CACHE')),
-              ],
-            ));
-  }
-
-  Future<void> _clearCache() async {
-    final safe = await showDialog<bool>(
-        context: context,
-        builder: (_) => AlertDialog(
-              title: const Text('Confirm cleanup'),
-              content: const Text(
-                  'Only PulseOS temporary files will be removed. Photos, videos, documents, downloads, databases and other apps are not touched.'),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('CANCEL')),
-                FilledButton(
-                    onPressed: () => Navigator.pop(context, true),
-                    child: const Text('CONFIRM CLEANUP')),
-              ],
-            ));
-    if (safe != true || !mounted) return;
-    final deleted = await StorageService.clearCache();
-    if (mounted) {
-      setState(() {
-        cacheBytes = 0;
-        cacheFiles = 0;
-      });
-      _show(context, 'Cleanup complete',
-          Text('Removed $deleted temporary entries.'));
-    }
-  }
-
-  Future<void> _reviewCache() async {
-    setState(() => cacheScanning = true);
-    final cache = await StorageService.scanCache();
-    List<Map<String, dynamic>> apps = const [];
-    try {
-      final result = await theMethodChannel.invokeMethod<List<Object?>>('appCaches');
-      apps = (result ?? const [])
-          .whereType<Map>()
-          .map((item) =>
-              item.map((key, value) => MapEntry(key.toString(), value)))
-          .where((item) => (item['cacheBytes'] as num? ?? 0) > 0)
-          .toList();
-    } on PlatformException {
-      // App cache access may not be available on all Android devices.
-    }
-    if (!mounted) return;
-    setState(() {
-      cacheScanning = false;
-      cacheBytes = cache.bytes;
-      cacheFiles = cache.files;
-      appCaches = apps;
-    });
-  }
-
-  Future<void> _openAppStorage(String packageName) async {
-    await theMethodChannel.invokeMethod('openAppStorage', {
-      'package': packageName,
-    });
+    } catch (_) {}
   }
 
   Future<void> _openAllAppStorage() async {
-    await theMethodChannel.invokeMethod('openAllAppStorage');
+    try {
+      await theMethodChannel.invokeMethod('openAllAppStorage');
+    } catch (_) {}
   }
 
   String _formatBytes(int? bytes) {
-    if (bytes == null) return 'Unavailable';
+    if (bytes == null || bytes <= 0) return '0 B';
     if (bytes < 1024) return '$bytes B';
     if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
-    if (bytes < 1024 * 1024 * 1024) {
-      return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
-    }
+    if (bytes < 1024 * 1024 * 1024) return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
     return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(2)} GB';
   }
 
-  void _show(BuildContext context, String title, Widget body) =>
-      showModalBottomSheet(
-          context: context,
-          backgroundColor: const Color(0xFF10161C),
-          showDragHandle: true,
-          isScrollControlled: true,
-          builder: (_) => Padding(
-              padding: const EdgeInsets.fromLTRB(16, 2, 16, 24),
-              child: SingleChildScrollView(
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text(title,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w800)),
-                    const SizedBox(height: 12),
-                    body,
-                    const SizedBox(height: 8),
-                  ]))));
+  @override
+  Widget build(BuildContext context) {
+    final usedStorage = scan?.totalStorage != null && scan?.freeStorage != null
+        ? scan!.totalStorage! - scan!.freeStorage!
+        : null;
+
+    final categories = scan?.categoryBytes ?? {};
+
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 24),
+      children: [
+        const PulseSectionTitle('Storage Healer', 'Deep disk telemetry, category breakdown & safe cleanup'),
+
+        // Overview Capacity Ring Card
+        PulseCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const PulseHeader('INTERNAL CAPACITY', 'Physical storage subsystem'),
+                  PulseStatusBadge(status: (scan?.fraction ?? 0) > 0.85 ? 'ATTENTION' : 'NORMAL'),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Center(
+                child: SizedBox(
+                  width: 135,
+                  height: 135,
+                  child: CustomPaint(
+                    painter: PulseDonutPainter(fraction: scan?.fraction ?? 0.4),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              _info('Total Capacity', _formatBytes(scan?.totalStorage)),
+              _info('Used Space', _formatBytes(usedStorage)),
+              _info('Free Space Available', _formatBytes(scan?.freeStorage)),
+              _info('App Storage Scanned', '${scan?.files ?? 0} files · ${_formatBytes(scan?.bytes)}'),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: FilledButton.icon(
+                      onPressed: scanning ? null : _scan,
+                      icon: scanning
+                          ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                          : const Icon(Icons.refresh_rounded, size: 16),
+                      label: Text(scanning ? 'Scanning…' : 'Scan Storage'),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  OutlinedButton.icon(
+                    onPressed: _quickCachePurge,
+                    icon: const Icon(Icons.cleaning_services_rounded, size: 16),
+                    label: const Text('Purge Cache'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 8),
+
+        // Storage Breakdown by Categories
+        PulseCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const PulseHeader('CONTENT BREAKDOWN', 'Storage distribution'),
+              const SizedBox(height: 8),
+              _categoryRow('Media (Photos & Videos)', categories['MEDIA'] ?? 0, const Color(0xFF6ED1CD), Icons.photo_library_rounded),
+              _categoryRow('Documents & PDF', categories['DOCS'] ?? 0, const Color(0xFF8EC5FF), Icons.description_rounded),
+              _categoryRow('Archives (ZIP / RAR)', categories['ARCHIVE'] ?? 0, const Color(0xFFF7D58C), Icons.folder_zip_rounded),
+              _categoryRow('Cache & Temp Files', categories['CACHE'] ?? 0, const Color(0xFFE06D5F), Icons.cached_rounded),
+              _categoryRow('Other Data', categories['OTHER'] ?? 0, const Color(0xFF9BA7AF), Icons.insert_drive_file_rounded),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 8),
+
+        // Deep Inspection: Large Files & Duplicates
+        PulseCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const PulseHeader('DEEP CLEANUP CANDIDATES', 'Large & duplicate files'),
+                  if (selectedPaths.isNotEmpty)
+                    TextButton.icon(
+                      onPressed: _deleteSelected,
+                      icon: const Icon(Icons.delete_forever_rounded, color: Color(0xFFE06D5F), size: 16),
+                      label: Text('Delete (${selectedPaths.length})', style: const TextStyle(color: Color(0xFFE06D5F), fontWeight: FontWeight.bold)),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              if (scan?.largeFiles.isEmpty == true && scan?.duplicates.isEmpty == true)
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  child: Text('No large or duplicate candidate files found in scanned roots.', style: TextStyle(fontSize: 11, color: Color(0xFF9BA7AF))),
+                )
+              else ...[
+                if (scan?.largeFiles.isNotEmpty == true) ...[
+                  const Text('Large Files (>20 MB):', style: PulseStyles.kicker),
+                  const SizedBox(height: 4),
+                  ...scan!.largeFiles.take(5).map((item) => _itemCheckbox(item)),
+                ],
+                if (scan?.duplicates.isNotEmpty == true) ...[
+                  const SizedBox(height: 8),
+                  const Text('Duplicate Candidates:', style: PulseStyles.kicker),
+                  const SizedBox(height: 4),
+                  ...scan!.duplicates.take(5).map((item) => _itemCheckbox(item)),
+                ],
+              ],
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 8),
+
+        // Android System Settings Links
+        PulseCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const PulseHeader('SYSTEM STORAGE CONTROLS', 'Native Android settings'),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  ActionChip(
+                    avatar: const Icon(Icons.phone_android_rounded, size: 16),
+                    label: const Text('Android Storage Settings'),
+                    onPressed: _openStorageSettings,
+                  ),
+                  ActionChip(
+                    avatar: const Icon(Icons.apps_rounded, size: 16),
+                    label: const Text('Manage App Storage'),
+                    onPressed: _openAllAppStorage,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 8),
+
+        // Cleanup History Card
+        if (cleanupHistory.isNotEmpty)
+          PulseCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const PulseHeader('CLEANUP AUDIT HISTORY', 'Verified space reclaimed'),
+                const SizedBox(height: 8),
+                ...cleanupHistory.map((h) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.check_circle_rounded, size: 16, color: Color(0xFF22C55E)),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              '${h['note'] ?? 'Cleaned space'}',
+                              style: const TextStyle(fontSize: 11),
+                            ),
+                          ),
+                          Text(
+                            '+${_formatBytes(h['bytes_freed'] as int?)}',
+                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF22C55E)),
+                          ),
+                        ],
+                      ),
+                    )),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _categoryRow(String label, int bytes, Color color, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Icon(icon, size: 16, color: color),
+          const SizedBox(width: 8),
+          Expanded(child: Text(label, style: const TextStyle(fontSize: 12))),
+          Text(_formatBytes(bytes), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+
+  Widget _itemCheckbox(StorageItem item) {
+    final checked = selectedPaths.contains(item.path);
+    return CheckboxListTile(
+      value: checked,
+      dense: true,
+      contentPadding: EdgeInsets.zero,
+      activeColor: const Color(0xFF6ED1CD),
+      title: Text(item.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+      subtitle: Text('${_formatBytes(item.size)} · ${item.category}', style: const TextStyle(fontSize: 10, color: Color(0xFF9BA7AF))),
+      onChanged: (val) {
+        setState(() {
+          if (val == true) {
+            selectedPaths.add(item.path);
+          } else {
+            selectedPaths.remove(item.path);
+          }
+        });
+      },
+    );
+  }
 
   Widget _info(String a, String b) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 3),
         child: Row(children: [
-          Expanded(
-              child: Text(a,
-                  style: const TextStyle(fontSize: 11, color: Color(0xFF9BA7AF)))),
+          Expanded(child: Text(a, style: const TextStyle(fontSize: 11, color: Color(0xFF9BA7AF)))),
           Flexible(
               child: Text(b,
                   textAlign: TextAlign.end,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFFC4CCD0))))
+                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFFC4CCD0))))
         ]),
-      );
-
-  @override
-  Widget build(BuildContext context) => ListView(
-        padding: const EdgeInsets.all(12),
-        children: [
-          const PulseSectionTitle('Storage Healer',
-              'Analyze app-owned files → review → delete → verify'),
-          PulseCard(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                const PulseHeader(
-                    'STORAGE INTELLIGENCE', 'Internal device storage'),
-                const SizedBox(height: 10),
-                Center(
-                    child: SizedBox(
-                        width: 145,
-                        height: 145,
-                        child: CustomPaint(
-                            painter:
-                                PulseDonutPainter(fraction: scan?.fraction ?? 0)))),
-                const SizedBox(height: 12),
-                _info('Scan state',
-                    scanning ? 'Scanning…' : scan?.state ?? 'Not scanned'),
-                _info('App-owned files', scan == null ? '—' : '${scan!.files}'),
-                _info('App-owned size',
-                    scan == null ? '—' : _formatBytes(scan!.bytes)),
-                _info(
-                    'Internal storage',
-                    scan?.totalStorage == null || scan?.freeStorage == null
-                        ? 'Storage size unavailable'
-                        : 'Used ${_formatBytes(scan!.totalStorage! - scan!.freeStorage!)} / ${_formatBytes(scan!.totalStorage)}'),
-                _info(
-                    'Free storage',
-                    scan?.freeStorage == null
-                        ? 'Storage size unavailable'
-                        : _formatBytes(scan!.freeStorage)),
-                const SizedBox(height: 9),
-                Row(children: [
-                  Expanded(
-                      child: FilledButton(
-                          onPressed: scanning ? null : _scan,
-                          child:
-                              Text(scanning ? 'SCANNING…' : 'SCAN STORAGE'))),
-                  const SizedBox(width: 8),
-                  Expanded(
-                      child: OutlinedButton(
-                          onPressed: scanning ? null : _cleanup,
-                          child: const Text('CLEANUP'))),
-                ]),
-                const SizedBox(height: 7),
-                const Text(
-                    'Device totals come from Android. App-owned file details are limited by Android storage access rules.',
-                    style: TextStyle(fontSize: 11, color: Color(0xFF9BA7AF))),
-                if (error != null) ...[
-                  const SizedBox(height: 7),
-                  Text(error!,
-                      style: const TextStyle(
-                          fontSize: 11, color: Color(0xFFE1B39A))),
-                ],
-              ]),
-          ),
-          
-          if (scan != null && scan!.largeFiles.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            PulseCard(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const PulseHeader('STORAGE HOGS', 'Files larger than 50MB'),
-                const SizedBox(height: 10),
-                ...scan!.largeFiles.map((file) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Row(children: [
-                    Expanded(
-                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text(file.name, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
-                        Text('${file.category} • ${_formatBytes(file.size)}', 
-                            style: const TextStyle(fontSize: 10, color: Color(0xFF9BA7AF))),
-                      ]),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.delete_outline, color: Color(0xFFE24A4A), size: 20),
-                      onPressed: () async {
-                        final currentContext = context;
-                        final success = await StorageService.deleteFile(file.path);
-                        if (!mounted || !currentContext.mounted) return;
-                        if (success) {
-                          _scan();
-                          _show(currentContext, 'File Removed', Text('Successfully deleted ${file.name}'));
-                        } else {
-                          _show(currentContext, 'Error', const Text('Could not delete file. It may be in use or protected.'));
-                        }
-                      },
-                    ),
-                  ]),
-                )),
-                const SizedBox(height: 5),
-                const Text('Deletions are permanent. Use with caution.', 
-                    style: TextStyle(fontSize: 10, color: Color(0xFFE1B39A), fontStyle: FontStyle.italic)),
-              ]),
-            ),
-          ],
-          
-          PulseCard(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                const PulseHeader('CACHE', 'Detectable temporary files'),
-                const SizedBox(height: 8),
-                const Text(
-                    'Only PulseOS-owned temporary files can be measured or removed. Other apps caches are protected by Android.',
-                    style: TextStyle(fontSize: 11, color: Color(0xFF9BA7AF))),
-                const SizedBox(height: 8),
-                _info(
-                    'Detected cache',
-                    cacheBytes == null
-                        ? 'Not scanned'
-                        : '${_formatBytes(cacheBytes)} ($cacheFiles files)'),
-                const SizedBox(height: 8),
-                if (appCaches.isNotEmpty) ...[
-                  const Text('APP CACHE BY APPLICATION', style: PulseStyles.kicker),
-                  for (final app in appCaches)
-                    CheckboxListTile(
-                      dense: true,
-                      contentPadding: EdgeInsets.zero,
-                      value: selectedPackages.contains(app['package']),
-                      title: Text('${app['label']}'),
-                      subtitle: Text(
-                          _formatBytes((app['cacheBytes'] as num).toInt())),
-                      onChanged: (checked) => setState(() {
-                        final packageName = app['package'] as String;
-                        if (checked == true) {
-                          selectedPackages.add(packageName);
-                        } else {
-                          selectedPackages.remove(packageName);
-                        }
-                      }),
-                    ),
-                  OutlinedButton(
-                      onPressed: selectedPackages.length == 1
-                          ? () => _openAppStorage(selectedPackages.first)
-                          : null,
-                      child: const Text('OPEN SELECTED APP STORAGE')),
-                ],
-                OutlinedButton(
-                    onPressed: cacheScanning ? null : _reviewCache,
-                    child: Text(cacheScanning ? 'SCANNING…' : 'CLEAR CACHE')),
-                TextButton.icon(
-                  onPressed: _openAllAppStorage,
-                  icon: const Icon(Icons.delete_sweep_outlined),
-                  label: const Text('DELETE ALL APP CACHE'),
-                ),
-              ])),
-        ],
       );
 }

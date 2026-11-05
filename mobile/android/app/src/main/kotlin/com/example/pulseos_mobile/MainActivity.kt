@@ -19,15 +19,19 @@ import android.media.AudioManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Vibrator
+import android.telephony.TelephonyManager
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import android.app.usage.UsageStatsManager
 import android.app.usage.UsageEvents
 import android.os.BatteryManager
+import androidx.core.content.ContextCompat
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.embedding.android.FlutterActivity
 import java.util.concurrent.TimeUnit
+import java.net.InetSocketAddress
+import java.net.Socket
 
 class MainActivity : FlutterActivity() {
 	private val channelName = "pulseos/device"
@@ -35,6 +39,8 @@ class MainActivity : FlutterActivity() {
 	private var previousCpuIdle = 0L
 	private val previousProcessTicks = mutableMapOf<Int, Long>()
 	private var previousProcessTotal = 0L
+
+	private fun isMonitoringServiceRunning(): Boolean = PulseMonitoringService.isRunning
 
 	override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
 		super.configureFlutterEngine(flutterEngine)
@@ -46,6 +52,8 @@ class MainActivity : FlutterActivity() {
 					"usageStats" -> result.success(usageStats())
 					"processes" -> result.success(processes())
 					"appCaches" -> result.success(appCaches())
+					"storageIntel" -> result.success(storageIntel())
+					"networkDiagnostics" -> result.success(networkDiagnostics())
 					"openPhoneSetting" -> {
 						result.success(openPhoneSetting(call.argument<String>("setting") ?: ""))
 					}
@@ -62,6 +70,14 @@ class MainActivity : FlutterActivity() {
 					}
 					"openAllAppStorage" -> {
 						startActivity(Intent(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS))
+						result.success(true)
+					}
+					"startMonitoring" -> {
+						PulseMonitoringService.startMonitoring(this)
+						result.success(true)
+					}
+					"stopMonitoring" -> {
+						PulseMonitoringService.stopMonitoring(this)
 						result.success(true)
 					}
 					else -> result.notImplemented()
@@ -90,7 +106,7 @@ class MainActivity : FlutterActivity() {
 			"security" -> Intent(Settings.ACTION_SECURITY_SETTINGS)
 			"nfc" -> Intent(Settings.ACTION_NFC_SETTINGS)
 			"date_time" -> Intent(Settings.ACTION_DATE_SETTINGS)
-			"language" -> Intent(Settings.ACTION_INPUT_METHOD_SETTINGS)
+			"language" -> Intent(Settings.ACTION_LOCALE_SETTINGS)
 			"accessibility" -> Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
 			else -> return false
 		}
@@ -130,7 +146,40 @@ class MainActivity : FlutterActivity() {
 			"batteryVoltage" to (battery?.getIntExtra(BatteryManager.EXTRA_VOLTAGE, -1) ?: -1),
 			"batteryHealth" to (battery?.getIntExtra(BatteryManager.EXTRA_HEALTH, -1) ?: -1),
 			"temperatures" to emptyList<Map<String, Any>>(),
+			"appHealth" to appHealth(),
 			"hardware" to hardwareSnapshot(),
+		)
+	}
+
+	private fun appHealth(): Map<String, Any> {
+		val appOps = getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+		val usageAllowed = appOps.checkOpNoThrow(
+			AppOpsManager.OPSTR_GET_USAGE_STATS,
+			android.os.Process.myUid(),
+			packageName,
+		) == AppOpsManager.MODE_ALLOWED
+		val notificationsEnabled = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+			ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) ==
+				PackageManager.PERMISSION_GRANTED
+		} else true
+		val storageAccess = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+			ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_MEDIA_IMAGES) ==
+				PackageManager.PERMISSION_GRANTED ||
+				ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) ==
+					PackageManager.PERMISSION_GRANTED
+		} else true
+		val powerManager = getSystemService(Context.POWER_SERVICE) as android.os.PowerManager
+		return mapOf(
+			"usageStatsAllowed" to usageAllowed,
+			"notificationsEnabled" to notificationsEnabled,
+			"storageAccess" to storageAccess,
+			"batterySaver" to powerManager.isPowerSaveMode,
+			"backgroundMonitoring" to isMonitoringServiceRunning(),
+			"summary" to listOf(
+				"Usage stats: ${if (usageAllowed) "enabled" else "disabled"}",
+				"Notifications: ${if (notificationsEnabled) "enabled" else "blocked"}",
+				"Storage access: ${if (storageAccess) "available" else "restricted"}",
+			),
 		)
 	}
 
@@ -160,8 +209,10 @@ class MainActivity : FlutterActivity() {
 		val locationManager = getSystemService(Context.LOCATION_SERVICE) as android.location.LocationManager
 		val nfcAdapter = (getSystemService(Context.NFC_SERVICE) as? android.nfc.NfcManager)?.defaultAdapter
 		val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+		val networkDiagnostics = networkDiagnostics()
 
 		return mapOf(
+			"networkLatencyMs" to (networkDiagnostics["latencyMs"] as? Number)?.toLong(),
 			"display" to mapOf(
 				"widthPixels" to displaySize.x,
 				"heightPixels" to displaySize.y,
@@ -294,8 +345,129 @@ class MainActivity : FlutterActivity() {
 					"cacheBytes" to stats.cacheBytes,
 				)
 			}
-			.sortedByDescending { it["cacheBytes"] as Long }
+			.sortedByDescending { (it["cacheBytes"] as? Number)?.toLong() ?: 0L }
 			.take(50)
+	}
+
+	private fun networkDiagnostics(): Map<String, Any> {
+		val connectivity = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+		val network = connectivity.activeNetwork
+		val caps = network?.let(connectivity::getNetworkCapabilities)
+		val telephony = getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
+		val wifiManager = getSystemService(Context.WIFI_SERVICE) as? android.net.wifi.WifiManager
+		val transport = when {
+			caps?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true -> "Wi‑Fi"
+			caps?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true -> "Mobile data"
+			caps?.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) == true -> "Ethernet"
+			else -> "Unavailable"
+		}
+		val wifiRssi = wifiManager?.connectionInfo?.rssi
+		val signalLevel = wifiRssi?.let { rssi ->
+			when {
+				rssi >= -50 -> 4
+				rssi >= -60 -> 3
+				rssi >= -67 -> 2
+				rssi >= -70 -> 1
+				else -> 0
+			}
+		}
+		val signalQuality = when (signalLevel) {
+			null -> "Unavailable"
+			0 -> "Very weak"
+			1 -> "Weak"
+			2 -> "Fair"
+			3 -> "Good"
+			4 -> "Strong"
+			else -> "Unavailable"
+		}
+		val latencyMs = measureNetworkLatency()
+		return mapOf(
+			"transport" to transport,
+			"connected" to (caps?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true),
+			"validated" to (caps?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) == true),
+			"roaming" to (telephony?.isNetworkRoaming == true),
+			"signalLevel" to (signalLevel ?: "Unavailable"),
+			"signalQuality" to signalQuality,
+			"mobileDataEnabled" to (telephony?.dataState == TelephonyManager.DATA_CONNECTED),
+			"state" to (connectivity.activeNetworkInfo?.state?.name?.toString() ?: "UNKNOWN"),
+			"latencyMs" to (latencyMs ?: "Unavailable"),
+		)
+	}
+
+	private fun measureNetworkLatency(): Long? {
+		return runCatching {
+			val start = System.nanoTime()
+			Socket().use { socket ->
+				socket.connect(InetSocketAddress("1.1.1.1", 53), 1500)
+			}
+			((System.nanoTime() - start) / 1_000_000L).coerceAtLeast(1L)
+		}.getOrNull()
+	}
+
+	private fun storageIntel(): Map<String, Any> {
+		val roots = mutableListOf<java.io.File>()
+		listOfNotNull(
+			cacheDir,
+			filesDir,
+			codeCacheDir,
+			*getExternalFilesDirs(null).filterNotNull().toTypedArray(),
+		).forEach { roots.add(it) }
+		listOfNotNull(
+			Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+			Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+			Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES),
+			Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM),
+		).forEach { roots.add(it) }
+
+		val seen = mutableSetOf<String>()
+		var files = 0
+		var bytes = 0L
+		val samples = mutableListOf<Map<String, Any>>()
+		for (root in roots.distinctBy { it.absolutePath }) {
+			if (!root.exists() || root.absolutePath in seen) continue
+			seen.add(root.absolutePath)
+			walkStorageDir(root, 0, 2) { file ->
+				if (!file.isFile) return@walkStorageDir
+				files += 1
+				bytes += file.length()
+				if (samples.size < 20 && file.length() > 0L) {
+					samples.add(mapOf(
+						"path" to file.absolutePath,
+						"bytes" to file.length(),
+						"name" to file.name,
+					))
+				}
+			}
+		}
+		return mapOf(
+			"files" to files,
+			"bytes" to bytes,
+			"scope" to "app-owned and accessible public media/download roots",
+			"limited" to true,
+			"samples" to samples.sortedByDescending { (it["bytes"] as Number).toLong() },
+		)
+	}
+
+	private fun walkStorageDir(
+		root: java.io.File,
+		depth: Int,
+		maxDepth: Int,
+		onFile: (java.io.File) -> Unit,
+	) {
+		if (!root.exists()) return
+		if (root.isFile) {
+			onFile(root)
+			return
+		}
+		if (depth >= maxDepth) return
+		val entries = root.listFiles() ?: return
+		for (entry in entries) {
+			if (entry.isDirectory) {
+				walkStorageDir(entry, depth + 1, maxDepth, onFile)
+			} else {
+				onFile(entry)
+			}
+		}
 	}
 
 	private fun usageStats(): Map<String, Any> {

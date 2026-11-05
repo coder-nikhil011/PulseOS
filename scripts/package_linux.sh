@@ -6,8 +6,8 @@ cd "$ROOT/desktop"
 APP_VERSION="${PULSEOS_VERSION:-1.0.8}"
 APP_VERSION="${APP_VERSION#v}"
 
-if ! command -v jpackage >/dev/null 2>&1; then
-  echo "JDK 21 is required: jpackage was not found." >&2
+if ! command -v jpackage >/dev/null 2>&1 || ! java -version 2>&1 | grep -q '"25\.'; then
+  echo "JDK 25 is required: install a Java 25 JDK with jpackage on PATH." >&2
   exit 1
 fi
 

@@ -1,0 +1,102 @@
+
+/* PulseOS Modern Light Theme */
+.main-panel {
+    -fx-background-color: #f8fafc; 
+    -fx-font-family: 'Segoe UI', 'SF Pro Display', sans-serif;
+}
+
+.label {
+    -fx-text-fill: #475569;
+}
+
+/* Sidebar */
+.view-shell-sidebar {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 0 1 0 0;
+    -fx-padding: 12;
+}
+
+.view-sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #64748b;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10 12;
+}
+
+.view-sidebar-button:hover {
+    -fx-background-color: #f1f5f9;
+    -fx-text-fill: #1e293b;
+}
+
+.view-sidebar-active {
+    -fx-background-color: #dbeafe;
+    -fx-text-fill: #2563eb;
+    -fx-font-weight: bold;
+}
+
+/* Header & Nav */
+.header-container {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 0 0 1 0;
+}
+
+.nav-tab-bar {
+    -fx-background-color: #ffffff;
+}
+
+.nav-tab-btn {
+    -fx-text-fill: #64748b;
+}
+
+.nav-tab-active {
+    -fx-border-color: #3b82f6;
+    -fx-border-width: 0 0 3 0;
+    -fx-text-fill: #1e293b;
+}
+
+/* Dashboard Cards */
+.card {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 4);
+}
+
+.card:hover {
+    -fx-border-color: #3b82f6;
+}
+
+.hero-card {
+    -fx-background-color: linear-gradient(to bottom right, #eff6ff, #ffffff);
+    -fx-border-color: #bfdbfe;
+}
+
+/* Metrics */
+.metric-tile {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 8;
+}
+
+.metric-value {
+    -fx-text-fill: #1e293b;
+}
+
+.stat-caption {
+    -fx-text-fill: #64748b;
+}
+
+/* Buttons */
+.action-btn {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: #ffffff;
+    -fx-background-radius: 6;
+}
+
+.action-btn:hover {
+    -fx-background-color: #2563eb;
+}

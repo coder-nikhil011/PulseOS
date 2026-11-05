@@ -24,15 +24,19 @@ import javafx.stage.FileChooser;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
 import javafx.stage.Stage;
+import javafx.application.Platform;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CompletableFuture;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.ArrayDeque;
+import java.util.function.Supplier;
+import netscape.javascript.JSObject;
 
 /** Read-only bridge between the live desktop telemetry and the existing WebView UI. */
 public final class DesktopTelemetryBridge {
@@ -56,17 +60,148 @@ public final class DesktopTelemetryBridge {
     private final java.util.concurrent.ConcurrentLinkedDeque<String> recentActivities = new java.util.concurrent.ConcurrentLinkedDeque<>();
     private volatile com.pulseos.watcher.DownloadInterceptorService systemWatcher;
     private volatile Path downloadsFolder;
+    private final com.pulseos.services.DiskIoTelemetryService diskIoService;
+    private final com.pulseos.services.MemoryOptimizerService memoryOptimizerService;
+    private final com.pulseos.services.PortAuditService portAuditService;
+    private final com.pulseos.services.ThreadConcurrencyService threadConcurrencyService;
+    private final com.pulseos.services.PowerDrainService powerDrainService;
 
+    // Cached hardware & OS metadata to eliminate per-second JNI/native syscall overhead
+    private final boolean isMac;
+    private final boolean isWindows;
+    private final String osFamily;
+    private final String friendlyOsName;
+    private final String architecture;
+    private final String processorName;
+    private final int processorCores;
+    private final String deviceManufacturer;
+    private final String deviceModel;
+    private final String prettyModel;
+    private final String deviceImageUrl;
+    private final String gpuName;
+    private final String gpuVendor;
+    private final double gpuVramGb;
+    private final double totalStorageGb;
+    private volatile double cachedFreeStorageGb = -1;
+    private volatile double cachedStorageUsedPercent = -1;
+    private volatile long lastStorageCheckTime = 0;
+
+    // High performance snapshot & system watcher caching
+    private volatile String cachedSnapshotJson = null;
+    private volatile long lastSnapshotBuildTime = 0;
+    private volatile com.pulseos.services.DiskIoTelemetryService.DiskSpeed cachedDiskSpeed = null;
+    private volatile long lastDiskSampleTime = 0;
+    private volatile double cachedRxMbps = -1;
+    private volatile double cachedTxMbps = -1;
+    private volatile long lastNetworkIfSampleTime = 0;
+    private volatile String cachedSystemWatcherJson = null;
+    private volatile long lastSystemWatcherScanTime = 0;
 
     public DesktopTelemetryBridge(Window owner) {
         this.owner = owner;
+        this.diskIoService = new com.pulseos.services.DiskIoTelemetryService(systemInfo.getHardware());
+        this.memoryOptimizerService = new com.pulseos.services.MemoryOptimizerService(systemInfo.getHardware());
+        this.portAuditService = new com.pulseos.services.PortAuditService();
+        this.threadConcurrencyService = new com.pulseos.services.ThreadConcurrencyService(systemInfo.getOperatingSystem(), hardwareTelemetry::getAllProcesses);
+        this.powerDrainService = new com.pulseos.services.PowerDrainService(systemInfo.getHardware());
+
+        String rawOs = System.getProperty("os.name", "").toLowerCase(Locale.ROOT);
+        this.isMac = rawOs.contains("mac");
+        this.isWindows = rawOs.contains("win");
+        this.osFamily = isMac ? "macOS" : (isWindows ? "Windows" : "Linux");
+        this.friendlyOsName = detectFriendlyOsName(systemInfo);
+        this.architecture = System.getProperty("os.arch", "unknown");
+
+        CentralProcessor proc = systemInfo.getHardware().getProcessor();
+        this.processorName = proc.getProcessorIdentifier().getName();
+        this.processorCores = proc.getLogicalProcessorCount();
+
+        var computer = systemInfo.getHardware().getComputerSystem();
+        String mfg = computer.getManufacturer();
+        this.deviceManufacturer = (mfg == null || mfg.isBlank()) ? (isMac ? "Apple Inc." : "Standard OEM") : mfg.trim();
+        String mdl = computer.getModel();
+        this.deviceModel = (mdl == null || mdl.isBlank()) ? (isMac ? "MacBook Pro" : "Standard Model") : mdl.trim();
+        this.prettyModel = resolvePrettyDeviceModel(this.deviceManufacturer, this.deviceModel, this.isMac);
+
+        DeviceService.DeviceInfo deviceInfo = new DeviceService.DeviceInfo(
+            this.deviceManufacturer, this.deviceModel, "", "", this.friendlyOsName, "", "", "", "");
+        String imgPath = DeviceImageResolver.resolve(deviceInfo);
+        var imgRes = getClass().getResource(imgPath);
+        this.deviceImageUrl = imgRes == null ? "" : imgRes.toExternalForm();
+
+        List<oshi.hardware.GraphicsCard> gpus = systemInfo.getHardware().getGraphicsCards();
+        if (gpus != null && !gpus.isEmpty()) {
+            var primary = gpus.get(0);
+            this.gpuName = primary.getName() != null && !primary.getName().isBlank() ? primary.getName().trim() : (isMac ? "Apple Integrated GPU" : "Integrated GPU");
+            this.gpuVendor = primary.getVendor() != null ? primary.getVendor().trim() : "";
+            this.gpuVramGb = primary.getVRam() > 0 ? (primary.getVRam() / (1024.0 * 1024.0 * 1024.0)) : (isMac ? 8.0 : 0.0);
+        } else {
+            this.gpuName = isMac ? "Apple Integrated GPU" : "Integrated GPU";
+            this.gpuVendor = isMac ? "Apple" : "";
+            this.gpuVramGb = isMac ? 8.0 : 0.0;
+        }
+
+        long totalBytes = home.getTotalSpace();
+        this.totalStorageGb = totalBytes > 0 ? totalBytes / 1073741824.0 : 512.0;
+    }
+
+    private static String detectFriendlyOsName(SystemInfo systemInfo) {
+        String rawOs = System.getProperty("os.name", "").toLowerCase(Locale.ROOT);
+        String version = System.getProperty("os.version", "");
+        if (rawOs.contains("mac")) {
+            String codeName = "";
+            if (version.startsWith("15.")) codeName = "Sequoia";
+            else if (version.startsWith("14.")) codeName = "Sonoma";
+            else if (version.startsWith("13.")) codeName = "Ventura";
+            else if (version.startsWith("12.")) codeName = "Monterey";
+            else if (version.startsWith("11.")) codeName = "Big Sur";
+            return codeName.isBlank() ? "macOS " + version : "macOS " + codeName + " " + version;
+        }
+        if (rawOs.contains("win")) {
+            String osDesc = systemInfo.getOperatingSystem().toString();
+            return osDesc.isBlank() ? "Windows " + version : osDesc;
+        }
+        return systemInfo.getOperatingSystem().toString();
+    }
+
+    private static String resolvePrettyDeviceModel(String manufacturer, String rawModel, boolean isMac) {
+        String m = (manufacturer == null ? "" : manufacturer).toLowerCase(Locale.ROOT);
+        String r = (rawModel == null ? "" : rawModel).toLowerCase(Locale.ROOT);
+        if (isMac || m.contains("apple")) {
+            if (r.contains("air") || r.startsWith("mac13") || r.startsWith("mac14,2")) return "MacBook Air";
+            if (r.startsWith("macmini")) return "Mac mini";
+            if (r.startsWith("imac")) return "iMac";
+            if (r.startsWith("macstudio")) return "Mac Studio";
+            if (r.startsWith("macpro")) return "Mac Pro";
+            if (r.contains("pro") || r.startsWith("mac14") || r.startsWith("mac15") || r.startsWith("mac16") || r.startsWith("mac17")) return "MacBook Pro";
+            return "Apple Mac";
+        }
+        if (m.contains("dell")) return "Dell " + (rawModel == null || rawModel.isBlank() ? "XPS Laptop" : rawModel);
+        if (m.contains("lenovo")) return "Lenovo " + (rawModel == null || rawModel.isBlank() ? "ThinkPad" : rawModel);
+        if (m.contains("hp") || m.contains("hewlett")) return "HP " + (rawModel == null || rawModel.isBlank() ? "Pavilion" : rawModel);
+        if (m.contains("microsoft")) return "Microsoft Surface " + (rawModel == null ? "" : rawModel);
+        return (rawModel == null || rawModel.isBlank() || rawModel.equalsIgnoreCase("generic model")) ? "Windows PC Workstation" : rawModel;
     }
 
     public void start() {
-        hardwareTelemetry.startMonitoring(latestMetrics::set, 1000);
+        hardwareTelemetry.startMonitoring(latestMetrics::set, 2000);
         networkTelemetry.start(latestNetwork::set, 15);
         addActivity("PulseOS dashboard started", "Live session");
         addActivity("Telemetry engine initialized", "Live");
+
+        // Background sampling for thread concurrency and power drain (low-frequency virtual thread)
+        Thread.ofVirtual().name("pulseos-thread-sampler").start(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
+                    threadConcurrencyService.sample();
+                    powerDrainService.sample();
+                    Thread.sleep(3500);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    break;
+                } catch (Exception ignored) { }
+            }
+        });
         try {
             downloadsFolder = home.toPath().resolve("Downloads");
             if (Files.isDirectory(downloadsFolder)) {
@@ -131,11 +266,15 @@ public final class DesktopTelemetryBridge {
     }
 
     public String getSystemWatcherJson() {
+        long now = System.currentTimeMillis();
+        if (cachedSystemWatcherJson != null && (now - lastSystemWatcherScanTime < 30000)) {
+            return cachedSystemWatcherJson;
+        }
         Path folder = downloadsFolder != null ? downloadsFolder : home.toPath().resolve("Downloads");
         List<String> files = new ArrayList<>();
         if (Files.isDirectory(folder)) {
-            try (var stream = Files.walk(folder, 3)) {
-                stream.filter(Files::isRegularFile).limit(150).forEach(path -> {
+            try (var stream = Files.list(folder)) {
+                stream.filter(Files::isRegularFile).limit(40).forEach(path -> {
                     try {
                         long size = Files.size(path);
                         String risk = assessFileRisk(path);
@@ -150,48 +289,55 @@ public final class DesktopTelemetryBridge {
             String[] p=files.get(i).split("\\|",-1);
             json.append('{'); append(json,"path",p[0]); append(json,"size",Long.parseLong(p[1])); append(json,"modified",Long.parseLong(p[2])); append(json,"risk",p[3]); json.append('}');
         }
-        return json.append("]}").toString();
+        json.append("]}");
+        cachedSystemWatcherJson = json.toString();
+        lastSystemWatcherScanTime = now;
+        return cachedSystemWatcherJson;
     }
 
     public String getSnapshotJson() {
+        long nowMs = System.currentTimeMillis();
+        if (cachedSnapshotJson != null && (nowMs - lastSnapshotBuildTime < 1400)) {
+            return cachedSnapshotJson;
+        }
+
         SystemMetrics metrics = latestMetrics.get();
         NetworkTelemetryService.NetworkMetrics network = latestNetwork.get();
-        long totalBytes = home.getTotalSpace();
-        long freeBytes = home.getFreeSpace();
-        double totalGb = totalBytes / 1073741824.0;
-        double freeGb = freeBytes / 1073741824.0;
-        double storageUsed = totalBytes > 0 ? (double) (totalBytes - freeBytes) / totalBytes : -1;
+
+        if (nowMs - lastStorageCheckTime > 20000 || cachedFreeStorageGb < 0) {
+            long freeBytes = home.getFreeSpace();
+            cachedFreeStorageGb = freeBytes / 1073741824.0;
+            cachedStorageUsedPercent = totalStorageGb > 0 ? ((totalStorageGb - cachedFreeStorageGb) / totalStorageGb) * 100.0 : 0;
+            lastStorageCheckTime = nowMs;
+        }
+
         double ramUsed = metrics == null || metrics.getTotalMemoryGb() <= 0
                 ? -1 : metrics.getUsedMemoryGb() / metrics.getTotalMemoryGb();
-        double health = calculateHealth(metrics, storageUsed, network);
-        CentralProcessor processor = systemInfo.getHardware().getProcessor();
-        String processorName = processor.getProcessorIdentifier().getName();
-        var computer = systemInfo.getHardware().getComputerSystem();
-        String deviceManufacturer = computer.getManufacturer() == null || computer.getManufacturer().isBlank()
-            ? "Unknown Manufacturer" : computer.getManufacturer().trim();
-        String deviceModel = computer.getModel() == null || computer.getModel().isBlank()
-            ? "Generic Model" : computer.getModel().trim();
-        DeviceService.DeviceInfo deviceInfo = new DeviceService.DeviceInfo(
-            deviceManufacturer, deviceModel, "", "", "", "", "", "", "");
-        String deviceImagePath = DeviceImageResolver.resolve(deviceInfo);
-        var deviceImageResource = getClass().getResource(deviceImagePath);
-        String osName = System.getProperty("os.name", "Unknown OS");
-        String architecture = System.getProperty("os.arch", "unknown");
+        double health = calculateHealth(metrics, cachedStorageUsedPercent / 100.0, network);
         long uptimeSeconds = systemInfo.getOperatingSystem().getSystemUptime();
-        long rxBytes = 0, txBytes = 0;
-        try {
-            for (var nif : systemInfo.getHardware().getNetworkIFs()) {
-                nif.updateAttributes(); rxBytes += Math.max(0, nif.getBytesRecv()); txBytes += Math.max(0, nif.getBytesSent());
+
+        if (nowMs - lastNetworkIfSampleTime > 2500) {
+            long rxBytes = 0, txBytes = 0;
+            try {
+                for (var nif : systemInfo.getHardware().getNetworkIFs()) {
+                    rxBytes += Math.max(0, nif.getBytesRecv());
+                    txBytes += Math.max(0, nif.getBytesSent());
+                }
+            } catch (Exception ignored) { }
+
+            if (previousNetworkSampleMs > 0 && nowMs > previousNetworkSampleMs && previousRxBytes >= 0) {
+                double seconds = (nowMs - previousNetworkSampleMs) / 1000.0;
+                cachedRxMbps = Math.max(0, (rxBytes - previousRxBytes) * 8.0 / seconds / 1_000_000.0);
+                cachedTxMbps = Math.max(0, (txBytes - previousTxBytes) * 8.0 / seconds / 1_000_000.0);
             }
-        } catch (Exception ignored) { }
-        long nowMs = System.currentTimeMillis();
-        double rxMbps = -1, txMbps = -1;
-        if (previousNetworkSampleMs > 0 && nowMs > previousNetworkSampleMs && previousRxBytes >= 0) {
-            double seconds = (nowMs - previousNetworkSampleMs) / 1000.0;
-            rxMbps = Math.max(0, (rxBytes - previousRxBytes) * 8.0 / seconds / 1_000_000.0);
-            txMbps = Math.max(0, (txBytes - previousTxBytes) * 8.0 / seconds / 1_000_000.0);
+            previousRxBytes = rxBytes; previousTxBytes = txBytes; previousNetworkSampleMs = nowMs;
+            lastNetworkIfSampleTime = nowMs;
         }
-        previousRxBytes = rxBytes; previousTxBytes = txBytes; previousNetworkSampleMs = nowMs;
+
+        if (nowMs - lastDiskSampleTime > 2500 || cachedDiskSpeed == null) {
+            cachedDiskSpeed = diskIoService.sample();
+            lastDiskSampleTime = nowMs;
+        }
 
         StringBuilder json = new StringBuilder("{");
         append(json, "ready", metrics != null);
@@ -206,30 +352,59 @@ public final class DesktopTelemetryBridge {
         append(json, "clock", metrics == null ? -1 : metrics.getClockSpeedGhz());
         append(json, "threads", metrics == null ? -1 : metrics.getActiveThreadCount());
         append(json, "processes", metrics == null ? -1 : metrics.getTotalProcessCount());
-        append(json, "storageUsed", storageUsed < 0 ? -1 : storageUsed * 100.0);
-        append(json, "storageFreeGb", freeGb);
-        append(json, "storageTotalGb", totalGb);
+        append(json, "storageUsed", cachedStorageUsedPercent);
+        append(json, "storageFreeGb", cachedFreeStorageGb);
+        append(json, "storageTotalGb", totalStorageGb);
         append(json, "healthScore", health);
         append(json, "uptimeSeconds", uptimeSeconds);
         append(json, "processor", processorName);
         append(json, "deviceManufacturer", deviceManufacturer);
-        append(json, "deviceModel", deviceModel);
-        append(json, "deviceImage", deviceImageResource == null ? "" : deviceImageResource.toExternalForm());
-        append(json, "cores", processor.getLogicalProcessorCount());
-        append(json, "os", osName);
+        append(json, "deviceModel", prettyModel);
+        append(json, "rawModel", deviceModel);
+        append(json, "deviceImage", deviceImageUrl);
+        append(json, "cores", processorCores);
+        append(json, "os", friendlyOsName);
         append(json, "architecture", architecture);
+        append(json, "gpuName", gpuName);
+        append(json, "gpuVendor", gpuVendor);
+        append(json, "gpuVramGb", gpuVramGb);
+        append(json, "isMac", isMac);
+        append(json, "isWindows", isWindows);
+        append(json, "osFamily", osFamily);
+        append(json, "fileManager", isMac ? "Finder" : (isWindows ? "File Explorer" : "Files"));
+        append(json, "taskManager", isMac ? "Activity Monitor" : (isWindows ? "Task Manager" : "Task Manager"));
+        append(json, "defaultFolder", isWindows ? "C:\\PulseOS\\Converted" : "~/PulseOS/Converted");
         append(json, "networkReady", network != null);
         append(json, "networkReachable", network != null && network.internetReachable());
         append(json, "dnsAvailable", network != null && network.dnsAvailable());
         append(json, "latency", network == null ? -1 : network.latencyMs());
-        append(json, "networkRxMbps", rxMbps);
-        append(json, "networkTxMbps", txMbps);
+        append(json, "networkRxMbps", cachedRxMbps);
+        append(json, "networkTxMbps", cachedTxMbps);
+        var diskSpeed = cachedDiskSpeed != null ? cachedDiskSpeed : diskIoService.getLatest();
+        append(json, "diskReadMb", diskSpeed.readMbPerSec());
+        append(json, "diskWriteMb", diskSpeed.writeMbPerSec());
+        // Thread concurrency
+        var concurrency = threadConcurrencyService.getLatest();
+        append(json, "totalThreads", concurrency.totalThreads());
+        append(json, "threadLeakDetected", concurrency.leakDetected());
+        append(json, "threadLeakSummary", concurrency.leakSummary());
+        // Power drain
+        var power = powerDrainService.getLatest();
+        append(json, "powerWatts", power.powerWatts());
+        append(json, "batteryRemaining", power.formattedRemaining());
+        append(json, "remainingHours", power.remainingHours());
+        append(json, "batteryVoltage", power.voltage());
+        append(json, "batteryCycles", power.cycleCount());
+        append(json, "batteryCurrentCapWh", power.currentCapacityWh());
+        append(json, "batteryDesignCapWh", power.designCapacityWh());
         append(json, "topCpuName", topCpuName(metrics));
         append(json, "topCpuPercent", topCpuPercent(metrics));
         append(json, "topRamName", topRamName(metrics));
         append(json, "topRamMb", topRamMb(metrics));
         json.append('}');
-        return json.toString();
+        cachedSnapshotJson = json.toString();
+        lastSnapshotBuildTime = nowMs;
+        return cachedSnapshotJson;
     }
 
     /** Returns real local network identity for the Router UI. */
@@ -264,12 +439,13 @@ public final class DesktopTelemetryBridge {
         if (os.contains("mac")) {
             // Check current Wi-Fi SSID
             try {
-                Process p = new ProcessBuilder("sh", "-c", "ipconfig getsummary en0 2>/dev/null | grep 'SSID :'").start();
+                Process p = new ProcessBuilder("sh", "-c", "ipconfig getsummary en0 2>/dev/null | grep 'SSID :' | head -n 1").start();
                 String out = new String(p.getInputStream().readAllBytes(), java.nio.charset.StandardCharsets.UTF_8).trim();
                 p.waitFor(800, java.util.concurrent.TimeUnit.MILLISECONDS);
                 if (out.contains(":")) {
                     String ssid = out.substring(out.indexOf(':') + 1).trim();
-                    if (!ssid.isBlank() && !ssid.equalsIgnoreCase("<redacted>")) return "Wi-Fi (" + ssid + ")";
+                    if (ssid.contains("\n")) ssid = ssid.substring(0, ssid.indexOf('\n')).trim();
+                    if (!ssid.isBlank() && !ssid.contains("<redacted>")) return "Wi-Fi (" + ssid + ")";
                     if (!ssid.isBlank()) return "Wi-Fi (Connected)";
                 }
             } catch (Exception ignored) { }
@@ -279,7 +455,8 @@ public final class DesktopTelemetryBridge {
                 p.waitFor(800, java.util.concurrent.TimeUnit.MILLISECONDS);
                 if (out.contains(":")) {
                     String ssid = out.substring(out.indexOf(':') + 1).trim();
-                    if (!ssid.isBlank() && !ssid.contains("not associated")) return "Wi-Fi (" + ssid + ")";
+                    if (ssid.contains("\n")) ssid = ssid.substring(0, ssid.indexOf('\n')).trim();
+                    if (!ssid.isBlank() && !ssid.contains("not associated") && !ssid.contains("<redacted>")) return "Wi-Fi (" + ssid + ")";
                 }
             } catch (Exception ignored) { }
             return "Wi-Fi (en0)";
@@ -416,6 +593,29 @@ public final class DesktopTelemetryBridge {
         return buildProcessJson(processes);
     }
 
+    public void scanProcessesAsync(JSObject callback) {
+        runScanAsync(this::scanProcessesJson, callback);
+    }
+
+    public void scanStorageDetailsAsync(JSObject callback) {
+        runScanAsync(this::scanStorageDetailsJson, callback);
+    }
+
+    private void runScanAsync(Supplier<String> scan, JSObject callback) {
+        if (callback == null) {
+            throw new IllegalArgumentException("A JavaScript scan callback is required.");
+        }
+        CompletableFuture.supplyAsync(scan).whenComplete((result, error) ->
+                Platform.runLater(() -> {
+                    String message = error == null ? "" : error.getMessage();
+                    try {
+                        callback.call("call", null, result, message);
+                    } catch (RuntimeException callbackError) {
+                        System.err.println("PulseOS scan callback failed: " + callbackError.getMessage());
+                    }
+                }));
+    }
+
     private String buildProcessJson(List<SystemMetrics.ProcessInfo> processes) {
         StringBuilder json = new StringBuilder("[");
         for (SystemMetrics.ProcessInfo process : processes == null ? List.<SystemMetrics.ProcessInfo>of() : processes) {
@@ -425,6 +625,7 @@ public final class DesktopTelemetryBridge {
             append(json, "pid", process.pid());
             append(json, "cpu", process.cpuPercent());
             append(json, "ramMb", process.getRamMb());
+            append(json, "threads", process.threadCount());
             append(json, "type", classifyProcess(process.name()));
             json.append('}');
         }
@@ -839,6 +1040,40 @@ public final class DesktopTelemetryBridge {
         return value;
     }
 
+    public String optimizeMemory() {
+        var res = memoryOptimizerService.optimize();
+        addActivity("Memory optimized", String.format(Locale.ROOT, "Freed %.0f MB RAM", res.freedMb()));
+        return String.format(Locale.ROOT, "{\"success\":%b,\"freedMb\":%.1f,\"currentUsedGb\":%.2f,\"totalGb\":%.2f,\"message\":\"%s\"}",
+                res.success(), res.freedMb(), res.currentUsedGb(), res.totalGb(), escape(res.message()));
+    }
+
+    public String getOpenPortsJson() {
+        var ports = portAuditService.scanListeningPorts();
+        StringBuilder sb = new StringBuilder("[");
+        boolean first = true;
+        for (var p : ports) {
+            if (!first) sb.append(','); first = false;
+            sb.append("{\"port\":").append(p.port())
+              .append(",\"process\":\"").append(escape(p.processName())).append('"')
+              .append(",\"pid\":").append(p.pid())
+              .append(",\"protocol\":\"").append(escape(p.protocol())).append('"')
+              .append(",\"address\":\"").append(escape(p.address())).append("\"}");
+        }
+        return sb.append(']').toString();
+    }
+
+    /** Returns a live JSON snapshot of thread concurrency across the OS. */
+    public String getThreadConcurrencyJson() {
+        threadConcurrencyService.sample();
+        return threadConcurrencyService.toJson();
+    }
+
+    /** Returns the latest power draw / battery drain JSON. */
+    public String getPowerDrainJson() {
+        powerDrainService.sample();
+        return powerDrainService.toJson();
+    }
+
     public String getConverterCapabilitiesJson() {
         return "{\"ffmpeg\":" + commandAvailable("ffmpeg")
                 + ",\"calibre\":" + commandAvailable("ebook-convert")
@@ -1015,9 +1250,10 @@ public final class DesktopTelemetryBridge {
         double score = 100.0;
         score -= Math.max(0, metrics.getCpuLoadPercentage() - 70) * 0.35;
         score -= Math.max(0, ramPercent - 75) * 0.25;
-        if (metrics.getCoreTemperature() > 0) score -= Math.max(0, metrics.getCoreTemperature() - 70) * 0.35;
+        if (metrics.getCoreTemperature() > 0) score -= Math.max(0, metrics.getCoreTemperature() - 75) * 0.35;
         if (storageUsed >= 0) score -= Math.max(0, storageUsed * 100 - 85) * 0.3;
-        if (metrics.getBatteryPercent() >= 0 && metrics.getBatteryPercent() < 20) score -= 8;
+        // Only deduct if actually on battery, battery is below 20%, and not charging
+        if (metrics.getBatteryPercent() >= 0 && metrics.getBatteryPercent() < 20 && !metrics.isBatteryCharging()) score -= 8;
         return Math.max(0, Math.min(100, Math.round(score)));
     }
 

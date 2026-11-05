@@ -45,9 +45,10 @@ class HealthScoreEngine {
       contributingMetrics++;
     }
 
-    // 3. Battery Health (Charge level)
+    // 3. Battery availability (current charge). This is NOT battery health/capacity health.
     if (data.battery != null) {
-      totalScore += data.battery! * batteryWeight;
+      final chargeScore = data.battery!.clamp(0, 100);
+      totalScore += chargeScore * batteryWeight;
       contributingMetrics++;
     }
 

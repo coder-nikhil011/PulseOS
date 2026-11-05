@@ -1,296 +1,324 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="PulseOS — Intelligent Device Health, Predictive Maintenance & Self-Healing Platform">
-<title>PulseOS — Device Health & Healing</title>
-<link rel="stylesheet" href="styles.css?v=demo-2">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="PulseOS — Intelligent Device Health, Predictive Maintenance & Self-Healing Platform">
+  <title>PulseOS — Device Health &amp; Healing</title>
+  <link rel="stylesheet" href="styles.css?v=demo-4">
 </head>
 <body>
-<header class="nav"><a class="brand" href="#top">Pulse<span>OS</span></a><nav><a href="#features">Features</a><a href="#how">How it works</a><a href="#download">Download</a><a href="#mobile">Mobile</a></nav><a class="nav-btn" href="#download">Get PulseOS</a></header>
-<main id="top">
-<section class="hero"><div class="eyebrow">MONITOR · UNDERSTAND · PREDICT · HEAL</div><h1>Your device should explain itself.</h1><p>PulseOS turns raw system activity into health, diagnosis, prediction and safe remediation — while keeping your data local.</p><div class="hero-actions"><a class="primary" href="#download">Download PulseOS</a><a class="secondary" href="#features">Explore capabilities</a></div><div class="status"><i></i><span id="platformText">Detecting your platform…</span><span>·</span><span>Local-first</span></div></section>
-
-<section class="dashboard-preview">
-  <div class="preview-heading">
-    <div><div class="eyebrow">AUTOMATIC DESKTOP TOUR</div><p id="desktopTourCaption" aria-live="polite">Overview · health score, live metrics, trends and recent activity.</p></div>
-    <span class="preview-orbit">SAMPLE DATA · VIEW ONLY</span>
-  </div>
-  <div class="dash-window">
-    <!-- Topbar -->
-    <div class="dash-topbar">
-      <div class="dash-brand">
-        <span class="dash-logo">P</span>
-        <div>
-          <b>PulseOS</b>
-          <small>DEVICE HEALTH &amp; HEALING CENTER</small>
-        </div>
-      </div>
-      <div class="dash-topbar-right">
-        <span class="badge-status green">● SAMPLE MODE</span>
-        <span class="badge-status live">● LIVE <small>Illustrative data</small></span>
-        <button class="dash-btn-sec" type="button" data-demo-action="refresh">↻ Refresh</button>
-        <button class="dash-btn-danger" type="button" data-demo-action="diagnosis">Run check →</button>
-      </div>
-    </div>
-    <nav class="demo-page-tabs" aria-label="Desktop preview pages">
-      <button class="demo-page-tab active" type="button" data-demo-page="overview">Overview</button>
-      <button class="demo-page-tab" type="button" data-demo-page="hardware">Hardware</button>
-      <button class="demo-page-tab" type="button" data-demo-page="router">Router</button>
-      <button class="demo-page-tab" type="button" data-demo-page="storage">Storage</button>
-      <button class="demo-page-tab" type="button" data-demo-page="converter">Converter</button>
-      <button class="demo-page-tab" type="button" data-demo-page="settings">Settings</button>
-      <span class="demo-auto-status" aria-live="off">AUTO TOUR · 1 / 6</span>
+  <header class="nav">
+    <a class="brand" href="#top">
+      <strong>Pulse</strong><span>OS</span>
+    </a>
+    <nav>
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#download">Download</a>
+      <a href="#mobile">Mobile</a>
     </nav>
+    <a class="nav-btn" href="#download">Get PulseOS</a>
+  </header>
 
-    <div class="dash-layout">
-      <!-- Main Content Container -->
-      <div class="dash-content">
-        <!-- Page Header -->
-        <div class="dash-pagehead">
-          <h3>Device Health &amp; Healing Center</h3>
-          <p>Monitor your device's hardware, sensors and system components in real time.</p>
-        </div>
-
-        <!-- Row 1: Score, Snapshot, Quick Health Status -->
-        <div class="dash-grid row-1">
-          <!-- Score Card -->
-          <div class="dash-card score-card">
-            <div class="dash-card-title">DEVICE HEALTH SCORE <span class="badge green-pill">EXCELLENT</span></div>
-            <div class="score-body">
-              <div class="score-num">
-                <strong>91</strong>
-                <small>/100</small>
-              </div>
-              <p>Your device is operating within the original health baseline. No active hardware failures detected.</p>
-            </div>
-            <div class="dash-card-foot-tag">LIVE DEVICE SNAPSHOT</div>
-          </div>
-
-          <!-- Live Device Snapshot Card -->
-          <div class="dash-card snapshot-card">
-            <div class="dash-card-title">● Live Device Snapshot <small>Real-time system information</small></div>
-            <div class="snapshot-body">
-              <div class="laptop-icon">
-                <div class="screen">Mac desktop</div>
-                <div class="base"></div>
-              </div>
-              <div class="snapshot-specs">
-                <div><small>Device</small><b>Mac computer</b></div>
-                <div><small>OS</small><b>macOS</b></div>
-                <div><small>Uptime</small><b>2d 1h 15m</b></div>
-              </div>
-              <div class="snapshot-hardware">
-                <div><small>CPU</small><b>Apple M1 (8 cores)</b></div>
-                <div><small>RAM</small><b>16 GB (LPDDR4)</b></div>
-                <div><small>Graphics</small><b>Integrated GPU</b></div>
-                <div><small>Storage</small><b>512 GB SSD</b></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Quick Health Status Card -->
-          <div class="dash-card status-list-card">
-            <div class="dash-card-title">Quick Health Status</div>
-            <ul class="status-list">
-              <li><span>● CPU</span> <em class="tag-good">Normal ›</em></li>
-              <li><span>● Memory</span> <em class="tag-good">Normal ›</em></li>
-              <li><span>● Storage</span> <em class="tag-good">Normal ›</em></li>
-              <li><span>● Battery</span> <em class="tag-good">Normal ›</em></li>
-              <li><span>● Network</span> <em class="tag-warn">Problem ›</em></li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Row 2: Top Resource Drainers, Live Performance Charts, Assistant -->
-        <div class="dash-grid row-2">
-          <!-- Top Resource Drainers -->
-          <div class="dash-card">
-            <div class="dash-card-title">Top Resource Drainers</div>
-            <div class="drainers-list">
-              <div class="drain-item"><span>■ CPU <small>Apple M1 (8 cores)</small></span><b>9.4%</b></div>
-              <div class="drain-item"><span>■ Memory <small>16 GB (LPDDR4)</small></span><b>6.8%</b></div>
-              <div class="drain-item"><span>■ Graphics <small>Integrated GPU</small></span><b>4.2%</b></div>
-              <div class="drain-item"><span>■ Storage <small>SSD</small></span><b>2.3%</b></div>
-              <div class="drain-item"><span>■ Battery <small>Charging</small></span><b>1.1%</b></div>
-            </div>
-          </div>
-
-          <!-- Live Performance Charts -->
-          <div class="dash-card charts-card">
-            <div class="dash-card-head-flex">
-              <div>
-                <div class="dash-card-title">■ Live Performance</div>
-                <small class="sub-text">Real-time hardware usage and temperature</small>
-              </div>
-              <div class="time-filters">
-                <button class="active">1 Min</button>
-                <button>5 Min</button>
-                <button>15 Min</button>
-                <button>1 Hour</button>
-              </div>
-            </div>
-            <div class="charts-3col">
-              <!-- CPU Load -->
-              <div class="mini-chart">
-                <div class="chart-label"><span>● CPU Load</span><strong>24%</strong></div>
-                <svg viewBox="0 0 200 60" class="sparkline blue">
-                  <polyline points="0,45 30,40 60,42 90,30 120,48 150,35 180,38 200,40"/>
-                </svg>
-                <div class="chart-time"><span>12:51</span><span>12:51:15</span><span>12:51:30</span><span>12:52</span></div>
-              </div>
-              <!-- Memory Pressure -->
-              <div class="mini-chart">
-                <div class="chart-label"><span>■ Memory Pressure</span><strong>62%</strong></div>
-                <svg viewBox="0 0 200 60" class="sparkline teal">
-                  <polyline points="0,30 30,28 60,32 90,30 120,29 150,31 180,28 200,30"/>
-                </svg>
-                <div class="chart-time"><span>12:51</span><span>12:51:15</span><span>12:51:30</span><span>12:52</span></div>
-              </div>
-              <!-- CPU Temp -->
-              <div class="mini-chart">
-                <div class="chart-label"><span>⚙ CPU Temperature</span><strong>62°C</strong></div>
-                <svg viewBox="0 0 200 60" class="sparkline red">
-                  <polyline points="0,35 30,30 60,38 90,32 120,34 150,28 180,30 200,32"/>
-                </svg>
-                <div class="chart-time"><span>12:51</span><span>12:51:15</span><span>12:51:30</span><span>12:52</span></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Assistant Panel -->
-          <div class="dash-card assistant-card">
-            <div class="dash-card-title">✦ Assistant <span class="badge-beta">BETA</span></div>
-            <p>Ask PulseOS anything about your device or system health.</p>
-            <div class="chat-input-wrapper">
-              <input type="text" placeholder="Type your question..." readonly>
-              <button>➤</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Row 3: Hardware Info & Predictive Health -->
-        <div class="dash-grid row-3">
-          <!-- Hardware Info Table -->
-          <div class="dash-card flex-2">
-            <div class="dash-card-title">⚙ Hardware Information</div>
-            <div class="info-table">
-              <div class="info-row"><span>Processor</span><b>Apple M1 (8 cores)</b><span>3.4 GHz</span></div>
-              <div class="info-row"><span>RAM</span><b>16 GB (LPDDR4)</b><span>10.1 GB used</span></div>
-              <div class="info-row"><span>Graphics</span><b>Apple M1 (Integrated)</b><span>9% usage</span></div>
-              <div class="info-row"><span>Storage</span><b>512 GB SSD</b><span>312 GB used</span></div>
-              <div class="info-row"><span>Battery</span><b>98% (Charging)</b><span>~4h 32m remaining</span></div>
-              <div class="info-row"><span>System</span><b>macOS · MacIntel</b><span>Uptime: 2d 14h 36m</span></div>
-            </div>
-          </div>
-
-          <!-- Predictive Health -->
-          <div class="dash-card flex-1">
-            <div class="dash-card-head-flex">
-              <div class="dash-card-title">⚙ Predictive Health</div>
-              <span class="badge green-pill">0 active</span>
-            </div>
-            <div class="predict-content">
-              <p><b>Outlook:</b> stable — no immediate degradation pattern is visible from the current telemetry trend.</p>
-              <div class="predict-pills">
-                <span>Outlook: CPU 43%</span>
-                <span>RAM 79%</span>
-                <span>Temp 62°C</span>
-                <span>Storage 29% used</span>
-              </div>
-              <p class="small-trend"><b>Trend:</b> CPU rising · RAM stable · Thermal falling · Storage stable</p>
-              <a href="#" class="link-btn">View Details →</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Row 4: System Watcher, Recent Activity, Network Health, Storage Intelligence -->
-        <div class="dash-grid row-4">
-          <!-- System Watcher -->
-          <div class="dash-card">
-            <div class="dash-card-head-flex">
-              <div class="dash-card-title">■ System Watcher</div>
-              <span class="badge green-pill">Monitoring in real time</span>
-            </div>
-            <ul class="watcher-list">
-              <li><span>↳ Downloads</span> <b>0 files ›</b></li>
-              <li><span>⚙ Telemetry</span> <b>Initialized ›</b></li>
-              <li><span>■ Storage Analysis</span> <b>Running ›</b></li>
-              <li><span>⚙ System Watcher</span> <b>Initialized ›</b></li>
-            </ul>
-          </div>
-
-          <!-- Recent Activity -->
-          <div class="dash-card">
-            <div class="dash-card-head-flex">
-              <div class="dash-card-title">Recent Activity</div>
-              <a href="#" class="link-btn">View all →</a>
-            </div>
-            <ul class="activity-timeline">
-              <li><span>● PulseOS dashboard started</span><time>12:51:30 pm</time></li>
-              <li><span>● Telemetry engine initialized</span><time>12:51:30 pm</time></li>
-              <li><span>● Storage analysis started</span><time>12:51:30 pm</time></li>
-              <li><span>● System Watcher initialized</span><time>12:51:30 pm</time></li>
-            </ul>
-          </div>
-
-          <!-- Network Health -->
-          <div class="dash-card network-card">
-            <div class="dash-card-head-flex">
-              <div class="dash-card-title">Network Health</div>
-              <span class="badge red-pill">PROBLEM</span>
-            </div>
-            <p>DNS or internet accessibility trend.</p>
-            <button class="dash-btn-red">Diagnose →</button>
-            <div class="net-stats">
-              <div><small>Connection</small><b>Not Connected</b></div>
-              <div><small>DNS</small><b>IP Address</b></div>
-              <div><small>Latency</small><b>—</b></div>
-            </div>
-          </div>
-
-          <!-- Storage Intelligence -->
-          <div class="dash-card storage-card">
-            <div class="dash-card-head-flex">
-              <div class="dash-card-title">Storage Intelligence</div>
-              <span class="badge green-pill">Healthy</span>
-            </div>
-            <div class="storage-content">
-              <div class="storage-num">
-                <strong>68%</strong>
-                <small>Used</small>
-              </div>
-              <div class="storage-breakdown">
-                <div><span>Free Space</span><b>156 GB</b></div>
-                <div><span>Apps</span><b>124 GB</b></div>
-                <div><span>Media</span><b>96 GB</b></div>
-                <div><span>Other</span><b>34 GB</b></div>
-              </div>
-            </div>
-            <a href="#" class="link-btn text-right">Manage Storage →</a>
-          </div>
-        </div>
-
+  <main id="top">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="eyebrow">MONITOR · UNDERSTAND · PREDICT · HEAL</div>
+      <h1>Your device should explain<br>itself.</h1>
+      <p>PulseOS turns raw system activity into health, diagnosis, prediction and safe<br class="hero-br">remediation — while keeping your data local.</p>
+      <div class="hero-actions">
+        <a class="primary" href="#download">Download PulseOS</a>
+        <a class="secondary" href="#desktop-demo">Explore capabilities</a>
       </div>
-    </div>
-  </div>
-</section>
+      <div class="hero-status">
+        <span class="status-dot-green">●</span>
+        <span id="platformText">Detected platform: macOS</span>
+        <span>·</span>
+        <span>Local-first</span>
+      </div>
+    </section>
 
-<section id="features" class="section"><div class="eyebrow">ONE PLATFORM, EVERY SIGNAL</div><h2>Everything already in PulseOS — plus intelligence around it.</h2><div class="cards"><article><b>◉</b><h3>Live Device Health</h3><p>CPU, RAM, temperature, threads, clocks, battery, processes and hardware telemetry.</p></article><article><b>↯</b><h3>Smart Router</h3><p>Understand resource-draining processes and make informed performance decisions.</p></article><article><b>◈</b><h3>Storage Healer</h3><p>Analyze storage, find build artifacts and reclaim safe space with guided cleanup.</p></article><article><b>⇄</b><h3>Offline Converter</h3><p>Document, image, archive, media and ebook conversion without uploading files.</p></article><article><b>⌁</b><h3>System Watcher</h3><p>Monitor Downloads, organize files and automate useful file workflows.</p></article><article><b>✦</b><h3>Local AI</h3><p>Optional Ollama integration for explanations, routing and intelligent automation.</p></article></div></section>
-<section id="how" class="section dark"><div class="eyebrow">THE PULSEOS LOOP</div><h2>From “something is slow” to a safe action.</h2><div class="steps"><div><span>01</span><h3>Monitor</h3><p>Collect available telemetry continuously.</p></div><div><span>02</span><h3>Understand</h3><p>Compare activity with device context and baseline.</p></div><div><span>03</span><h3>Predict</h3><p>Spot trends before they become failures.</p></div><div><span>04</span><h3>Heal</h3><p>Recommend and execute guarded remediation.</p></div></div></section>
-<section id="mobile" class="section mobile"><div class="mobile-copy"><div class="eyebrow">ANDROID · AUTOMATIC APP TOUR</div><h2>PulseOS Android, screen by screen.</h2><p id="phoneTourCaption" aria-live="polite">Overview · phone health score, battery, processor, memory and storage.</p><ul><li>Overview</li><li>Hardware</li><li>Router</li><li>Storage</li><li>Convert</li><li>Settings</li></ul><span class="phone-demo-note">VIEW-ONLY SAMPLE · THE TOUR ADVANCES AUTOMATICALLY</span></div><div class="phone" id="phoneDemo" aria-label="PulseOS Android app automatic preview"><div class="notch"></div><div class="phone-status"><span>9:41</span><span>●●●  ▰</span></div><div class="phone-appbar"><span class="phone-logo">P</span><div><b>PulseOS</b><small>DEVICE HEALTH &amp; HEALING</small></div><span class="phone-live">● LIVE</span></div><div class="phone-screen" id="phoneScreen" aria-live="polite"></div><nav class="phone-nav" aria-label="Mobile preview pages"><span class="active" data-phone-page="overview"><span>▦</span><small>Overview</small></span><span data-phone-page="hardware"><span>⌁</span><small>Hardware</small></span><span data-phone-page="router"><span>⌘</span><small>Router</small></span><span data-phone-page="storage"><span>▣</span><small>Storage</small></span><span data-phone-page="converter"><span>⇄</span><small>Convert</small></span><span data-phone-page="settings"><span>⚙</span><small>Settings</small></span></nav><div class="phone-demo-shield" aria-hidden="true"></div></div></section>
-<section id="download" class="section download">
-  <div class="eyebrow">DOWNLOAD</div>
-  <h2>Install PulseOS on your device.</h2>
-  <p id="downloadIntro">Choose the desktop installer for Windows, macOS, or Linux, or the Android-only mobile APK.</p>
-  <p class="setup-guide"><a href="https://github.com/coder-nikhil011/PulseOS/blob/main/README.md#%EF%B8%8F-installation--setup" target="_blank" rel="noopener">Read the full setup instructions on GitHub before installing</a></p>
-  <div class="download-grid">
-    <article id="windows"><h3>Windows</h3><p>Desktop client · Windows installer</p><a class="download-button" href="https://github.com/coder-nikhil011/PulseOS/releases/latest/download/PulseOS-windows.exe">Download for Windows</a><small class="install-note">Latest Windows package built by GitHub Actions.</small></article>
-    <article id="macos"><h3>macOS</h3><p>Desktop client · macOS package</p><a class="download-button" href="https://github.com/coder-nikhil011/PulseOS/releases/latest/download/PulseOS-macos.dmg">Download for macOS</a><small class="install-note">Unsigned builds may require opening PulseOS from System Settings → Privacy &amp; Security.</small></article>
-    <article id="linux"><h3>Linux</h3><p>Desktop client · Debian/Ubuntu package</p><a class="download-button" href="https://github.com/coder-nikhil011/PulseOS/releases/latest/download/PulseOS-linux.deb">Download for Linux</a><small class="install-note">Debian package · latest tagged release.</small></article>
-    <article id="mobile-client"><h3>Android</h3><p>Android-only mobile app · six interactive destinations</p><a class="download-button" href="https://github.com/coder-nikhil011/PulseOS/releases/latest/download/PulseOS-android.apk">Download for Android</a><small class="install-note">Install the APK on your Android phone. Usage Access remains optional.</small></article>
-  </div>
-</section>
-</main><footer><b>PulseOS</b><span>Intelligent Device Health, Predictive Maintenance &amp; Self-Healing Platform</span><span>Local-first · Cross-platform</span></footer>
-<script src="app.js?v=demo-2"></script>
-</body></html>
+    <!-- Desktop Interactive Showcase Section -->
+    <section class="dashboard-preview" id="desktop-demo">
+      <div class="preview-heading">
+        <div>
+          <div class="eyebrow">AUTONOMOUS GUIDED TOUR · 6 COMPLETE SCREENS</div>
+          <h2 class="showcase-title">Watch PulseOS Demonstrate Every Feature</h2>
+          <p id="desktopTourCaption" aria-live="polite">Overview · Continuous telemetry evaluates CPU, RAM, storage and thermals in real time.</p>
+        </div>
+        <div class="showcase-status-badge">
+          <span class="pulse-dot"></span>
+          <span id="tourModeIndicator">VIRTUAL MOUSE ACTIVE</span>
+          <span class="badge-tag" id="desktopPageIndicator" style="margin-left:8px;font-size:9.5px;color:#94a3b8;background:rgba(255,255,255,0.06);padding:2px 7px;border-radius:10px;">SCREEN 1 OF 6: OVERVIEW</span>
+        </div>
+      </div>
+
+      <!-- Showcase Control Bar -->
+      <div class="showcase-control-bar">
+        <div class="showcase-page-pills" id="desktopPageTabs" role="tablist">
+          <button class="page-pill active" data-page="overview" type="button" role="tab">
+            <span class="pill-num">1</span>
+            <span>Overview</span>
+          </button>
+          <button class="page-pill" data-page="hardware" type="button" role="tab">
+            <span class="pill-num">2</span>
+            <span>Hardware</span>
+          </button>
+          <button class="page-pill" data-page="router" type="button" role="tab">
+            <span class="pill-num">3</span>
+            <span>Smart Router</span>
+          </button>
+          <button class="page-pill" data-page="storage" type="button" role="tab">
+            <span class="pill-num">4</span>
+            <span>Storage Healer</span>
+          </button>
+          <button class="page-pill" data-page="converter" type="button" role="tab">
+            <span class="pill-num">5</span>
+            <span>Converter</span>
+          </button>
+          <button class="page-pill" data-page="settings" type="button" role="tab">
+            <span class="pill-num">6</span>
+            <span>Settings</span>
+          </button>
+        </div>
+
+        <div class="showcase-actions">
+          <button class="btn-prev-page" id="btnPrevPage" type="button" title="Previous Page">❮ Prev</button>
+          <button class="btn-next-page" id="btnNextPage" type="button" title="Next Page">Next ❯</button>
+          <button class="btn-toggle-tour" id="btnToggleTour" type="button" title="Pause / Play Tour">
+            <span id="tourToggleIcon">⏸</span>
+            <span id="tourToggleText">Pause Tour</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Studio Desktop Monitor Hardware Mockup -->
+      <div class="desktop-monitor-wrap">
+        <div class="monitor-hardware-frame">
+          <div class="monitor-top-bezel">
+            <div class="monitor-webcam" title="FaceTime HD Camera"></div>
+          </div>
+          <div class="monitor-screen-viewport">
+            <iframe id="desktopIframe" src="demo/desktop/index.html#overview" title="PulseOS Desktop Guided Interactive Tour" loading="eager"></iframe>
+            <div class="monitor-glass-shield"></div>
+          </div>
+          <div class="monitor-chin">
+            <div class="monitor-chin-content">
+              <span class="chin-brand-mark">P</span>
+              <span class="chin-brand-text">PulseOS 27″ Studio Display · 5K Retina</span>
+            </div>
+            <div class="monitor-power-led" title="Power: Active"></div>
+          </div>
+        </div>
+        <div class="monitor-stand-neck"></div>
+        <div class="monitor-stand-base"></div>
+        <div class="monitor-desk-shadow"></div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section">
+      <div class="eyebrow">ONE PLATFORM, EVERY SIGNAL</div>
+      <h2>Everything already in PulseOS — plus intelligence around it.</h2>
+      <div class="cards">
+        <article>
+          <b>◉</b>
+          <h3>Live Device Health</h3>
+          <p>Continuous telemetry across CPU, RAM, GPU, thermals, clock speeds, battery, and processes.</p>
+        </article>
+        <article>
+          <b>↯</b>
+          <h3>Smart Router</h3>
+          <p>Instantly spot and understand resource-draining processes with network latency optimizations.</p>
+        </article>
+        <article>
+          <b>◈</b>
+          <h3>Storage Healer</h3>
+          <p>Safely analyze storage, find build artifacts and reclaim disk space with zero risk to personal files.</p>
+        </article>
+        <article>
+          <b>⇄</b>
+          <h3>Offline Converter</h3>
+          <p>Fast on-device document, image, audio, video and archive conversion without uploading files to any cloud.</p>
+        </article>
+        <article>
+          <b>⌁</b>
+          <h3>System Watcher</h3>
+          <p>Continuous Downloads monitoring, file integrity checks, and automated workflow organization.</p>
+        </article>
+        <article>
+          <b>✦</b>
+          <h3>Local AI</h3>
+          <p>Ollama integration for natural language diagnostics, root-cause explanations and intelligent actions.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- The PulseOS Loop -->
+    <section id="how" class="section dark">
+      <div class="eyebrow">THE PULSEOS LOOP</div>
+      <h2>From “something is slow” to a guarded safe action.</h2>
+      <div class="steps">
+        <div>
+          <span>01</span>
+          <h3>Monitor</h3>
+          <p>Collect available telemetry continuously across 42+ hardware sensors at 1-second cadence.</p>
+        </div>
+        <div>
+          <span>02</span>
+          <h3>Understand</h3>
+          <p>Compare live activity with device baseline to isolate runaway tasks and degradation.</p>
+        </div>
+        <div>
+          <span>03</span>
+          <h3>Predict</h3>
+          <p>Spot thermal and memory trends before they cause sudden throttling or system crashes.</p>
+        </div>
+        <div>
+          <span>04</span>
+          <h3>Heal</h3>
+          <p>Recommend and execute guarded remediation with confirmation before any changes.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mobile Autonomous Touch Tour Section -->
+    <section id="mobile" class="section mobile-section">
+      <div class="mobile-copy">
+        <div class="eyebrow">ANDROID · AUTONOMOUS TOUCH TOUR</div>
+        <h2>PulseOS Android, screen by screen.</h2>
+        <p id="phoneTourCaption" aria-live="polite">Overview · Tap demonstration shows phone health score, battery, processor, and memory.</p>
+
+        <div class="mobile-page-pills" id="mobilePageTabs">
+          <button class="m-pill active" data-phone-page="overview" type="button">1. Overview</button>
+          <button class="m-pill" data-phone-page="hardware" type="button">2. Hardware</button>
+          <button class="m-pill" data-phone-page="router" type="button">3. Router</button>
+          <button class="m-pill" data-phone-page="storage" type="button">4. Storage</button>
+          <button class="m-pill" data-phone-page="converter" type="button">5. Convert</button>
+          <button class="m-pill" data-phone-page="settings" type="button">6. Settings</button>
+        </div>
+
+        <div class="mobile-tour-controls">
+          <button class="btn-m-prev" id="btnMobilePrev" type="button">❮ Prev Screen</button>
+          <button class="btn-m-next" id="btnMobileNext" type="button">Next Screen ❯</button>
+          <span class="mobile-tour-badge">Touch Pointer Active</span>
+        </div>
+
+        <ul class="mobile-feature-bullets">
+          <li><strong>On-Device Sensor Diagnostics:</strong> Battery temperature, screen touch, cameras, and connectivity.</li>
+          <li><strong>Smart App Usage Monitor:</strong> Identifies battery-draining apps with optional Android Usage Access.</li>
+          <li><strong>Zero-Upload File Converter:</strong> Convert PDFs, images, archives completely offline on your phone.</li>
+        </ul>
+      </div>
+
+      <!-- Smartphone Device Mockup -->
+      <div class="phone-device-wrap">
+        <div class="phone" id="phoneDemo">
+          <div class="phone-notch">
+            <div class="speaker-slit"></div>
+            <div class="camera-lens"></div>
+          </div>
+          <div class="phone-status">
+            <span>9:41</span>
+            <span class="status-icons">5G  ●●●  ▰</span>
+          </div>
+          <div class="phone-appbar">
+            <span class="phone-logo">P</span>
+            <div>
+              <b>PulseOS</b>
+              <small>MOBILE HEALTH &amp; HEALING</small>
+            </div>
+            <span class="phone-live">● LIVE</span>
+          </div>
+
+          <div class="phone-screen" id="phoneScreen">
+            <!-- Dynamically populated phone screen views -->
+          </div>
+
+          <nav class="phone-nav" id="phoneBottomNav">
+            <button class="active" data-phone-page="overview" type="button">
+              <span>▦</span>
+              <small>Overview</small>
+            </button>
+            <button data-phone-page="hardware" type="button">
+              <span>⌁</span>
+              <small>Hardware</small>
+            </button>
+            <button data-phone-page="router" type="button">
+              <span>⌘</span>
+              <small>Router</small>
+            </button>
+            <button data-phone-page="storage" type="button">
+              <span>▣</span>
+              <small>Storage</small>
+            </button>
+            <button data-phone-page="converter" type="button">
+              <span>⇄</span>
+              <small>Convert</small>
+            </button>
+            <button data-phone-page="settings" type="button">
+              <span>⚙</span>
+              <small>Settings</small>
+            </button>
+          </nav>
+
+          <!-- Animated Virtual Touch Pointer -->
+          <div class="virtual-touch-pointer" id="phoneTouchPointer">
+            <div class="touch-ring"></div>
+            <div class="touch-dot"></div>
+            <div class="phone-spotlight-pill" id="phoneSpotlight">
+              <strong class="phone-spotlight-title" id="mSpotlightTitle">Device Health Score</strong>
+              <p class="phone-spotlight-desc" id="mSpotlightDesc">Evaluates battery, RAM and storage in real time.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Download Section -->
+    <section id="download" class="section download">
+      <div class="eyebrow">DOWNLOAD &amp; INSTALL</div>
+      <h2>Install PulseOS on your device.</h2>
+      <p id="downloadIntro">Choose the desktop client for Windows, macOS, or Linux, or download the Android APK directly.</p>
+      <p class="setup-guide">
+        <a href="https://github.com/coder-nikhil011/PulseOS/blob/main/README.md#%EF%B8%8F-installation--setup" target="_blank" rel="noopener">Read the full setup and installation guide on GitHub →</a>
+      </p>
+
+      <div class="download-grid">
+        <article id="windows">
+          <h3>Windows</h3>
+          <p>Desktop client · Windows installer with bundled runtime.</p>
+          <a class="download-button" href="downloads/PulseOS-1.0.9.exe" download="PulseOS-1.0.9.exe">Download for Windows (115 MB)</a>
+        </article>
+
+        <article id="macos">
+          <h3>macOS</h3>
+          <p>Desktop client · macOS package (Apple Silicon &amp; Intel).</p>
+          <a class="download-button" href="downloads/PulseOS-1.0.9.dmg" download="PulseOS-1.0.9.dmg">Download for macOS (148 MB)</a>
+        </article>
+
+        <article id="linux">
+          <h3>Linux</h3>
+          <p>Desktop client · Debian / Ubuntu package.</p>
+          <a class="download-button" href="downloads/PulseOS-1.0.9.deb" download="PulseOS-1.0.9.deb">Download for Linux (96 MB)</a>
+        </article>
+
+        <article id="mobile-client">
+          <h3>Android</h3>
+          <p>Android-only mobile app · Six interactive destinations.</p>
+          <a class="download-button" href="downloads/PulseOS-2.0.5.apk" download="PulseOS-2.0.5.apk">Download for Android (56 MB)</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>
+      <b>PulseOS</b> — Intelligent Device Health, Predictive Maintenance &amp; Self-Healing Platform
+    </div>
+    <div>Local-first · 100% Private · Cross-platform</div>
+  </footer>
+
+  <script src="app.js?v=demo-4"></script>
+</body>
+</html>

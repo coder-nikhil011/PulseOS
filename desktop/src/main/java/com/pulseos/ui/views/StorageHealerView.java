@@ -15,6 +15,8 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.animation.FadeTransition;
+import javafx.util.Duration;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -152,6 +154,11 @@ public class StorageHealerView extends VBox {
         healerService.analyzeCommonLocations(home).thenAccept(artifacts -> Platform.runLater(() -> {
             spinner.setVisible(false);
             rows.setAll(artifacts.stream().map(Row::new).collect(Collectors.toList()));
+            
+            FadeTransition ft = new FadeTransition(Duration.millis(400), table);
+            ft.setFromValue(0);
+            ft.setToValue(1);
+            ft.play();
 
             long totalMb = (long) artifacts.stream().mapToDouble(ArtifactDetails::getSizeInMb).sum();
             long safeCount = artifacts.stream().filter(a -> !a.isActiveProject()).count();

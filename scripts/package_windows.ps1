@@ -1,9 +1,13 @@
 $ErrorActionPreference = "Stop"
 
 if (-not $env:JAVA_HOME) {
-    $java = Get-Command java -ErrorAction Stop
+    Get-Command java -ErrorAction Stop | Out-Null
 } else {
     $env:Path = "$env:JAVA_HOME\bin;$env:Path"
+}
+$javaVersion = & java -version 2>&1 | Select-String -Pattern 'version "(\d+)'
+if (-not $javaVersion -or $javaVersion.Matches[0].Groups[1].Value -ne "25") {
+    throw "JDK 25 is required to package PulseOS."
 }
 
 $root = Split-Path -Parent $PSScriptRoot

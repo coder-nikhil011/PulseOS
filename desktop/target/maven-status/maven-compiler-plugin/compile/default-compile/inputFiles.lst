@@ -1,3 +1,4 @@
+/Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/services/MemoryOptimizerService.java
 /Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/healer/StorageHealerService.java
 /Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/ui/DetailDialogs.java
 /Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/ui/views/HardwareHealthView.java
@@ -27,13 +28,16 @@
 /Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/data/MockNetworkService.java
 /Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/ai/AiFeaturesService.java
 /Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/data/HardwareService.java
+/Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/services/PowerDrainService.java
 /Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/Main.java
 /Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/data/MockHardwareService.java
 /Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/data/MockConverterService.java
 /Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/data/NetworkService.java
+/Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/services/DiskIoTelemetryService.java
 /Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/converter/ImageConverterEngine.java
 /Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/converter/DocumentConverterEngine.java
 /Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/ui/views/DashboardView.java
+/Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/services/PortAuditService.java
 /Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/ui/BackendInfoDialogs.java
 /Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/DesktopTelemetryBridge.java
 /Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/telemetry/SystemMetrics.java
@@ -45,5 +49,6 @@
 /Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/data/StorageService.java
 /Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/ui/ReferenceDashboardController.java
 /Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/data/ConverterService.java
+/Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/services/ThreadConcurrencyService.java
 /Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/converter/EbookConverterEngine.java
 /Users/nikhilpandit/Downloads/PulseOS/desktop/src/main/java/com/pulseos/ui/components/TelemetryChartCard.java
