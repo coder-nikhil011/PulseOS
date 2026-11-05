@@ -42,7 +42,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "21"
+          java-version: "25"
           cache: maven
       - uses: subosito/flutter-action@v2
         if: matrix.platform == 'android'
@@ -117,6 +117,10 @@ jobs:
           set -euo pipefail
           mkdir -p website/downloads
           version="${GITHUB_REF_NAME#v}"
+          cp "release-assets/PulseOS-${version}.exe" "website/downloads/PulseOS-${version}.exe"
+          cp "release-assets/PulseOS-${version}.deb" "website/downloads/PulseOS-${version}.deb"
+          cp "release-assets/PulseOS-${version}.dmg" "website/downloads/PulseOS-${version}.dmg"
+          cp release-assets/app-release.apk website/downloads/PulseOS-2.0.5.apk
           cp "release-assets/PulseOS-${version}.exe" website/downloads/PulseOS-windows.exe
           cp "release-assets/PulseOS-${version}.deb" website/downloads/PulseOS-linux.deb
           cp "release-assets/PulseOS-${version}.dmg" website/downloads/PulseOS-macos.dmg
@@ -128,6 +132,10 @@ jobs:
           generate_release_notes: true
           make_latest: true
           files: |
+            website/downloads/PulseOS-[0-9]*.exe
+            website/downloads/PulseOS-[0-9]*.deb
+            website/downloads/PulseOS-[0-9]*.dmg
+            website/downloads/PulseOS-2.0.5.apk
             website/downloads/PulseOS-windows.exe
             website/downloads/PulseOS-linux.deb
             website/downloads/PulseOS-macos.dmg
