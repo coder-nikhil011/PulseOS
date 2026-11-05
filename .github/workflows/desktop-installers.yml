@@ -117,12 +117,17 @@ jobs:
           set -euo pipefail
           mkdir -p website/downloads
           version="${GITHUB_REF_NAME#v}"
+          linux_deb="$(find release-assets -maxdepth 1 -type f -name '*.deb' -print -quit)"
+          if [[ -z "$linux_deb" ]]; then
+            echo "Linux .deb installer not found in release artifacts." >&2
+            exit 1
+          fi
           cp "release-assets/PulseOS-${version}.exe" "website/downloads/PulseOS-${version}.exe"
-          cp "release-assets/PulseOS-${version}.deb" "website/downloads/PulseOS-${version}.deb"
+          cp "$linux_deb" "website/downloads/PulseOS-${version}.deb"
           cp "release-assets/PulseOS-${version}.dmg" "website/downloads/PulseOS-${version}.dmg"
           cp release-assets/app-release.apk website/downloads/PulseOS-2.0.5.apk
           cp "release-assets/PulseOS-${version}.exe" website/downloads/PulseOS-windows.exe
-          cp "release-assets/PulseOS-${version}.deb" website/downloads/PulseOS-linux.deb
+          cp "$linux_deb" website/downloads/PulseOS-linux.deb
           cp "release-assets/PulseOS-${version}.dmg" website/downloads/PulseOS-macos.dmg
           cp release-assets/app-release.apk website/downloads/PulseOS-android.apk
           sha256sum website/downloads/PulseOS-{windows.exe,linux.deb,macos.dmg,android.apk}
