@@ -27,3 +27,6 @@ local.properties
 
 # Website downloads (Binaries)
 website/downloads/
+
+# Local Netlify folder
+.netlify
