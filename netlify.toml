@@ -1,0 +1,4 @@
+# Deploy the static PulseOS marketing site from the website/ folder.
+[build]
+  publish = "website"
+  command = ""
