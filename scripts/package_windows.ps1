@@ -5,11 +5,7 @@ if (-not $env:JAVA_HOME) {
 } else {
     $env:Path = "$env:JAVA_HOME\bin;$env:Path"
 }
-$javaVersionOutput = & cmd.exe /d /c "java -version 2>&1"
-if ($LASTEXITCODE -ne 0) {
-    throw "Unable to run java -version."
-}
-$javaVersion = $javaVersionOutput | Select-String -Pattern 'version "(\d+)'
+$javaVersion = & java -version 2>&1 | Select-String -Pattern 'version "(\d+)'
 if (-not $javaVersion -or $javaVersion.Matches[0].Groups[1].Value -ne "25") {
     throw "JDK 25 is required to package PulseOS."
 }
